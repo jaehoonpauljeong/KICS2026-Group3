@@ -1,0 +1,31 @@
+<!-- intent: Block SNS Access during Business Hours -->
+<!-- expected: primary-action: drop -->
+xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>block_sns_access_business_hours_policy</name>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>block_sns_access</name>
+    <condition>
+      <context>
+        <time>
+          <period>
+            <start-time>09:00:00Z</start-time>
+            <end-time>17:00:00Z</end-time>
+            <month>
+              <start>January</start>
+              <end>December</end>
+            </month>
+          </period>
+        </time>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

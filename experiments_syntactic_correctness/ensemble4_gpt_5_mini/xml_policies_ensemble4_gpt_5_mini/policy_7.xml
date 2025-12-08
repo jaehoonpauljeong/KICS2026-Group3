@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Device endpoint-group referenced by the policy (placeholder IPv4 range) -->
+  <device-group>
+    <name>all_devices</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- URL group representing the "adult" content category.
+       Populate with real blocked URLs/domains from your categorization service in production. -->
+  <url-group>
+    <name>adult</name>
+    <url>http://adult-content.example/</url>
+    <url>https://adult-content.example/</url>
+  </url-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Adult_Content_All_Devices</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Deny_Access_To_Adult_Content_Per_Device</name>
+
+    <!-- Condition: any traffic from endpoints in 'all_devices' that matches the 'adult' URL-group -->
+    <condition>
+      <firewall>
+        <source>all_devices</source>
+      </firewall>
+      <url-category>
+        <url-name>adult</url-name>
+      </url-category>
+    </condition>
+
+    <!-- Action: deny/drop the access -->
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

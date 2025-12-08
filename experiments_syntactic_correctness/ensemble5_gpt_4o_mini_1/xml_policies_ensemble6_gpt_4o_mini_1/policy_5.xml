@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>Corporate_User_Endpoints</name>
+    <range-ipv4-address>
+      <start>192.0.2.0</start>
+      <end>192.0.2.255</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No specific threat feeds defined in the policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_SNS_Access_During_Office_Hours</name>
+  <rules>
+    <name>Block_Access_Office_Hours</name>
+    <condition>
+      <firewall>
+        <source>Corporate_User_Endpoints</source>
+      </firewall>
+      <context>
+        <time>
+          <period>
+            <start-time>09:00:00Z</start-time>
+            <end-time>17:00:00Z</end-time>
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+            <frequency>weekly</frequency>
+          </period>
+        </time>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

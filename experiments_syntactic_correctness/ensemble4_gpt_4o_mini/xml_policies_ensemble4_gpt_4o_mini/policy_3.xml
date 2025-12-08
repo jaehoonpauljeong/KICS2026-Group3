@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Company Web Server</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.50</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Mitigate_Flood_Attacks_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Flood_Attack_Mitigation_Rule</name>
+    <condition>
+      <firewall>
+        <source>Company Web Server</source>
+        <destination>Company Web Server</destination>
+      </firewall>
+      <context>
+        <time>
+          <start-date-time>2025-09-01T08:00:00Z</start-date-time>
+          <end-date-time>2025-09-01T18:00:00Z</end-date-time>
+          <period>
+            <start-time>08:00:00Z</start-time>
+            <end-time>18:00:00Z</end-time>
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+          </period>
+          <frequency>daily</frequency>
+        </time>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

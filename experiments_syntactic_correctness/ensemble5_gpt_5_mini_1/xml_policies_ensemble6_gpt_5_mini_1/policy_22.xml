@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Source group: internal hosts that generate sensitive financial data -->
+  <user-group>
+    <name>financial_clients</name>
+    <!-- Placeholder/test IPv4 prefix (TEST-NET-1) -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Destination group: central server that must receive encapsulated traffic -->
+  <device-group>
+    <name>central_financial_server</name>
+    <!-- Placeholder/test IPv4 prefix (TEST-NET-2) -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Payload-content entry used by rules/condition/payload/content -->
+  <!-- This entry represents the DPI/DLP signature or classifier that detects
+       "sensitive financial data". The actual DPI/signature details are
+       implementation-specific; below is a descriptive placeholder and a
+       simple IOC-like pattern indicating the intent. -->
+  <payload-content>
+    <name>sensitive-financial-data</name>
+    <!-- Example IOC/pattern describing the payload detection logic.
+         Format chosen is 'openioc' as a placeholder; replace with the
+         concrete format/signature your NSF uses (STIX/MISP/OpenIOC/etc.). -->
+    <ioc>openioc:regex:(?i)(account(?:\s*number)?|credit(?:\s*card)?|routing\s*number|iban|sort-code|ssn)</ioc>
+    <format>openioc</format>
+  </payload-content>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Secure_Tunnel_For_Sensitive_Financial_Data</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Encapsulate_Sensitive_Financial_Traffic_To_Central_Server</name>
+
+    <condition>
+      <firewall>
+        <!-- Reference endpoint-groups by name only (addresses are in endpoint-groups doc) -->
+        <source>financial_clients</source>
+        <destination>central_financial_server</destination>
+      </firewall>
+
+      <!-- Payload/content condition: reference the payload-content defined in threat-prevention -->
+      <payload>
+        <content>sensitive-financial-data</content>
+      </payload>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Instruct the NSF to encapsulate matching traffic into a secure tunnel.
+             Note: the I2NSF model instance here requests 'tunnel-encapsulation'.
+             The policy assumes the NSF or out-of-band tunnel/profile configuration
+             enforces authentication, confidentiality, integrity and replay protection
+             (mutual auth, strong ciphers, key management). If your deployment requires
+             explicit tunnel/profile parameters, create a tunnel/profile object in the
+             NSF and ensure it is applied on this action. -->
+        <action>tunnel-encapsulation</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

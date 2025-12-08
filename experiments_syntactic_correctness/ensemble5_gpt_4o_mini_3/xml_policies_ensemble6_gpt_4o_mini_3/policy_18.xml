@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>Suspicious Database Traffic</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.50</end>
+    </range-ipv4-address>
+  </user-group>
+  <device-group>
+    <name>analysis-server</name>
+    <range-ipv4-address>
+      <start>192.0.2.100</start>
+      <end>192.0.2.150</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <threat-feed-list>
+    <name>general-threat-feed</name>
+    <ioc>malicious-ip</ioc>
+    <ioc>hash:abcd1234</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>DatabaseTrafficMirrorPolicy</name>
+  <rules>
+    <name>MirrorSuspiciousTraffic</name>
+    <condition>
+      <firewall>
+        <source>Suspicious Database Traffic</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>mirror</action>
+      </primary-action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

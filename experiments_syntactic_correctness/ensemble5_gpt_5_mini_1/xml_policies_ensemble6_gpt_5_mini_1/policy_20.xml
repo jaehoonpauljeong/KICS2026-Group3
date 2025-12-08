@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!--
+    Endpoint groups referenced by the policy.
+    Placeholder TEST-NET addresses are used. Replace with real addresses in production.
+  -->
+  <device-group>
+    <name>Internal_Network</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+    <!-- Indicate common streaming-related application protocols for this source group -->
+    <application-protocol>http</application-protocol>
+    <application-protocol>https</application-protocol>
+  </device-group>
+
+  <device-group>
+    <name>Video_Streaming_Services</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>DMZ_Proxy_Servers</name>
+    <!-- single proxy server placeholder -->
+    <ipv4-prefix>203.0.113.5/32</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>route_video_streaming_through_dmz_proxy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>route_video_streaming_to_dmz_proxy</name>
+
+    <condition>
+      <firewall>
+        <!-- source and destination reference endpoint-groups by name only -->
+        <source>Internal_Network</source>
+        <destination>Video_Streaming_Services</destination>
+
+        <!-- HTTP/HTTPS range -->
+        <range-port-number>
+          <start>80</start>
+          <end>443</end>
+        </range-port-number>
+
+        <!-- RTSP (TCP 554) -->
+        <range-port-number>
+          <start>554</start>
+          <end>554</end>
+        </range-port-number>
+
+        <!-- RTMP (TCP 1935) -->
+        <range-port-number>
+          <start>1935</start>
+          <end>1935</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Use 'forwarding' to route matching flows toward the DMZ proxy -->
+        <action>forwarding</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

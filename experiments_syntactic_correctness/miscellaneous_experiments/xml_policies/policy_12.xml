@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>malicious-ip-addresses</name>
+    <range-ipv4-address>
+      <start>192.0.2.0</start>
+      <end>192.0.2.255</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>malicious-ip-feed</name>
+  <ioc>malicious-ip-1</ioc>
+  <ioc>malicious-ip-2</ioc>
+  <format>stix</format>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Malicious_IP_Traffic_Drop_Policy</name>
+  <rules>
+    <name>Drop_Malicious_IP_Traffic</name>
+    <condition>
+      <firewall>
+        <source>malicious-ip-addresses</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

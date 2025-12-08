@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Source group: employees (placeholder/test-net range) -->
+  <user-group>
+    <name>employees</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Destination group: restricted finance servers (placeholder/test-net range) -->
+  <device-group>
+    <name>Restricted-Finance-Servers</name>
+    <ipv4-prefix>192.0.2.0/28</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Restrict_Unauthorized_Finance_Server_Access</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>pmre</resolution-strategy>
+
+  <!-- Rule 1: immediate block -->
+  <rules>
+    <name>Block_And_Log_Unauthorized_Finance_Access</name>
+    <condition>
+      <firewall>
+        <source>employees</source>
+        <destination>Restricted-Finance-Servers</destination>
+      </firewall>
+      <context>
+        <users>
+          <group>
+            <id>200</id>
+            <name>employees</name>
+          </group>
+        </users>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- Rule 2: invoke orchestration to notify, suspend/revoke access, and initiate incident response -->
+  <rules>
+    <name>Orchestrate_Notify_Suspend_Initiate_IR</name>
+    <condition>
+      <firewall>
+        <source>employees</source>
+        <destination>Restricted-Finance-Servers</destination>
+      </firewall>
+      <context>
+        <users>
+          <group>
+            <id>200</id>
+            <name>employees</name>
+          </group>
+        </users>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

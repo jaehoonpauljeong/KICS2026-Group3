@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>file-transfer-sources</name>
+    <range-ipv4-address>
+      <start>192.168.1.1</start>
+      <end>192.168.1.50</end>
+    </range-ipv4-address>
+  </user-group>
+  <user-group>
+    <name>file-transfer-destinations</name>
+    <range-ipv4-address>
+      <start>192.168.1.51</start>
+      <end>192.168.1.100</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>AntiVirus_Ransomware_Detection_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Investigate_And_Mitigate_File_Transfer_Threat</name>
+    <condition>
+      <firewall>
+        <source>file-transfer-sources</source>
+        <destination>file-transfer-destinations</destination>
+      </firewall>
+      <anti-virus>
+        <profile>ransomware-detect</profile>
+      </anti-virus>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Backup_Clients</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+    <!-- Example: clients initiating backups. Replace with real prefixes as needed. -->
+  </device-group>
+
+  <device-group>
+    <name>Backup_Storage</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+    <!-- Example: backup target servers/storage. Replace with real prefixes as needed. -->
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>backup_transfer_rate_limit_work_hours</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>throttle_backup_transfer_10MBps_during_work_hours</name>
+
+    <condition>
+      <firewall>
+        <source>Backup_Clients</source>
+        <destination>Backup_Storage</destination>
+      </firewall>
+
+      <context>
+        <time>
+          <period>
+            <start-time>09:00:00Z</start-time>
+            <end-time>17:30:00Z</end-time>
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+          </period>
+          <frequency>weekly</frequency>
+        </time>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>10000000</limit>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

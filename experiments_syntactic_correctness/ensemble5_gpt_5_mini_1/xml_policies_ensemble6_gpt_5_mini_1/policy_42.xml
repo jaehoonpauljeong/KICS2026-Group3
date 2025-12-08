@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>db-servers</name>
+    <!-- Placeholder IPv4 prefix for the database server group; replace with real prefix(es) -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Database_Memory_High_Usage_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Memory_Usage_Above_80pct</name>
+    <condition>
+      <firewall>
+        <source>db-servers</source>
+      </firewall>
+      <context>
+        <users>
+          <group>
+            <id>200</id>
+            <name>administrators</name>
+          </group>
+        </users>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>suspicious-db-clients</name>
+    <!-- Placeholder/test-net range for clients that may generate suspicious DB traffic -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>db-servers</name>
+    <!-- Placeholder/test-net range for intended DB server destinations -->
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>analysis-server</name>
+    <!-- Placeholder/test-net single-address for the analysis/forensics host that will receive mirrored traffic -->
+    <ipv4-prefix>198.51.100.10/32</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>mirror_suspicious_database_traffic</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <!-- Rule 1: Mirror matching suspicious DB flows (non-blocking mirror action) -->
+  <rules>
+    <name>mirror_suspicious_db_to_analysis</name>
+
+    <condition>
+      <firewall>
+        <!-- Source and destination reference endpoint-group names only (details are in endpoint-groups above) -->
+        <source>suspicious-db-clients</source>
+        <destination>db-servers</destination>
+
+        <!-- Common database service ports (each range is start==end) -->
+        <range-port-number>
+          <start>3306</start>
+          <end>3306</end>
+        </range-port-number>
+        <range-port-number>
+          <start>5432</start>
+          <end>5432</end>
+        </range-port-number>
+        <range-port-number>
+          <start>1433</start>
+          <end>1433</end>
+        </range-port-number>
+        <range-port-number>
+          <start>1521</start>
+          <end>1521</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Mirror the matching flows. The policy model uses 'priority-by-order' and we place a subsequent rule to allow the original flow. -->
+        <action>mirror</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- Rule 2: Ensure original flow is allowed to reach DB servers -->
+  <rules>
+    <name>allow_suspicious_db_to_dbservers</name>
+
+    <condition>
+      <firewall>
+        <source>suspicious-db-clients</source>
+        <destination>db-servers</destination>
+
+        <range-port-number>
+          <start>3306</start>
+          <end>3306</end>
+        </range-port-number>
+        <range-port-number>
+          <start>5432</start>
+          <end>5432</end>
+        </range-port-number>
+        <range-port-number>
+          <start>1433</start>
+          <end>1433</end>
+        </range-port-number>
+        <range-port-number>
+          <start>1521</start>
+          <end>1521</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Allow the original traffic to continue to its intended destination -->
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

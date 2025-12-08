@@ -1,0 +1,53 @@
+<!-- (Invalid) Intent: Calculate the total payroll tax due for this month. -->
+
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <user-group>
+      <name>Payroll Services</name>
+      <range-ipv4-address>
+        <start>192.0.2.1</start>
+        <end>192.0.2.50</end>
+      </range-ipv4-address>
+    </user-group>
+  </endpoint-groups>
+  <threat-prevention>
+    <!-- No threat feeds were specified, so this section can be left empty -->
+  </threat-prevention>
+  <i2nsf-cfi-policy>
+    <name>Payroll_Tax_Calculation_Policy</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+      <name>Current_Month_Payroll_Tax_Calculation</name>
+      <condition>
+        <firewall>
+          <source>Payroll Services</source>
+        </firewall>
+      </condition>
+  </threat-prevention>
+  <i2nsf-cfi-policy>
+    <name>Payroll_Tax_Calculation_Policy</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+      <name>Current_Month_Payroll_Tax_Calculation</name>
+      <condition>
+        <firewall>
+          <source>Payroll Services</source>
+        </firewall>
+      </condition>
+          <source>Payroll Services</source>
+        </firewall>
+      </condition>
+      </condition>
+      <action>
+        <primary-action>
+          <action>calculate-payroll-tax</action>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>

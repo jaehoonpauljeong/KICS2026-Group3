@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>guest-network</name>
+    <ipv4-prefix>192.168.10.0/24</ipv4-prefix>
+    <range-ipv4-address>
+      <start>192.168.10.1</start>
+      <end>192.168.10.50</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Drop_Guest_Network_SSH_Connections</name>
+  <rules>
+    <name>Drop_SSH_From_Guest_Network</name>
+    <condition>
+      <firewall>
+        <source>guest-network</source>
+        <range-port-number>
+          <start>22</start>
+          <end>22</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

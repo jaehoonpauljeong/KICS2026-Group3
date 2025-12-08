@@ -1,0 +1,22 @@
+<!-- intent: Block all incoming connections from the guest network (no response to sender). -->
+<!-- expected: primary-action: drop -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>block_guest_network_incoming_connections</name>
+    <rules>
+        <name>Block_incoming_from_guest_network</name>
+        <condition>
+            <firewall>
+                <source>guest_network</source>
+            </firewall>
+        </condition>
+        <action>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

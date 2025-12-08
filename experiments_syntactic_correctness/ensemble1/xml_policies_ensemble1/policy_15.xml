@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>unauthorized-login-sources</name>
+    <range-ipv4-address>
+      <start>0.0.0.0</start>
+      <end>255.255.255.255</end>
+    </range-ipv4-address>
+    <range-ipv6-address>
+      <start>::</start>
+      <end>::ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff</end>
+    </range-ipv6-address>
+  </user-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Unauthorized_Login_Attempt_Protection</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Reject_Unauthorized_Login_Attempt</name>
+    <condition>
+      <firewall>
+        <source>unauthorized-login-sources</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

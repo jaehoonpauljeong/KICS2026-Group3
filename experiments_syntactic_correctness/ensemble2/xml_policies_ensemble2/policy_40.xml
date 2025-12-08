@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <user-group>
+      <name>authorized-users</name>
+      <range-ipv4-address>
+        <start>192.168.1.1</start>
+        <end>192.168.1.50</end>
+      </range-ipv4-address>
+    </user-group>
+    <user-group>
+      <name>security-team</name>
+      <range-ipv4-address>
+        <start>192.168.1.51</start>
+        <end>192.168.1.100</end>
+      </range-ipv4-address>
+    </user-group>
+  </endpoint-groups>
+  
+  <i2nsf-cfi-policy>
+    <name>Firewall_Configuration_Change_Notification</name>
+    <rules>
+      <name>Notify_Security_Team_On_Change</name>
+      <condition>
+        <firewall>
+          <source>authorized-users</source>
+        </firewall>
+      </condition>
+      <action>
+        <primary-action>
+          <action>invoke-signaling</action>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>

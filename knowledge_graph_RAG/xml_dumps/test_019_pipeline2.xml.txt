@@ -1,0 +1,23 @@
+<!-- intent: Forward all IoT device traffic to a specialized gateway for additional processing. -->
+<!-- expected: primary-action: forwarding -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>forward_iot_traffic_policy</name>
+    <rules>
+        <name>Forward_IoT_Traffic</name>
+        <condition>
+            <firewall>
+                <source>IoT_Devices</source>
+            </firewall>
+        </condition>
+        <action>
+            <primary-action>
+                <action>forward</action>
+                <limit>specialized_gateway</limit>
+            </primary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

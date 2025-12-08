@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>SOURCE_ANY</name>
+    <!-- wildcard ("any") represented as IPv4 prefix 0.0.0.0/0 -->
+    <ipv4-prefix>0.0.0.0/0</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>DEST_ANY</name>
+    <!-- wildcard ("any") represented as IPv4 prefix 0.0.0.0/0 -->
+    <ipv4-prefix>0.0.0.0/0</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>MONITORING_SYSTEM</name>
+    <!-- Placeholder monitoring system IP; the policy model cannot reference this as an alert destination,
+         but included here per the inferred intent. Replace with your real monitoring endpoint as needed. -->
+    <ipv4-prefix>203.0.113.5/32</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>PortScan_AlertAllowPolicy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>AlertOn_PortScan_AllowTraffic</name>
+
+    <condition>
+      <firewall>
+        <source>SOURCE_ANY</source>
+        <destination>DEST_ANY</destination>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+
+      <secondary-action>
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

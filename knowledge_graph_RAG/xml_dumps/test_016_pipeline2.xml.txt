@@ -1,0 +1,29 @@
+<!-- intent: Actively refuse traffic on disallowed ports, informing the sender that the connection is prohibited. -->
+<!-- expected: primary-action: reject -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>refuse_traffic_on_disallowed_ports_policy</name>
+    <rules>
+        <name>refuse_disallowed_ports</name>
+        <condition>
+            <firewall>
+                <destination>all</destination>
+                <range-port-number>
+                    <start>1</start>
+                    <end>1023</end> <!-- Assuming ports 1 to 1023 are disallowed -->
+                </range-port-number>
+            </firewall>
+        </condition>
+        <action>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+            <secondary-action>
+                <log-action>notify_sender_connection_prohibited</log-action> <!-- This assumes you have a log action defined for notifications -->
+            </secondary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Endpoint groups (must contain all endpoint groups referenced by the policy) -->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>guest_endpoints</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>internal_endpoints</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<!-- I2NSF CFI policy referencing endpoint-groups by name -->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>block_guest_inbound_silent_policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>deny_guest_inbound_no_response</name>
+
+    <condition>
+      <firewall>
+        <!-- References to endpoint-group names only -->
+        <source>guest_endpoints</source>
+        <destination>internal_endpoints</destination>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- 'drop' is used to silently discard packets (no response). -->
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

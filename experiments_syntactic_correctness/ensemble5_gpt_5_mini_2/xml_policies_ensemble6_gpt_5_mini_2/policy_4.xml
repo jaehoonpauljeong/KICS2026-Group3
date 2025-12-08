@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Endpoint groups document: contains all endpoint groups referenced by the policy -->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>son_devices</name>
+    <!-- Placeholder IPv4 prefix for "my son's computer(s)". Replace with real device identifiers (MACs, hostnames, or actual IPs) in production. -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<!-- Threat prevention document: contains the threat feed(s) referenced by the policy -->
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <threat-feed-list>
+    <name>malicious_url_feed</name>
+    <!-- Example/test IOC entry. In production, populate with real IOCs or point to a real STIX/MISP feed. -->
+    <ioc>example-malicious-site.test</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+</threat-prevention>
+
+<!-- i2nsf-cfi-policy document: references endpoint groups and threat feeds by name only -->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Sons_Devices_From_Malicious_Websites</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Deny_Sons_Devices_To_Malicious_Websites</name>
+
+    <condition>
+      <firewall>
+        <!-- Reference to the endpoint-group defined in the endpoint-groups document -->
+        <source>son_devices</source>
+      </firewall>
+
+      <!-- Reference the threat feed defined in the threat-prevention document -->
+      <threat-feed>
+        <name>malicious_url_feed</name>
+      </threat-feed>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Block/drop the connection so the device cannot load the malicious site -->
+        <action>drop</action>
+      </primary-action>
+      <!-- No secondary logging action requested per intent -->
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

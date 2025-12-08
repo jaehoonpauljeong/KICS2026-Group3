@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>financial_clients</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+  <device-group>
+    <name>central_financial_server</name>
+    <ipv4-prefix>198.51.100.10/32</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <payload-content>
+    <name>sensitive-financial-data</name>
+  </payload-content>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Encapsulate_Sensitive_Financial_Traffic_To_Central_Server</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Encapsulate_Sensitive_Financial_Data_To_Central_Server</name>
+    <condition>
+      <firewall>
+        <source>financial_clients</source>
+        <destination>central_financial_server</destination>
+      </firewall>
+      <payload>
+        <content>sensitive-financial-data</content>
+      </payload>
+    </condition>
+    <action>
+      <primary-action>
+        <action>tunnel-encapsulation</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

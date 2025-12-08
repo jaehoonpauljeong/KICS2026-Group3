@@ -1,0 +1,28 @@
+<!-- intent: When the CPU load on the firewall is above 90%, allow only critical management traffic and rate-limit all other flows. -->
+<!-- expected: event -> system-alarm: cpu-alarm, primary-action: rate-limit -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>cpu_load_management_policy</name>
+    <rules>
+        <name>cpu_load_above_90_percent</name>
+        <condition>
+            <firewall>
+                <source>management_traffic</source>
+            </firewall>
+            <system-event>
+                <cpu-load>90</cpu-load>
+            </system-event>
+        </condition>
+        <action>
+            <primary-action>
+                <action>allow</action>
+            </primary-action>
+            <secondary-action>
+                <limit>rate-limit</limit>
+            </secondary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

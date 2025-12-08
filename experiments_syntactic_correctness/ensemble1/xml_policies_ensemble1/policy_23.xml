@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>port-scan-sources</name>
+    <range-ipv4-address>
+      <start>0.0.0.0</start>
+      <end>255.255.255.255</end>
+    </range-ipv4-address>
+  </user-group>
+  <device-group>
+    <name>port-scan-targets</name>
+    <range-ipv4-address>
+      <start>0.0.0.0</start>
+      <end>255.255.255.255</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Port_Scan_Alert_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Send_Alert_On_Port_Scan</name>
+    <condition>
+      <firewall>
+        <source>port-scan-sources</source>
+        <destination>port-scan-targets</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

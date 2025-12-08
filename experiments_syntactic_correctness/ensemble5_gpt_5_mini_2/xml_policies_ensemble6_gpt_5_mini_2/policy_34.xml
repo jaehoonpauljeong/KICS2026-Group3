@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>employees</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>web-destinations</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+    <!-- optional: label these devices as supporting the application protocols referenced by the rule -->
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Allow_Employee_Web_Browsing_With_Logging</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Allow_Employee_HTTP_HTTPS_With_RuleLog</name>
+
+    <condition>
+      <firewall>
+        <source>employees</source>
+        <destination>web-destinations</destination>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>forwarding</action>
+      </primary-action>
+
+      <secondary-action>
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

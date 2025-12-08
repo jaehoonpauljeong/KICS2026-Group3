@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Source endpoint group: internal clients that consume/produce video streaming -->
+  <user-group>
+    <name>internal_video_clients</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Destination endpoint group: external video streaming services / CDNs -->
+  <device-group>
+    <name>video_streaming_services</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- DMZ proxy servers (next-hop target for forwarded video streams) -->
+  <device-group>
+    <name>dmz_proxy_servers</name>
+    <ipv4-prefix>198.51.100.10/32</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Route_VideoStreaming_To_DMZ_Proxy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <!-- Rule 1: TCP-based video streaming (HTTP/HTTPS/RTSP, RTMP over TCP, etc.) -->
+  <rules>
+    <name>Route_Video_Traffic_Through_DMZ_Proxy_TCP</name>
+
+    <condition>
+      <firewall>
+        <!-- source references the user-group declared in endpoint-groups -->
+        <source>internal_video_clients</source>
+
+        <!-- destination references the device-group for streaming services -->
+        <destination>video_streaming_services</destination>
+
+        <!-- explicit port matches (each range indicated with start/end) -->
+        <range-port-number>
+          <start>80</start>
+          <end>80</end>
+        </range-port-number>
+        <range-port-number>
+          <start>443</start>
+          <end>443</end>
+        </range-port-number>
+        <range-port-number>
+          <start>1935</start>
+          <end>1935</end>
+        </range-port-number>
+        <range-port-number>
+          <start>554</start>
+          <end>554</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>forwarding</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- Rule 2: UDP-based video streaming (RTP/QUIC-based, etc.) -->
+  <rules>
+    <name>Route_Video_Traffic_Through_DMZ_Proxy_UDP</name>
+
+    <condition>
+      <firewall>
+        <source>internal_video_clients</source>
+        <destination>video_streaming_services</destination>
+
+        <!-- a broad UDP port range commonly used by RTP or ephemeral streaming ports -->
+        <range-port-number>
+          <start>10000</start>
+          <end>65535</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>forwarding</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

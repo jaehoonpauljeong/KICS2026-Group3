@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>backup-clients</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>backup-servers</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Restrict_Backup_Transfers_WorkHours</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>LimitBackupRate_10MBps_WorkHours</name>
+
+    <condition>
+      <firewall>
+        <source>backup-clients</source>
+        <destination>backup-servers</destination>
+
+        <range-port-number>
+          <start>22</start>
+          <end>22</end>
+        </range-port-number>
+        <range-port-number>
+          <start>873</start>
+          <end>873</end>
+        </range-port-number>
+        <range-port-number>
+          <start>445</start>
+          <end>445</end>
+        </range-port-number>
+        <range-port-number>
+          <start>2049</start>
+          <end>2049</end>
+        </range-port-number>
+      </firewall>
+
+      <context>
+        <time>
+          <period>
+            <start-time>09:00:00Z</start-time>
+            <end-time>17:00:00Z</end-time>
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+          </period>
+          <frequency>weekly</frequency>
+        </time>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>10485760</limit>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

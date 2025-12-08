@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Streaming_Media_Endpoints</name>
+    <range-ipv4-address>
+      <start>203.0.113.1</start>
+      <end>203.0.113.50</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface"/>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Streaming_Media_Throttle_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Throttle_Streaming_Traffic_Threshold</name>
+    <condition>
+      <firewall>
+        <source>Streaming_Media_Endpoints</source>
+      </firewall>
+      <ddos>
+        <rate-limit>
+          <byte-rate-threshold>100000000</byte-rate-threshold> <!-- 100 MB/s in bytes -->
+        </rate-limit>
+      </ddos>
+    </condition>
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>100000000</limit> <!-- Limit set to 100 MB/s -->
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

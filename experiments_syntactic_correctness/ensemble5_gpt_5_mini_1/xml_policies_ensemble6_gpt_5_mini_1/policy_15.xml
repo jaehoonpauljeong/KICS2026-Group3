@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>login_attempt_sources</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <user-group>
+    <name>unauthenticated_clients</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>authentication_servers</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+    <!-- This group models the authentication/authorization servers (placeholder). -->
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Unauthorized_Login_Rejection_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Reject_Unauthorized_Login_And_Notify_Rule</name>
+
+    <condition>
+      <firewall>
+        <source>login_attempt_sources</source>
+        <destination>authentication_servers</destination>
+      </firewall>
+
+      <context>
+        <device-type>
+          <device>computer</device>
+          <device>mobile-phone</device>
+        </device-type>
+
+        <users>
+          <group>
+            <id>300</id>
+            <name>unauthenticated_clients</name>
+          </group>
+        </users>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

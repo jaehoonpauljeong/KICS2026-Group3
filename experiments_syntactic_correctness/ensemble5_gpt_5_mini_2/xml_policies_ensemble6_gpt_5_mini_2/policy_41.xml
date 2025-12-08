@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- User group of authorized DNS administrators (allowed to change DNS settings) -->
+  <user-group>
+    <name>DNS_Administrators</name>
+    <!-- Placeholder/test IPv4 prefix (RFC 5737 TEST-NET-2) -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- User/endpoint group representing unprivileged requesters (unauthorized) -->
+  <user-group>
+    <name>Unprivileged_Endpoints</name>
+    <!-- Placeholder/test IPv4 prefix (RFC 5737 TEST-NET-1) -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Device group representing DNS servers / management endpoints (targets of DNS configuration changes) -->
+  <device-group>
+    <name>DNS_Infrastructure</name>
+    <!-- Placeholder/test IPv4 prefix (RFC 5737 TEST-NET-3) -->
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Prevent_DNS_Settings_Tampering_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <!-- Rule 1: allow legitimate DNS administrators to perform configuration changes.
+       This rule is placed first because the policy uses priority-by-order. -->
+  <rules>
+    <name>Allow_DNS_Admins_Configuration_Changes</name>
+    <condition>
+      <firewall>
+        <!-- Reference to endpoint-groups (names only) -->
+        <source>DNS_Administrators</source>
+        <destination>DNS_Infrastructure</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- Rule 2: reject attempts to modify DNS settings when requester is not authorized.
+       This matches configuration-change events affecting the DNS infrastructure from unprivileged endpoints. -->
+  <rules>
+    <name>Reject_Unauthorized_DNS_Modification_Rule</name>
+    <condition>
+      <firewall>
+        <source>Unprivileged_Endpoints</source>
+        <destination>DNS_Infrastructure</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>reject</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

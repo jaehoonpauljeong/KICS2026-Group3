@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Source hosts generating financial data -->
+  <user-group>
+    <name>Financial_Endpoints</name>
+    <!-- Placeholder test-net prefix; replace with real IP prefixes or ranges -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Central server that receives sensitive financial data -->
+  <device-group>
+    <name>Central_Financial_Server</name>
+    <!-- Placeholder test-net prefix; replace with real IPs/FQDNs of central server -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Payload content rule used by payload/content leafref in policy.
+       This placeholder entry names the DLP/DPI rule that detects sensitive financial data.
+       Implementations should populate the actual detection signature/regex/rule-set associated
+       with this name in the controller's threat/payload repository. -->
+  <payload-content>
+    <name>sensitive-financial-dlp-rule</name>
+  </payload-content>
+
+  <!-- No threat-feed lists are required for this policy; include additional threat feeds here if needed -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Encapsulate_Sensitive_Financial_Traffic_To_Central_Server</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Encapsulate_Financial_Data_To_Central_Tunnel</name>
+
+    <condition>
+      <firewall>
+        <!-- Source and destination reference endpoint-group names only (details are in endpoint-groups document) -->
+        <source>Financial_Endpoints</source>
+        <destination>Central_Financial_Server</destination>
+      </firewall>
+
+      <!-- Layer-7 content detection reference. This points to the payload-content entry in threat-prevention.xml -->
+      <payload>
+        <content>sensitive-financial-dlp-rule</content>
+      </payload>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- The primary enforcement action: encapsulate the matched traffic into a secure tunnel.
+             Tunnel parameters (protocol, endpoints, ciphers, key-management, NAT-T, rekey, etc.)
+             must be configured separately on the controller or via an augmented model. -->
+        <action>tunnel-encapsulation</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

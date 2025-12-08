@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <url-group>
+    <name>sns-access-group</name>
+    <url>http://example.com</url> <!-- Placeholder for Social Networking Services -->
+  </url-group>
+  <user-group>
+    <name>sns-users</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start> <!-- Placeholder IP range -->
+      <end>192.0.2.50</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_SNS_Access_During_Business_Hours</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Block_Access_During_Business_Hours</name>
+    <condition>
+      <firewall>
+        <source>sns-users</source>
+      </firewall>
+      <url-category>
+        <url-name>sns-access-group</url-name>
+      </url-category>
+      <context>
+        <time>
+          <period>
+            <start-time>08:00:00Z</start-time>
+            <end-time>18:00:00Z</end-time>
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+          </period>
+          <frequency>weekly</frequency>
+        </time>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action> <!-- Blocking access -->
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

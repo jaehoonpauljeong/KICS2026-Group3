@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <url-group>
+    <name>VideoStreamingEndpoints</name>
+    <url>https://youtube.com</url>
+  </url-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <!-- No specific threat feeds are defined in the policy intent -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Access_To_YouTube</name>
+  <rules>
+    <name>Block_YouTube_Access</name>
+    <condition>
+      <firewall>
+        <source>VideoStreamingEndpoints</source>
+        <destination>
+          <url-category>
+            <url-name>VideoStreamingEndpoints</url-name>
+          </url-category>
+        </destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

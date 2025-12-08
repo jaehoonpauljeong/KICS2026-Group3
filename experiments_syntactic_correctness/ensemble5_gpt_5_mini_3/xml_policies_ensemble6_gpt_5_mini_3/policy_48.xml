@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>workstations</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>file-servers</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>quarantine-storage</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>AV_RansomwareDetect_ResponsePolicy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>pmre</resolution-strategy>
+
+  <rules>
+    <name>Block_Quarantine_Alert_On_RansomwareFlag_invoke</name>
+    <condition>
+      <firewall>
+        <source>workstations</source>
+        <destination>file-servers</destination>
+      </firewall>
+      <anti-virus>
+        <profile>ransomware-detect</profile>
+      </anti-virus>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <rules>
+    <name>Block_Quarantine_Alert_On_RansomwareFlag_drop</name>
+    <condition>
+      <firewall>
+        <source>workstations</source>
+        <destination>file-servers</destination>
+      </firewall>
+      <anti-virus>
+        <profile>ransomware-detect</profile>
+      </anti-virus>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

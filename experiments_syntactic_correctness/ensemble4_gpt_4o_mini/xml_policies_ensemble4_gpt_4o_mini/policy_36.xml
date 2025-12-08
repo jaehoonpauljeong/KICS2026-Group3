@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <user-group>
+      <name>Finance Department Endpoints</name>
+      <range-ipv4-address>
+        <start>192.0.2.1</start>
+        <end>192.0.2.50</end>
+      </range-ipv4-address>
+    </user-group>
+  </endpoint-groups>
+  <threat-prevention>
+    <name>No Threat Feeds</name>
+  </threat-prevention>
+  <i2nsf-cfi-policy>
+    <name>Permit_Finance_Database_Traffic</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+      <name>Allow_And_Log_Finance_Traffic</name>
+      <condition>
+        <firewall>
+          <source>Finance Department Endpoints</source>
+        </firewall>
+      </condition>
+      <action>
+        <primary-action>
+          <action>pass</action>
+        </primary-action>
+        <secondary-action>
+          <log-action>session-log</log-action>
+        </secondary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>internal_endpoints</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>zeus-ioc</name>
+  <!-- Example/sample IOCs (TEST/placeholder values). Production feeds will supply real IOCs. -->
+  <ioc>198.51.100.23</ioc>
+  <ioc>malicious.example</ioc>
+  <ioc>hash:abcd1234</ioc>
+  <format>stix</format>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>zeus_ioc_blocklist_policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>drop_log_add_to_blocklist_zeus_ioc</name>
+    <condition>
+      <firewall>
+        <!-- Placeholder endpoint-group (defined in endpoint-groups document above) -->
+        <source>internal_endpoints</source>
+      </firewall>
+      <threat-feed>
+        <!-- Reference to threat-prevention feed by name -->
+        <name>zeus-ioc</name>
+      </threat-feed>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+      <secondary-action>
+        <!-- request logging of the match; implementation-specific logs must include matched IOC and metadata -->
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

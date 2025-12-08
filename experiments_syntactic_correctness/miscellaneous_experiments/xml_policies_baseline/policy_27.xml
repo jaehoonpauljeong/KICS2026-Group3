@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>rate_limit_icmp_policy</name>
+    <rules>
+        <name>rate_limit_icmp</name>
+        <condition>
+            <firewall-condition>
+                <transport-layer-protocol>icmp</transport-layer-protocol>
+            </firewall-condition>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>rate-limit</action>
+                <limit>500</limit>
+            </primary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>

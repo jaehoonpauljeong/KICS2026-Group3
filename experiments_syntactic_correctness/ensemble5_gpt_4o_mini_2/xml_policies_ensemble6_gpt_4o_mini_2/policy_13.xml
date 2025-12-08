@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <endpoint-groups>
+        <user-group>
+            <name>guest-network</name>
+            <range-ipv4-address>
+                <start>192.0.2.1</start>
+                <end>192.0.2.254</end>
+            </range-ipv4-address>
+        </user-group>
+    </endpoint-groups>
+    <i2nsf-cfi-policy>
+        <name>Block_Guest_Network_Incoming_Connections</name>
+        <rules>
+            <name>Block_Incoming_Connections_From_Guest_Network</name>
+            <condition>
+                <firewall>
+                    <source>guest-network</source>
+                </firewall>
+            </condition>
+            <action>
+                <primary-action>
+                    <action>drop</action>
+                </primary-action>
+            </action>
+        </rules>
+    </i2nsf-cfi-policy>
+</policy>

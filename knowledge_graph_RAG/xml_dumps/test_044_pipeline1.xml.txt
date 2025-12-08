@@ -1,0 +1,25 @@
+<!-- intent: If a core network interface goes down, reject any new connections from the external network. -->
+<!-- expected: event -> system-alarm: interface-alarm, primary-action: reject -->
+xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>reject_new_connections_policy</name>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>reject_new_connections</name>
+    <event>
+      <system-event>traffic-flows</system-event>
+    </event>
+    <condition>
+      <firewall>
+        <destination>external_network</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>reject</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

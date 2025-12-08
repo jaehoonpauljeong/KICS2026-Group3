@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Endpoint groups document.
+  Contains all endpoint-groups referenced by the policy (device-group entries).
+  Placeholder TEST-NET address ranges used as described in the intent.
+-->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>video-clients</name>
+    <!-- Placeholder internal client subnet -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+    <!-- Indicate expected application protocols used by clients (helps classifiers) -->
+    <application-protocol>http</application-protocol>
+    <application-protocol>https</application-protocol>
+  </device-group>
+
+  <device-group>
+    <name>video-servers</name>
+    <!-- Placeholder external streaming server / CDN subnet -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+    <application-protocol>http</application-protocol>
+    <application-protocol>https</application-protocol>
+    <application-protocol>rtsp</application-protocol>
+  </device-group>
+
+  <device-group>
+    <name>dmz-proxy</name>
+    <!-- Proxy server in the DMZ (single-address placeholder) -->
+    <ipv4-prefix>203.0.113.10/32</ipv4-prefix>
+    <!-- Proxy typically speaks HTTP/HTTPS towards clients/servers -->
+    <application-protocol>http</application-protocol>
+    <application-protocol>https</application-protocol>
+  </device-group>
+</endpoint-groups>
+
+<!--
+  Threat-prevention document.
+  Define payload/content identifiers referenced by the rule (used for DPI / content-type matching).
+  Minimal placeholder entries to allow payload/content leafrefs from the policy.
+-->
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- The YANG excerpt references payload content entries; provide minimal named entries -->
+  <payload-content>
+    <name>video-content-type</name>
+    <!-- Example IOC / pattern could be stored here by implementations (not required for name reference) -->
+  </payload-content>
+
+  <payload-content>
+    <name>video-dpi-signature</name>
+  </payload-content>
+</threat-prevention>
+
+<!--
+  I2NSF policy document.
+  References endpoint-groups by name only (sources/destinations).
+  Implements: IF traffic identified as video streaming (ports/protocols/HTTP Content-Type/DPI/application)
+              THEN forwarding action = forwarding (route/redirect) to be enforced so matching flows traverse the DMZ proxy.
+  No logging specified (per intent).
+-->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>route_video_streaming_to_dmz_proxy_policy</name>
+  <language>en-US</language>
+  <!-- Use order-based priority as requested -->
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>route_video_streaming_to_dmz_proxy_rule</name>
+
+    <condition>
+      <firewall>
+        <!-- Apply to video-producing clients inside the network -->
+        <source>video-clients</source>
+
+        <!-- Targeting external streaming servers / CDNs (if you want to limit to known CDNs). -->
+        <destination>video-servers</destination>
+
+        <!-- Transport / port indicators used as part of identification -->
+        <!-- HTTP / HTTPS -->
+        <range-port-number>
+          <start>80</start>
+          <end>80</end>
+        </range-port-number>
+        <range-port-number>
+          <start>443</start>
+          <end>443</end>
+        </range-port-number>
+
+        <!-- RTSP (typical TCP port) -->
+        <range-port-number>
+          <start>554</start>
+          <end>554</end>
+        </range-port-number>
+
+        <!-- Example ephemeral UDP ranges commonly used for media streaming (placeholder) -->
+        <range-port-number>
+          <start>10000</start>
+          <end>20000</end>
+        </range-port-number>
+      </firewall>
+
+      <!-- DPI / content-type matching references -->
+      <payload>
+        <!-- HTTP Content-Type or other DPI signatures indicating video -->
+        <content>video-content-type</content>
+        <content>video-dpi-signature</content>
+      </payload>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- The enforcement desired is to route/redirect matched traffic so it traverses the DMZ proxy.
+             'forwarding' is the identityref action used for steering/next-hop/policy-based routing. -->
+        <action>forwarding</action>
+        <!-- Implementation is expected to map this forwarding action + policy scope to the dmz-proxy endpoint-group. -->
+      </primary-action>
+      <!-- No secondary-action (no logging) per the intent -->
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

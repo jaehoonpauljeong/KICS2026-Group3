@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>All Gaming Devices</name>
+    <range-ipv4-address>
+      <start>192.0.2.0</start>
+      <end>192.0.2.255</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Weekday_Night_Games</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Block_All_Games_On_Weekday_Nights</name>
+    <condition>
+      <firewall>
+        <source>All Gaming Devices</source>
+      </firewall>
+      <context>
+        <time>
+          <period>
+            <start-time>19:00:00Z</start-time> <!-- Start of night -->
+            <end-time>23:59:59Z</end-time>   <!-- End of night -->
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+          </period>
+          <frequency>weekly</frequency>
+        </time>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action> <!-- Specifies to block all games -->
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

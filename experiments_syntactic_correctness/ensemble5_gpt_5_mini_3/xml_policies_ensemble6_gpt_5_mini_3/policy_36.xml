@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>Finance-Dept</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+  <device-group>
+    <name>Database-Servers</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Finance_DB_Permit_LogSession_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Permit_Finance_DB_LogFullSession_Rule</name>
+
+    <condition>
+      <firewall>
+        <source>Finance-Dept</source>
+        <destination>Database-Servers</destination>
+
+        <range-port-number>
+          <start>3306</start>
+          <end>3306</end>
+        </range-port-number>
+        <range-port-number>
+          <start>5432</start>
+          <end>5432</end>
+        </range-port-number>
+        <range-port-number>
+          <start>1433</start>
+          <end>1433</end>
+        </range-port-number>
+        <range-port-number>
+          <start>1521</start>
+          <end>1521</end>
+        </range-port-number>
+
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+
+  </rules>
+</i2nsf-cfi-policy>

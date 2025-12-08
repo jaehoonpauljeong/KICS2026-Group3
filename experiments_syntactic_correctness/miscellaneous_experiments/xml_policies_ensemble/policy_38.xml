@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No endpoint groups defined in the policy -->
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds defined in the policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Allow_Web_Server_Access_With_Logging</name>
+  <rules>
+    <name>External_Client_Access_Logging</name>
+    <condition>
+      <firewall>
+        <source>external-clients</source> <!-- Placeholder for the source endpoint group -->
+        <destination>web-server</destination> <!-- Placeholder for the destination endpoint group -->
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action> <!-- Action to allow access -->
+      </primary-action>
+      <secondary-action>
+        <log-action>session-log</log-action> <!-- Log action for maintaining session logs -->
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

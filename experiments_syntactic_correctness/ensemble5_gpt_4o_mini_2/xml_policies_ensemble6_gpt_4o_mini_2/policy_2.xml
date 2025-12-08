@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <voice-group>
+    <name>VoIP_VoCN_Services</name>
+    <sip-id>sip:2030@company.com</sip-id>
+    <sip-id>sip:2031@company.com</sip-id>
+  </voice-group>
+</endpoint-groups>
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <threat-feed-list>
+    <name>malicious_voip_packets</name>
+    <ioc>malicious.voip.packet.example</ioc>
+    <ioc>hash:malicious_packet_hash12345</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+</threat-prevention>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Malicious_VoIP_Packets</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Block_Malicious_VoIP_or_VoCN_Packets</name>
+    <condition>
+      <firewall>
+        <source>VoIP_VoCN_Services</source>
+        <destination>company_network</destination>
+      </firewall>
+      <context>
+        <time>
+          <start-date-time>2025-01-01T00:00:00Z</start-date-time>
+          <end-date-time>2025-12-31T23:59:59Z</end-date-time>
+        </time>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

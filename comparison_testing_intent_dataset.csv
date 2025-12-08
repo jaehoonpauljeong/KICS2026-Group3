@@ -1,0 +1,51 @@
+intent
+Block SNS Access during Business Hours
+Block Malicious VoIP/VoCN Packets Coming to a Company
+Mitigate Flood Attacks on a Company Web Server
+Block my son's computers from malicious websites.
+Block SNS access during office hours with a weekly frequency (9am-5pm; Monday-Friday).
+Block access to Youtube, X and Instagram during school hours to all PCs within 128.0.0.0-128.0.0.255 IPv4 ranges.
+Restrict access to adult content from all devices.
+Block all games during the nights at weekdays.
+Allow all traffic from the internal HR system through the firewall without restriction.
+Permit employees to browse the web freely from the corporate network.
+Traffic from trusted devices should be allowed without any filtering.
+Silently drop any traffic coming from known malicious IP addresses.
+Block all incoming connections from the guest network (no response to sender).
+Unknown or unclassified traffic should be discarded without notification.
+Reject any unauthorized login attempts and send an error notification back to the source.
+Actively refuse traffic on disallowed ports, informing the sender that the connection is prohibited.
+Mirror suspicious database traffic to an analysis server while still allowing it to reach its destination.
+Copy all outgoing email traffic to the monitoring system for inspection (and still forward it).
+Forward all IoT device traffic to a specialized gateway for additional processing.
+Route all video streaming traffic through the proxy server in the DMZ.
+Translate incoming HTTP requests from IoT sensors into CoAP for the internal service.
+Encapsulate sensitive financial data traffic into a secure tunnel to the central server.
+Send an alert to the monitoring system for any detected port scans (but allow traffic).
+Throttle streaming media traffic to 100 MB/s to prevent network congestion.
+Limit guest network bandwidth to 1000 packets per second.
+Cap new connection attempts to 20 flows per second to protect the server from abuse.
+Apply a rate limit of 500 pps on ICMP traffic to mitigate ping flood attacks.
+Restrict backup data transfers to 10 MB/s during work hours.
+Block traffic to the admin port and log the attempt for auditing.
+Allow file downloads but generate a log entry each time this rule is triggered.
+Monitor login attempts by permitting them but logging whenever this rule matches.
+Permit database access and log the full session details for each connection.
+Allow VPN connections but keep a session log of every session for review.
+Allow all employee web browsing but write a rule-log entry whenever this rule is triggered.
+Drop all incoming SSH connections from the guest network and log each attempt in the rule log.
+Permit database traffic from the finance department but log the entire session information.
+Reject unauthorized VPN login attempts and record session details for each attempt.
+Allow web server access from external clients but maintain a session log of every connection.
+If any employee attempts to access restricted finance servers without authorization, drop the traffic and trigger this rule.
+Whenever a configuration change is made on the firewall, allow the change but log the attempt for auditing.
+Detect unauthorized attempts to alter DNS settings and immediately reject the request.
+If memory usage on the database server exceeds 80%, drop nonessential backup traffic.
+When the CPU load on the firewall is above 90%, allow only critical management traffic and rate-limit all other flows.
+If a core network interface goes down, reject any new connections from the external network.
+During a CPU overload, if an employee also attempts unauthorized access to the HR portal, reject the attempt immediately.
+If a configuration change is made while memory usage on the firewall is critically high, drop any non-management traffic until stability is restored.
+Drop and log any traffic that matches indicators-of-compromise from the threat feed named “zeus-ioc” and add matched IOCs to the blocklist.
+If an anti-virus profile ransomware-detect flags a file transfer, quarantine the endpoint, drop the flow, and forward the payload to the forensic analysis server.
+During the monthly maintenance window (first Sunday 02:00–04:00 UTC), allow SSH (port 22) only from devices of type “management” and reject all other SSH connection attempts.
+Reject calls and mirror media to an analysis server whenever a SIP URI in the voice-group blacklist_sip initiates a session.

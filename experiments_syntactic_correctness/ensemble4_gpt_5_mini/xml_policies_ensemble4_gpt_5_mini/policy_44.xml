@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Endpoint groups referenced by the policy. Contains network interface groups and operational/automation endpoints (placeholders). -->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>core_interfaces</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>redundant_interfaces</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>backup_paths</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Operational / automation endpoints (logical placeholders) -->
+  <device-group>
+    <name>netops_team</name>
+    <ipv4-prefix>198.51.100.128/25</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>oncall_engineer</name>
+    <ipv4-prefix>198.51.100.192/26</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>incident_management_system</name>
+    <ipv4-prefix>203.0.113.128/25</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>diag_automation_service</name>
+    <ipv4-prefix>203.0.113.192/26</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>CoreNetworkInterface_Failure_Response</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>CoreInterfaceDown_Reroute_Alert_CreateTicket_RunDiagnostics</name>
+
+    <condition>
+      <!-- Scope the rule to the core interfaces as the source of the alarm -->
+      <firewall>
+        <source>core_interfaces</source>
+
+        <!-- Destinations identify alternate targets for reroute (redundant interface(s) / backup path(s)) -->
+        <destination>redundant_interfaces</destination>
+        <destination>backup_paths</destination>
+      </firewall>
+
+      <!-- Scope to network infrastructure devices (applies to core network interfaces) -->
+      <context>
+        <device-type>
+          <device>network-infrastructure-device</device>
+        </device-type>
+      </context>
+    </condition>
+
+    <action>
+      <!--
+        Use invoke-signaling as the single primary action in this schema instance.
+        The invoked orchestration/service is responsible for:
+         - performing immediate reroute to redundant_interfaces or backup_paths,
+         - sending alerts to netops_team and oncall_engineer,
+         - creating and assigning an incident ticket in incident_management_system,
+         - running automated diagnostics/remediation via diag_automation_service.
+
+        Operational endpoint/service details are provided in the standalone endpoint-groups document above.
+      -->
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

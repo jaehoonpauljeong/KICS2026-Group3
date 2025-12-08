@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <user-group>
+      <name>Ransomware Protection Endpoints</name>
+      <range-ipv4-address>
+        <start>192.0.2.1</start>
+        <end>192.0.2.50</end>
+      </range-ipv4-address>
+    </user-group>
+  </endpoint-groups>
+  
+  <threat-prevention>
+    <threat-feed-list>
+      <name>Ransomware Threat Feed</name>
+      <ioc>sample-ioc-1</ioc>
+      <ioc>sample-ioc-2</ioc>
+      <format>stix</format>
+    </threat-feed-list>
+  </threat-prevention>
+  
+  <i2nsf-cfi-policy>
+    <name>Anti-Virus_Ransomware_Detection_Policy</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+      <name>Investigate_or_Block_File_Transfer</name>
+      <condition>
+        <anti-virus>
+          <profile>Ransomware Detection Profile</profile>
+        </anti-virus>
+        <firewall>
+          <source>Ransomware Protection Endpoints</source>
+        </firewall>
+      </condition>
+      <action>
+        <primary-action>
+          <action>drop</action>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>

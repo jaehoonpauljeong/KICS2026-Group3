@@ -1,0 +1,318 @@
+From the original YANG data model draft paper:
+
+1. 
+Intent: 
+"Block SNS Access during Business Hours"
+
+Policy:
+  <?xml version="1.0" encoding="UTF-8" ?>
+  <i2nsf-cfi-policy
+   xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>security_policy_for_blocking_sns</name>
+    <rules>
+      <name>block_access_to_sns_during_office_hours</name>
+      <condition>
+        <firewall>
+          <source>employees</source>
+        </firewall>
+        <url-category>
+          <url-name>sns-websites</url-name>
+        </url-category>
+        <context>
+          <time>
+            <start-date-time>2021-03-11T09:00:00.00Z</start-date-time>
+            <end-date-time>2021-12-31T18:00:00.00Z</end-date-time>
+            <period>
+              <start-time>09:00:00Z</start-time>
+              <end-time>18:00:00Z</end-time>
+              <day>monday</day>
+              <day>tuesday</day>
+              <day>wednesday</day>
+              <day>thursday</day>
+              <day>friday</day>
+            </period>
+            <frequency>weekly</frequency>
+          </time>
+        </context>
+      </condition>
+      <action>
+        <primary-action>
+          <action>drop</action>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+
+
+2. 
+Intent: 
+"Block Malicious VoIP/VoCN Packets Coming to a Company"
+
+Policy:
+  <?xml version="1.0" encoding="UTF-8" ?>
+  <i2nsf-cfi-policy
+   xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>
+      security_policy_for_blocking_malicious_voip_packets
+    </name>
+    <rules>
+      <name>Block_malicious_voip_and_vocn_packets</name>
+      <condition>
+        <voice>
+          <source-id>malicious-id</source-id>
+        </voice>
+        <firewall>
+          <destination>employees</destination>
+        </firewall>
+      </condition>
+      <action>
+        <primary-action>
+          <action>drop</action>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+
+  
+3. 
+Intent: 
+"Mitigate Flood Attacks on a Company Web Server"
+
+Policy:
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+   xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>security_policy_for_ddos_attacks</name>
+    <rules>
+      <name>1000_packets_per_second</name>
+      <condition>
+        <firewall>
+          <destination>webservers</destination>
+        </firewall>
+        <ddos>
+          <rate-limit>
+            <packet-rate-threshold>1000</packet-rate-threshold>
+          </rate-limit>
+        </ddos>
+      </condition>
+      <action>
+        <primary-action>
+          <action>drop</action>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+
+
+From the students paper's source code:
+4. 
+Intent: "Block my son's computers from malicious websites."
+
+Policy:
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>block_web_security_policy</name>
+    <rules>
+        <name>block_web</name>
+        <condition>
+            <firewall-condition>
+                <source>Son's_PC</source>
+            </firewall-condition>
+            <url-condition>
+                <url-name>malicious_websites</url-name>
+            </url-condition>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>
+
+5.
+Intent: "Block packets coming from Buenos Aires, Argentina but allow packets coming from Lima, Peru."
+
+Policy:
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>block_packets_from_buenos_aires_allow_lima</name>
+    <rules>
+        <name>Block_packets_from_Buenos_Aires</name>
+        <condition>
+            <firewall>
+                <source>
+                    <geographic-location>
+                        <source>
+                            <country>Argentina</country>
+                            <city>Buenos Aires</city>
+                        </source>
+                    </geographic-location>
+                </source>
+            </firewall>
+        </condition>
+        <action>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+        </action>
+    </rules>
+    <rules>
+        <name>Allow_packets_from_Lima</name>
+        <condition>
+            <firewall>
+                <source>
+                    <geographic-location>
+                        <source>
+                            <country>Peru</country>
+                            <city>Lima</city>
+                        </source>
+                    </geographic-location>
+                </source>
+            </firewall>
+        </condition>
+        <action>
+            <primary-action>
+                <action>pass</action>
+            </primary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+
+
+6. 
+Intent: "Block SNS access during office hours with a weekly frequency (9am-5pm; Monday-Friday)."
+
+Policy:
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>block_sns_access_during_office_hours</name>
+    <rules>
+        <name>block_sns_access</name>
+        <condition>
+            <time>
+                <frequency>weekly</frequency>
+                <period>
+                    <start-time>09:00</start-time>
+                    <end-time>17:00</end-time>
+                    <day>monday</day>
+                    <day>tuesday</day>
+                    <day>wednesday</day>
+                    <day>thursday</day>
+                    <day>friday</day>
+                </period>
+            </time>
+            <url-category>
+                <url-name>SNS</url-name>
+            </url-category>
+        </condition>
+        <action>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+
+7.
+Intent: "Block access to Youtube, X and Instagram during school hours to all PCs within 128.0.0.0-128.0.0.255 IPv4 ranges."
+
+Policy:
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>block_social_media_during_school_hours</name>
+    <rules>
+        <name>Block_youtube_x_instagram</name>
+        <condition>
+            <firewall>
+                <source>
+                    <range-ipv4-address>
+                        <start>128.0.0.0</start>
+                        <end>128.0.0.255</end>
+                    </range-ipv4-address>
+                </source>
+            </firewall>
+            <url-category>
+                <url-name>Youtube</url-name>
+            </url-category>
+            <url-category>
+                <url-name>X</url-name>
+            </url-category>
+            <url-category>
+                <url-name>Instagram</url-name>
+            </url-category>
+            <context>
+                <time>
+                    <period>
+                        <start-time>08:00:00</start-time>
+                        <end-time>15:00:00</end-time>
+                    </period>
+                </time>
+            </context>
+        </condition>
+        <action>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+
+8.
+Intent: "Restrict access to adult content from all devices."
+
+Policy:
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>restrict_adult_content_policy</name>
+    <rules>
+        <name>restrict_adult</name>
+        <condition>
+            <url-condition>
+                <url-name>adult_content</url-name>
+            </url-condition>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>
+
+9. 
+Intent: "Block all games during the nights at weekdays."
+
+Policy:
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>block_games_night_policy</name>
+    <rules>
+        <name>block_games_night</name>
+        <condition>
+            <firewall-condition>
+                <source>All_Devices</source>
+            </firewall-condition>
+            <time-condition>
+                <day>Monday</day>
+                <day>Tuesday</day>
+                <day>Wednesday</day>
+                <day>Thursday</day>
+                <day>Friday</day>
+                <time>22:00-23:59</time>
+            </time-condition>
+            <application-condition>
+                <application-name>games</application-name>
+            </application-condition>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>

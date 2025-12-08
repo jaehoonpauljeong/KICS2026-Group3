@@ -1,0 +1,23 @@
+<!-- intent: Monitor login attempts by permitting them but logging whenever this rule matches. -->
+<!-- expected: primary-action: drop -->
+xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>monitor_login_attempts_policy</name>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>monitor_login_attempts</name>
+    <event>
+      <system-event>access-violation</system-event>
+    </event>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

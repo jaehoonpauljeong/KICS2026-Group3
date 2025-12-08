@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <url-group>
+    <name>SNS Access Endpoints</name>
+    <url>http://example.com</url>
+  </url-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+	<!-- No threat feeds are specified in the policy intent -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_SNS_Access_During_Office_Hours</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Block_SNS_Access_Weekdays</name>
+    <condition>
+      <firewall>
+        <source>SNS Access Endpoints</source>
+      </firewall>
+      <url-category>
+        <url-name>SNS Access Endpoints</url-name>
+      </url-category>
+      <context>
+        <time>
+          <start-date-time>2021-03-11T09:00:00.00Z</start-date-time>
+          <end-date-time>2021-12-31T18:00:00.00Z</end-date-time>
+          <period>
+            <start-time>09:00:00Z</start-time>
+            <end-time>17:00:00Z</end-time>
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+            <frequency>weekly</frequency>
+          </period>
+        </time>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

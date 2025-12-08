@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <url-group>
+    <name>video-streaming-endpoints</name>
+    <url>http://example.com/video1</url>
+    <url>http://example.com/video2</url>
+    <url>http://example.com/video3</url>
+  </url-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Video_Streaming_Traffic_Routing_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Route_Video_Streaming_Traffic</name>
+    <condition>
+      <firewall>
+        <source>video-streaming-endpoints</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>forwarding</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

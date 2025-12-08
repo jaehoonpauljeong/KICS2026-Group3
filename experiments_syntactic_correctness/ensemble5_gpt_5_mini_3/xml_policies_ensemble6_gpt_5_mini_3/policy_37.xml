@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Inferred endpoint groups referenced by the policy.
+       These use RFC5737 test/net ranges as placeholders and MUST be replaced with real prefixes in production. -->
+  <user-group>
+    <name>remote-clients</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>vpn-servers</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Reject_Unauthorized_VPN_Logins_with_Session_Recording</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Reject_Unauthorized_VPN_Login_Record_Session</name>
+
+    <condition>
+      <firewall>
+        <!-- Reference endpoint-group names only. Endpoint details are in the endpoint-groups document above. -->
+        <source>remote-clients</source>
+        <destination>vpn-servers</destination>
+      </firewall>
+      <!-- No additional modeled authentication-state fields available in the base model;
+           "unauthorized" is indicated by external event sources mapped to system events. -->
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Primary enforcement: prevent/deny the session attempt -->
+        <action>reject</action>
+      </primary-action>
+
+      <secondary-action>
+        <!-- Secondary action: record session details for the rejected attempt. -->
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

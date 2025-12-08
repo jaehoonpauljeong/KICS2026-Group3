@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No endpoint groups defined in the policy -->
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds defined in the policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>DNS_Alteration_Protection_Policy</name>
+  <rules>
+    <name>Reject_Unauthorized_DNS_Alteration</name>
+    <condition>
+      <firewall>
+        <source>unauthorized-attempts</source> <!-- Placeholder for the source group -->
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>reject</action> <!-- Action to immediately reject the request -->
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>cpu-overload-group</name>
+    <range-ipv4-address>
+      <start>192.168.1.1</start>
+      <end>192.168.1.50</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>CPU_Overload_Management_Policy</name>
+  <rules>
+    <name>Manage_CPU_Overload</name>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+    <condition>
+      <firewall>
+        <source>cpu-overload-group</source>
+      </firewall>
+    </condition>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,36 @@
+<!-- intent: Restrict backup data transfers to 10 MB/s during work hours. -->
+<!-- expected: primary-action: rate-limit, limit -> 10 -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>restrict_backup_data_transfers_policy</name>
+    <rules>
+        <name>restrict_backup_data_transfer</name>
+        <condition>
+            <firewall>
+                <destination>backup_servers</destination>
+            </firewall>
+            <ddos>
+                <rate-limit>
+                    <byte-rate-threshold>10485760</byte-rate-threshold> <!-- 10 MB/s in bytes -->
+                </rate-limit>
+            </ddos>
+            <context>
+                <time>
+                    <period>
+                        <start-time>09:00</start-time>
+                        <end-time>17:00</end-time>
+                    </period>
+                </time>
+            </context>
+        </condition>
+        <action>
+            <primary-action>
+                <action>limit</action>
+                <limit>10</limit> <!-- 10 MB/s -->
+            </primary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

@@ -1,0 +1,20 @@
+<!-- intent: Detect unauthorized attempts to alter DNS settings and immediately reject the request. -->
+<!-- expected: event -> system-event: access-violation, primary-action: reject -->
+xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>detect_dns_alteration_policy</name>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>detect_unauthorized_dns_alteration</name>
+    <event>
+      <system-event>configuration-change</system-event>
+    </event>
+    <action>
+      <primary-action>
+        <action>reject</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

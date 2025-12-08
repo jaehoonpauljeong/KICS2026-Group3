@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Non_Critical_Workloads</name>
+    <ipv4-prefix>192.0.2.0/25</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>Critical_Services</name>
+    <ipv4-prefix>192.0.2.128/26</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>Security_Services</name>
+    <ipv4-prefix>192.0.2.192/27</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>Autoscaling_Failover_Pool</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>Operators_Admin_Notifications</name>
+    <ipv4-prefix>203.0.113.0/29</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>SIEM_Logging_Target</name>
+    <ipv4-prefix>203.0.113.8/29</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>cpu_overload_mitigation_policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>throttle_noncritical_workloads</name>
+    <condition>
+      <firewall>
+        <source>Non_Critical_Workloads</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>1048576</limit>
+      </primary-action>
+    </action>
+  </rules>
+
+  <rules>
+    <name>preserve_critical_and_security_services</name>
+    <condition>
+      <firewall>
+        <source>Critical_Services</source>
+        <source>Security_Services</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <rules>
+    <name>enable_autoscaling_or_failover</name>
+    <condition>
+      <firewall>
+        <destination>Autoscaling_Failover_Pool</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <rules>
+    <name>notify_operators_and_log</name>
+    <condition>
+      <firewall>
+        <destination>Operators_Admin_Notifications</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <rules>
+    <name>log_cpu_overload_to_siem</name>
+    <condition>
+      <firewall>
+        <destination>SIEM_Logging_Target</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+
+</i2nsf-cfi-policy>

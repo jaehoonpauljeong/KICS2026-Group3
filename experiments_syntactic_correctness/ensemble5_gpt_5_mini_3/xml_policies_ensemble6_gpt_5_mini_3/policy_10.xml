@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Source user-group: employees (placeholder RFC5737 IPv4 prefix) -->
+  <user-group>
+    <name>employees</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Device-group representing the corporate network (used to indicate "connected to corporate network") -->
+  <device-group>
+    <name>corporate-network</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Destination device-group representing external web destinations (placeholder RFC5737 IPv4 prefix) -->
+  <device-group>
+    <name>web-services</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Permit_Employee_Web_Browsing</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Allow_Employee_Web_Browsing_Unrestricted</name>
+
+    <condition>
+      <firewall>
+        <source>employees</source>
+        <source>corporate-network</source>
+        <destination>web-services</destination>
+
+        <range-port-number>
+          <start>80</start>
+          <end>80</end>
+        </range-port-number>
+        <range-port-number>
+          <start>443</start>
+          <end>443</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

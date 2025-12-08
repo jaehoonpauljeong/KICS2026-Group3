@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Device groups representing corporate-managed devices and corporate-network endpoints.
+       Placeholder RFC 5737 test-network prefixes are used as source address ranges. -->
+  <device-group>
+    <name>CORP_DEVICES</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+    <application-protocol>http</application-protocol>
+    <application-protocol>https</application-protocol>
+  </device-group>
+
+  <device-group>
+    <name>CORP_NETWORK</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+    <application-protocol>http</application-protocol>
+    <application-protocol>https</application-protocol>
+  </device-group>
+
+  <!-- URL group enumerating common SNS domains to block (recommended over IP-only matching). -->
+  <url-group>
+    <name>sns-websites</name>
+    <url>https://www.facebook.com</url>
+    <url>https://twitter.com</url>
+    <url>https://www.instagram.com</url>
+    <url>https://www.linkedin.com</url>
+    <url>https://www.tiktok.com</url>
+  </url-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_SNS_Access_Business_Hours</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Deny_SNS_Access_Weekdays_0900_1700</name>
+
+    <condition>
+      <firewall>
+        <!-- Reference endpoint-groups by name only (no addresses here). -->
+        <source>CORP_DEVICES</source>
+        <source>CORP_NETWORK</source>
+      </firewall>
+
+      <!-- Match destination by URL category (references url-group 'sns-websites' above). -->
+      <url-category>
+        <url-name>sns-websites</url-name>
+      </url-category>
+
+      <!-- Time window: Monday–Friday 09:00–17:00. -->
+      <context>
+        <time>
+          <!-- Activation horizon for the rule (optional); long-range placeholder included). -->
+          <start-date-time>2025-01-01T00:00:00Z</start-date-time>
+          <end-date-time>2030-12-31T23:59:59Z</end-date-time>
+
+          <period>
+            <!-- Business hours: 09:00 to 17:00 (times provided with Z suffix per model). -->
+            <start-time>09:00:00Z</start-time>
+            <end-time>17:00:00Z</end-time>
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+          </period>
+
+          <!-- Recurrence: weekly (every week on the specified days/time). -->
+          <frequency>weekly</frequency>
+        </time>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Deny the network/application connections to the SNS destinations -->
+        <action>drop</action>
+      </primary-action>
+
+      <secondary-action>
+        <!-- Log the denied attempt as requested -->
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

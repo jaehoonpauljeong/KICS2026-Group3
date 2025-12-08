@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <url-group>
+        <name>SNS Endpoint Group</name>
+        <url>https://example.com</url> <!-- Placeholder for SNS blocking -->
+    </url-group>
+    <user-group>
+        <name>Employees</name>
+        <range-ipv4-address>
+            <start>192.0.2.1</start>
+            <end>192.0.2.50</end>
+        </range-ipv4-address>
+    </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <!-- No specific threat feeds mentioned, leaving this empty -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>Block_SNS_Access_During_Office_Hours</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+        <name>Block_SNS_Access_Office_Hours</name>
+        <condition>
+            <firewall>
+                <source>Employees</source>
+            </firewall>
+            <url-category>
+                <url-name>SNS Endpoint Group</url-name>
+            </url-category>
+            <context>
+                <time>
+                    <start-date-time>2025-09-01T09:00:00Z</start-date-time>
+                    <end-date-time>2025-09-01T17:00:00Z</end-date-time>
+                    <period>
+                        <start-time>09:00:00Z</start-time>
+                        <end-time>17:00:00Z</end-time>
+                        <day>monday</day>
+                        <day>tuesday</day>
+                        <day>wednesday</day>
+                        <day>thursday</day>
+                        <day>friday</day>
+                    </period>
+                    <frequency>weekly</frequency>
+                </time>
+            </context>
+        </condition>
+        <action>
+            <primary-action>
+                <action>drop</action> <!-- Blocking SNS access -->
+            </primary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>CLIENTS</name>
+    <!-- Placeholder/test-net IPv4 prefix for endpoints initiating downloads -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>FILE_SERVERS</name>
+    <!-- Placeholder/test-net IPv4 prefix for servers providing downloadable files -->
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Allow_File_Downloads_With_Logging</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Allow_File_Download_And_Log</name>
+
+    <condition>
+      <firewall>
+        <source>CLIENTS</source>
+        <destination>FILE_SERVERS</destination>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+
+      <secondary-action>
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Firewall Management Group</name>
+    <range-ipv4-address>
+      <start>192.0.2.0</start>
+      <end>192.0.2.255</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Firewall_Configuration_Change_Notification</name>
+  <rules>
+    <name>Notify_Relevant_Personnel_On_Change</name>
+    <condition>
+      <firewall>
+        <source>Firewall Management Group</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>notify</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <user-group>
+      <name>cpu-overload-systems</name>
+      <ipv4-prefix>192.168.1.0/24</ipv4-prefix>
+      <range-ipv4-address>
+        <start>192.168.1.1</start>
+        <end>192.168.1.50</end>
+      </range-ipv4-address>
+    </user-group>
+  </endpoint-groups>
+  
+  <i2nsf-cfi-policy>
+    <name>CPU_Overload_Management_Policy</name>
+    <rules>
+      <name>Manage_CPU_Overload</name>
+      <condition>
+        <firewall>
+          <source>cpu-overload-systems</source>
+        </firewall>
+        <context>
+          <time>
+            <start-date-time>2025-09-01T08:00:00Z</start-date-time>
+            <end-date-time>2025-09-01T18:00:00Z</end-date-time>
+          </time>
+        </context>
+      </condition>
+      <action>
+        <primary-action>
+          <action>rate-limit</action>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>

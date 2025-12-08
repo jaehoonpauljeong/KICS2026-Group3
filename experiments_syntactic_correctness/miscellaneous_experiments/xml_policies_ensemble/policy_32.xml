@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No endpoint groups defined in the policy -->
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Database_Access_Logging_Policy</name>
+  <rules>
+    <name>Permit_Access_And_Log_Session</name>
+    <condition>
+      <firewall>
+        <source>unknown-source-group</source> <!-- Placeholder for source group -->
+        <destination>database-destination-group</destination> <!-- Placeholder for destination group -->
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action> <!-- Permit access -->
+      </primary-action>
+      <secondary-action>
+        <log-action>session-log</log-action> <!-- Log the full session details -->
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Streaming Media Endpoints</name>
+    <range-ipv4-address>
+      <start>192.0.2.0</start>
+      <end>192.0.2.255</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No specific threat feeds were defined in the policy. -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Throttle_Streaming_Media_Traffic</name>
+  <rules>
+    <name>Limit_Streaming_Traffic_100MBps</name>
+    <condition>
+      <firewall>
+        <source>Streaming Media Endpoints</source>
+      </firewall>
+      <ddos>
+        <rate-limit>
+          <byte-rate-threshold>100000000</byte-rate-threshold>
+        </rate-limit>
+      </ddos>
+    </condition>
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>100000000</limit>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

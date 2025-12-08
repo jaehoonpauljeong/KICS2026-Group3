@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>ransomware-detection-endpoints</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.50</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds specified; leaving empty -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>AntiVirus_Ransomware_Detection_Policy</name>
+  <rules>
+    <name>Flagged_File_Transfer_Actions</name>
+    <condition>
+      <anti-virus>
+        <profile>ransomware-profile</profile>
+      </anti-virus>
+      <firewall>
+        <source>ransomware-detection-endpoints</source>
+      </firewall>
+      <payload>
+        <content>malware-signature-Ransomware</content>
+      </payload>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

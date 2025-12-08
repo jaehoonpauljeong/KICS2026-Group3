@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>Backup Transfers</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.50</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface"/>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>BackupTransferSpeedPolicy</name>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>RestrictBackupDataTransferDuringWorkHours</name>
+    <condition>
+      <firewall>
+        <source>Backup Transfers</source>
+      </firewall>
+      <context>
+        <time>
+          <start-date-time>2021-09-01T08:00:00Z</start-date-time>
+          <end-date-time>2021-12-31T18:00:00Z</end-date-time>
+          <period>
+            <start-time>08:00:00Z</start-time>
+            <end-time>18:00:00Z</end-time>
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+          </period>
+          <frequency>weekly</frequency>
+        </time>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>10000000</limit>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

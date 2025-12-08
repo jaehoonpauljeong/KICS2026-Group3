@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>cap_connection_attempts_policy</name>
+    <rules>
+        <name>cap_connections</name>
+        <condition>
+            <ddos>
+                <rate-limit>
+                    <packet-rate-threshold>20</packet-rate-threshold>
+                </rate-limit>
+            </ddos>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>cap</action>
+            </primary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>

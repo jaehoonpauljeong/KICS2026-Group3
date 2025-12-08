@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No endpoint groups defined in the policy -->
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds defined in the policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Firewall_CPU_Load_Management</name>
+  <rules>
+    <name>High_CPU_Load_Action</name>
+    <condition>
+      <firewall>
+        <device>firewall</device>
+        <threshold>90</threshold>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

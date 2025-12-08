@@ -1,0 +1,27 @@
+<!-- intent: Mitigate Flood Attacks on a Company Web Server -->
+<!-- expected: primary-action: drop -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>security_policy_for_mitigating_flood_attacks</name>
+    <rules>
+        <name>mitigate_flood_attacks</name>
+        <condition>
+            <firewall>
+                <destination>web_servers</destination>
+            </firewall>
+            <ddos>
+                <rate-limit>
+                    <packet-rate-threshold>1000</packet-rate-threshold>
+                </rate-limit>
+            </ddos>
+        </condition>
+        <action>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

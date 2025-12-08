@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>web_server_endpoints</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.50</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>traffic-management-threat-feed</name>
+  <ioc>none</ioc>
+  <format>none</format>
+</threat-prevention>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>ConnectionFlowLimitPolicy</name>
+  <rules>
+    <name>CapNewConnectionAttempts</name>
+    <condition>
+      <ddos>
+        <rate-limit>
+          <flow-rate-threshold>20</flow-rate-threshold>
+        </rate-limit>
+      </ddos>
+      <firewall>
+        <source>web_server_endpoints</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>20</limit>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

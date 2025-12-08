@@ -1,0 +1,207 @@
+YANG Validation Report - 2025-09-22 17:41:41.912171
+============================================================
+
+Checking policy_19.xml...
+❌ policy_19.xml failed validation:
+libyang err : Data for both cases "prefix" and "range" exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/device-group/match-type/ipv4/ipv4-range-or-prefix, data location /ietf-i2nsf-cons-facing-interface:device-group[name='iot-devices'], line number 10.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_19.xml".
+
+Checking policy_46.xml...
+❌ policy_46.xml failed validation:
+libyang err : Data for both cases "prefix" and "range" exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/device-group/match-type/ipv4/ipv4-range-or-prefix, data location /ietf-i2nsf-cons-facing-interface:device-group[name='firewall'], line number 10.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_46.xml".
+
+Checking policy_31.xml...
+❌ policy_31.xml failed validation:
+libyang err : Node "policy" not found in the "ietf-i2nsf-cons-facing-interface" module. (Line number 3.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_31.xml".
+
+Checking policy_6.xml...
+✅ policy_6.xml is valid!
+
+Checking policy_33.xml...
+❌ policy_33.xml failed validation:
+libyang err : Data for both cases "ipv4" and "ipv6" exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/user-group/match-type, data location /ietf-i2nsf-cons-facing-interface:user-group[name='vpn-users'], line number 16.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_33.xml".
+
+Checking policy_34.xml...
+✅ policy_34.xml is valid!
+
+Checking policy_17.xml...
+❌ policy_17.xml failed validation:
+libyang err : Data for both cases "prefix" and "range" exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/device-group/match-type/ipv4/ipv4-range-or-prefix, data location /ietf-i2nsf-cons-facing-interface:device-group[name='analysis-server'], line number 10.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_17.xml".
+
+Checking policy_35.xml...
+✅ policy_35.xml is valid!
+
+Checking policy_25.xml...
+❌ policy_25.xml failed validation:
+libyang err : Mandatory choice "match-type" data do not exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/user-group/match-type.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_25.xml".
+
+Checking policy_3.xml...
+✅ policy_3.xml is valid!
+
+Checking policy_30.xml...
+✅ policy_30.xml is valid!
+
+Checking policy_1.xml...
+❌ policy_1.xml failed validation:
+libyang err : When condition "../frequency!='only-once'" not satisfied. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition/context/time/period, data location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy[name='Block_SNS_Access_During_Business_Hours']/rules[name='Block_Access_During_Business_Hours']/condition/context/time/period.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_1.xml".
+
+Checking policy_29.xml...
+✅ policy_29.xml is valid!
+
+Checking policy_5.xml...
+✅ policy_5.xml is valid!
+
+Checking policy_38.xml...
+❌ policy_38.xml failed validation:
+libyang err : Mandatory choice "match-type" data do not exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/user-group/match-type.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_38.xml".
+
+Checking policy_20.xml...
+❌ policy_20.xml failed validation:
+libyang err : Data for both cases "prefix" and "range" exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/device-group/match-type/ipv4/ipv4-range-or-prefix, data location /ietf-i2nsf-cons-facing-interface:device-group[name='proxy-server-dmz'], line number 10.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_20.xml".
+
+Checking policy_22.xml...
+❌ policy_22.xml failed validation:
+libyang err : Mandatory choice "match-type" data do not exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/user-group/match-type.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_22.xml".
+
+Checking policy_43.xml...
+❌ policy_43.xml failed validation:
+libyang err : Data for both cases "prefix" and "range" exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/device-group/match-type/ipv4/ipv4-range-or-prefix, data location /ietf-i2nsf-cons-facing-interface:device-group[name='firewall-devices'], line number 10.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_43.xml".
+
+Checking policy_15.xml...
+❌ policy_15.xml failed validation:
+libyang err : Unsatisfied pattern - "::ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff" does not conform to "((:|[0-9a-fA-F]{0,4}):)([0-9a-fA-F]{0,4}:){0,5}((([0-9a-fA-F]{0,4}:)?(:|[0-9a-fA-F]{0,4}))|(((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])))(%[A-Za-z0-9][A-Za-z0-9\-\._~/]*)?". (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/user-group/match-type/ipv6/ipv6-range-or-prefix/range/range-ipv6-address/end, data location /ietf-i2nsf-cons-facing-interface:range-ipv6-address[start='::'], line number 11.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_15.xml".
+
+Checking policy_16.xml...
+✅ policy_16.xml is valid!
+
+Checking policy_8.xml...
+❌ policy_8.xml failed validation:
+libyang err : Mandatory choice "match-type" data do not exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/user-group/match-type.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_8.xml".
+
+Checking policy_10.xml...
+❌ policy_10.xml failed validation:
+libyang err : Unsatisfied pattern - "
+      " does not conform to "[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}". (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/user-group/mac-address, data location /ietf-i2nsf-cons-facing-interface:user-group[name='employees'], line number 6.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_10.xml".
+
+Checking policy_28.xml...
+❌ policy_28.xml failed validation:
+libyang err : When condition "../frequency!='only-once'" not satisfied. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition/context/time/period, data location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy[name='Backup_Data_Transfer_Restriction']/rules[name='Limit_Backup_Transfer_During_Work_Hours']/condition/context/time/period.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_28.xml".
+
+Checking policy_18.xml...
+❌ policy_18.xml failed validation:
+libyang err : Invalid identityref "forward" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/action/primary-action/action, data location /ietf-i2nsf-cons-facing-interface:primary-action, line number 24.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_18.xml".
+
+Checking policy_14.xml...
+❌ policy_14.xml failed validation:
+libyang err : Mandatory choice "match-type" data do not exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/user-group/match-type.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_14.xml".
+
+Checking policy_24.xml...
+❌ policy_24.xml failed validation:
+libyang err : Data for both cases "prefix" and "range" exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/device-group/match-type/ipv4/ipv4-range-or-prefix, data location /ietf-i2nsf-cons-facing-interface:device-group[name='streaming-media-devices'], line number 10.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_24.xml".
+
+Checking policy_39.xml...
+❌ policy_39.xml failed validation:
+libyang err : Node "authorization" not found as a child of "context" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition/context, data location /ietf-i2nsf-cons-facing-interface:context, line number 18.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_39.xml".
+
+Checking policy_45.xml...
+❌ policy_45.xml failed validation:
+libyang err : Node "policy" not found in the "ietf-i2nsf-cons-facing-interface" module. (Line number 3.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_45.xml".
+
+Checking policy_36.xml...
+✅ policy_36.xml is valid!
+
+Checking policy_21.xml...
+❌ policy_21.xml failed validation:
+libyang err : Data for both cases "prefix" and "range" exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/device-group/match-type/ipv4/ipv4-range-or-prefix, data location /ietf-i2nsf-cons-facing-interface:device-group[name='iot-devices'], line number 10.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_21.xml".
+
+Checking policy_37.xml...
+❌ policy_37.xml failed validation:
+libyang err : Node "description" not found as a child of "user-group" node. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/user-group, data location /ietf-i2nsf-cons-facing-interface:user-group[name='unauthorized-vpn-attempts'], line number 5.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_37.xml".
+
+Checking policy_40.xml...
+❌ policy_40.xml failed validation:
+libyang err : Mandatory choice "match-type" data do not exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/user-group/match-type.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_40.xml".
+
+Checking policy_7.xml...
+❌ policy_7.xml failed validation:
+libyang err : Invalid leafref value "adult-content" - no existing target instance "/endpoint-groups/url-group/name". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition/url-category/url-name, data location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy[name='Restrict_Adult_Content_Access']/rules[name='Restrict_Access_To_Adult_Content']/condition/url-category/url-name.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_7.xml".
+
+Checking policy_41.xml...
+❌ policy_41.xml failed validation:
+libyang err : Mandatory choice "match-type" data do not exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/user-group/match-type.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_41.xml".
+
+Checking policy_4.xml...
+✅ policy_4.xml is valid!
+
+Checking policy_9.xml...
+❌ policy_9.xml failed validation:
+libyang err : Data for both cases "prefix" and "range" exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/user-group/match-type/ipv4/ipv4-range-or-prefix, data location /ietf-i2nsf-cons-facing-interface:user-group[name='internal-hr-system'], line number 10.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_9.xml".
+
+Checking policy_2.xml...
+❌ policy_2.xml failed validation:
+libyang err : Node "name" not found as a child of "threat-prevention" node. (Schema location /ietf-i2nsf-cons-facing-interface:threat-prevention, data location /ietf-i2nsf-cons-facing-interface:threat-prevention, line number 20.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_2.xml".
+
+Checking policy_32.xml...
+✅ policy_32.xml is valid!
+
+Checking policy_26.xml...
+✅ policy_26.xml is valid!
+
+Checking policy_13.xml...
+✅ policy_13.xml is valid!
+
+Checking policy_44.xml...
+❌ policy_44.xml failed validation:
+libyang err : Node "action" not found as a child of "secondary-action" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/action/secondary-action, data location /ietf-i2nsf-cons-facing-interface:secondary-action, line number 26.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_44.xml".
+
+Checking policy_12.xml...
+❌ policy_12.xml failed validation:
+libyang err : Node "name" not found as a child of "threat-prevention" node. (Schema location /ietf-i2nsf-cons-facing-interface:threat-prevention, data location /ietf-i2nsf-cons-facing-interface:threat-prevention, line number 11.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_12.xml".
+
+Checking policy_11.xml...
+❌ policy_11.xml failed validation:
+libyang err : Data for both cases "ipv4" and "ipv6" exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/device-group/match-type, data location /ietf-i2nsf-cons-facing-interface:device-group[name='trusted-devices'], line number 13.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_11.xml".
+
+Checking policy_42.xml...
+❌ policy_42.xml failed validation:
+libyang err : Data for both cases "prefix" and "range" exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/device-group/match-type/ipv4/ipv4-range-or-prefix, data location /ietf-i2nsf-cons-facing-interface:device-group[name='database-server'], line number 10.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_42.xml".
+
+Checking policy_23.xml...
+✅ policy_23.xml is valid!
+
+Checking policy_27.xml...
+✅ policy_27.xml is valid!
+
+============================================================
+Summary: 15 passed, 31 failed
+============================================================

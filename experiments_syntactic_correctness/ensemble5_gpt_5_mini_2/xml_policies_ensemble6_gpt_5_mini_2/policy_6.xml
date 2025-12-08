@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>internal-users</name>
+    <!-- Placeholder TEST-NET source range for internal users -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>youtube-service</name>
+    <!-- Placeholder TEST-NET destination range representing YouTube endpoints -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <url-group>
+    <name>youtube-sites</name>
+    <!-- Representative YouTube URIs. Wildcards are not expressible as inet:uri; enforcement implementations should
+         use SNI/DNS/TLS-inspection or expanded lists to cover subdomains and CDN hostnames. -->
+    <url>https://www.youtube.com/</url>
+    <url>https://youtube.com/</url>
+    <url>https://youtu.be/</url>
+    <url>https://youtube-nocookie.com/</url>
+    <url>https://youtubei.googleapis.com/</url>
+  </url-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_YouTube_Access</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Deny_YouTube_Traffic</name>
+
+    <condition>
+      <firewall>
+        <source>internal-users</source>
+        <destination>youtube-service</destination>
+      </firewall>
+
+      <url-category>
+        <url-name>youtube-sites</url-name>
+      </url-category>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

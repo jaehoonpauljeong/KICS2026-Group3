@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>remote-clients</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+  <user-group>
+    <name>unauthorized-clients</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </user-group>
+  <device-group>
+    <name>vpn-servers</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Reject_Unauthorized_VPN_Access_with_Session_Logging</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Reject_Unauthorized_VPN_Attempt_and_Log_Session</name>
+    <condition>
+      <firewall>
+        <source>unauthorized-clients</source>
+        <destination>vpn-servers</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>reject</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

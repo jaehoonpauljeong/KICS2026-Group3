@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <url-group>
+      <name>video-streaming-traffic</name>
+      <range-ipv4-address>
+        <start>192.0.2.0</start>
+        <end>192.0.2.255</end>
+      </range-ipv4-address>
+    </url-group>
+  </endpoint-groups>
+  <threat-prevention>
+    <!-- No threat feeds are mentioned in the policy intent -->
+  </threat-prevention>
+  <i2nsf-cfi-policy>
+    <name>Video_Streaming_Proxy_Routing</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+      <name>Route_Video_Streaming_Through_Proxy</name>
+      <condition>
+        <firewall>
+          <source>video-streaming-traffic</source>
+          <destination>proxy-server-in-dmz</destination>
+        </firewall>
+      </condition>
+      <action>
+        <primary-action>
+          <action>forwarding</action>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>

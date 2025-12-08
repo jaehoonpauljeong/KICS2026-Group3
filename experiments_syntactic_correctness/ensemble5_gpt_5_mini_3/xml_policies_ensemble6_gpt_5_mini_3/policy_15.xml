@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>Login-Sources</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>Authentication-Servers</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+    <application-protocol>http</application-protocol>
+    <application-protocol>https</application-protocol>
+    <application-protocol>ssh</application-protocol>
+    <application-protocol>ldap</application-protocol>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>reject_unauthorized_login_policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>reject_and_notify_unauthorized_login_rule</name>
+
+    <condition>
+      <firewall>
+        <source>Login-Sources</source>
+        <destination>Authentication-Servers</destination>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>reject</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

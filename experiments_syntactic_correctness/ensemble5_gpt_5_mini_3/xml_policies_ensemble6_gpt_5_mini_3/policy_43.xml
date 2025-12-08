@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>admin_ops_group</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <user-group>
+    <name>new_connection_sources</name>
+    <ipv4-prefix>192.0.2.128/25</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>primary_firewall</name>
+    <ipv4-prefix>192.0.2.1/32</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>standby_firewall</name>
+    <ipv4-prefix>203.0.113.1/32</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>non_essential_traffic_group</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Firewall_CPU_Overload_Mitigation</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>CPU_Load_Above_90pct_Alert_and_Mitigate</name>
+
+    <condition>
+      <firewall>
+        <!-- Endpoint groups referenced by name only -->
+        <!-- Sources (non-essential and new-connection sources) -->
+        <source>non_essential_traffic_group</source>
+        <source>new_connection_sources</source>
+        <!-- Destination: primary firewall -->
+        <destination>primary_firewall</destination>
+      </firewall>
+
+      <ddos>
+        <rate-limit>
+          <!-- Placeholder hint for new-connection limiting (flows/sec). Adjust as needed. -->
+          <flow-rate-threshold>1000</flow-rate-threshold>
+        </rate-limit>
+      </ddos>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  endpoint-groups document for 'maintenance_monthly_first_sunday_policy'.
+  NOTE: The intent is "first Sunday of each month, 02:00–04:00 UTC".
+  The I2NSF time model cannot directly express "first Sunday of each month".
+  This policy uses 'invoke-signaling' as the primary action so an external
+  orchestrator/scheduler can compute the concrete first-Sunday occurrences and
+  invoke the NSF (recommended approach). The rule's time condition restricts
+  the day to 'sunday' and the time window to 02:00:00Z–04:00:00Z with
+  frequency=monthly as a semantic hint; the actual "first" week-of-month
+  enforcement must be handled by the external scheduler that sends the
+  signaling.
+-->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>maintenance-admins</name>
+    <!-- TEST-NET-3 range used as a placeholder for admin/control addresses -->
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>maintenance-targets</name>
+    <!-- TEST-NET-2 range used as a placeholder for maintenance target hosts -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<!--
+  i2nsf-cfi-policy for scheduled monthly maintenance.
+  Primary action is 'invoke-signaling' so an external orchestrator can
+  perform or trigger the "scheduled maintenance operations" (this maps the
+  human intent into a supported I2NSF action).
+-->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>maintenance_monthly_first_sunday_policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>maintenance_first_sunday_02_00_04_00_UTC</name>
+
+    <!--
+      Condition: time-based window (02:00:00Z - 04:00:00Z, sunday, monthly).
+      Important: The I2NSF model cannot express "first Sunday of each month"
+      natively. An external orchestrator should compute the concrete dates
+      (the first Sunday for each month) and invoke the NSF during those
+      computed windows via the signaling mechanism.
+    -->
+    <condition>
+      <firewall>
+        <!-- reference endpoint-groups by name only -->
+        <source>maintenance-admins</source>
+        <destination>maintenance-targets</destination>
+      </firewall>
+
+      <context>
+        <time>
+          <period>
+            <start-time>02:00:00Z</start-time>
+            <end-time>04:00:00Z</end-time>
+            <day>sunday</day>
+          </period>
+          <frequency>monthly</frequency>
+        </time>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Use invoke-signaling so an orchestrator can perform maintenance tasks -->
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

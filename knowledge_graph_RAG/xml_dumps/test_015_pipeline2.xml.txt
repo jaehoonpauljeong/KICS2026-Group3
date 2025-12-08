@@ -1,0 +1,26 @@
+<!-- intent: Reject any unauthorized login attempts and send an error notification back to the source. -->
+<!-- expected: primary-action: reject -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>security_policy_for_rejecting_unauthorized_login_attempts</name>
+    <rules>
+        <name>Reject_Unauthorized_Login_Attempts</name>
+        <condition>
+            <firewall>
+                <source>unauthorized_sources</source>
+                <destination>login_port</destination>
+            </firewall>
+        </condition>
+        <action>
+            <primary-action>
+                <action>reject</action>
+            </primary-action>
+            <secondary-action>
+                <log-action>send_error_notification</log-action>
+            </secondary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

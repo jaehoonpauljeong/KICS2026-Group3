@@ -1,0 +1,32 @@
+<!-- intent: Block all games during the nights at weekdays. -->
+<!-- expected: primary-action: drop -->
+xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>block_games_night_weekdays_policy</name>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>block_games_night_weekdays</name>
+    <condition>
+      <context>
+        <time>
+          <period>
+            <start-time>20:00:00Z</start-time>
+            <end-time>23:59:59Z</end-time>
+            <day>Mon</day>
+            <day>Tue</day>
+            <day>Wed</day>
+            <day>Thu</day>
+            <day>Fri</day>
+          </period>
+        </time>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

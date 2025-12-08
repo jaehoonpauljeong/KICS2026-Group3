@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Financial_Systems</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+    <!-- Placeholder address range for financial systems; replace with real prefixes -->
+  </device-group>
+
+  <device-group>
+    <name>Central_Server</name>
+    <ipv4-prefix>192.0.2.10/32</ipv4-prefix>
+    <!-- Placeholder address for central server; replace with real IP/FQDN mapping as appropriate -->
+  </device-group>
+
+  <device-group>
+    <name>Secure_Tunnel_Gateway</name>
+    <ipv4-prefix>203.0.113.5/32</ipv4-prefix>
+    <!-- Optional gateway/tunnel endpoint; included as an explicit endpoint-group in case the tunnel terminates on a dedicated gateway -->
+  </device-group>
+</endpoint-groups>
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- payload-content list entry used to identify "sensitive financial data" flows.
+       Replace the IOC and format with your actual DLP signature or detection artifact. -->
+  <payload-content>
+    <name>sensitive-financial-data</name>
+    <ioc>dlp-label:sensitive-financial-data</ioc>
+    <format>stix</format>
+  </payload-content>
+</threat-prevention>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Encapsulate_Sensitive_Financial_Traffic</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <!-- Rule 1: internal → central -->
+  <rules>
+    <name>Encapsulate_To_Central_Server_Egress</name>
+    <condition>
+      <firewall>
+        <source>Financial_Systems</source>
+        <destination>Central_Server</destination>
+        <!-- transport-layer/protocol/ports could be added if known -->
+      </firewall>
+      <payload>
+        <content>sensitive-financial-data</content>
+      </payload>
+    </condition>
+    <action>
+      <primary-action>
+        <action>tunnel-encapsulation</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- Rule 2: central → internal -->
+  <rules>
+    <name>Encapsulate_From_Central_Server_Egress</name>
+    <condition>
+      <firewall>
+        <source>Central_Server</source>
+        <destination>Financial_Systems</destination>
+      </firewall>
+      <payload>
+        <content>sensitive-financial-data</content>
+      </payload>
+    </condition>
+    <action>
+      <primary-action>
+        <action>tunnel-encapsulation</action>
+      </primary-action>
+    </action>
+  </rules>
+
+</i2nsf-cfi-policy>

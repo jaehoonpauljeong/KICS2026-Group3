@@ -1,0 +1,26 @@
+<!-- intent: Allow web server access from external clients but maintain a session log of every connection. -->
+<!-- expected: primary-action: pass, secondary-action -> log-action: session-log -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>allow_web_server_access_with_logging</name>
+    <rules>
+        <name>allow_external_clients_access</name>
+        <condition>
+            <firewall>
+                <destination>webserver</destination>
+                <source>external_clients</source>
+            </firewall>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>allow</action>
+            </primary-action>
+            <secondary-action>
+                <log-action>log_connection</log-action>
+            </secondary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>
+```

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <user-group>
+      <name>employees</name>
+      <mac-address>
+        <mac-address>00:00:00:00:00:01</mac-address>
+      </mac-address>
+      <ipv4-prefix>
+        <ipv4-prefix>192.168.1.0/24</ipv4-prefix>
+      </ipv4-prefix>
+    </user-group>
+    <url-group>
+      <name>websites</name>
+      <url>http://example.com</url>
+    </url-group>
+  </endpoint-groups>
+  
+  <i2nsf-cfi-policy>
+    <name>Employee_Web_Browsing_Policy</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+      <name>Permit_Employee_Web_Browsing</name>
+      <condition>
+        <firewall>
+          <source>employees</source>
+          <destination>websites</destination>
+        </firewall>
+      </condition>
+      <action>
+        <primary-action>
+          <action>pass</action>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>

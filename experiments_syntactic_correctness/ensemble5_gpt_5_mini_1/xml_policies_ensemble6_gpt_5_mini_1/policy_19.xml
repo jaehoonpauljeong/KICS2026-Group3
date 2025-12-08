@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Endpoint groups referenced by the policy -->
+  <device-group>
+    <name>IoT_Devices</name>
+    <!-- Placeholder TEST-NET IPv4 prefix for the IoT device group (replace in production) -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>Specialized_Gateway</name>
+    <!-- Placeholder TEST-NET IPv4 address for the specialized gateway (replace in production) -->
+    <ipv4-prefix>198.51.100.10/32</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Forward_IoT_Traffic_To_Specialized_Gateway_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Forward_All_IoT_Traffic_To_Gateway_Rule</name>
+
+    <condition>
+      <firewall>
+        <!-- Match: source endpoints are the IoT devices group (defined in endpoint-groups) -->
+        <source>IoT_Devices</source>
+
+        <!-- Reference to the processing/forward target (gateway) by name;
+             implementation may interpret this as the forwarding target. -->
+        <destination>Specialized_Gateway</destination>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Action: forward matched traffic to the specialized gateway -->
+        <action>forwarding</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

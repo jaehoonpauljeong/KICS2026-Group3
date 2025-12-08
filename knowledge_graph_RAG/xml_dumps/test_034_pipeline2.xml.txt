@@ -1,0 +1,25 @@
+<!-- intent: Allow all employee web browsing but write a rule-log entry whenever this rule is triggered. -->
+<!-- expected: primary-action: pass, secondary-action -> log-action: rule-log -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>allow_employee_web_browsing</name>
+    <rules>
+        <name>allow_web_browsing</name>
+        <condition>
+            <firewall>
+                <destination>employees</destination>
+            </firewall>
+        </condition>
+        <action>
+            <primary-action>
+                <action>allow</action>
+            </primary-action>
+            <secondary-action>
+                <log-action>rule-log-entry</log-action>
+            </secondary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

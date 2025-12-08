@@ -1,0 +1,141 @@
+YANG Validation Results - 2025-10-26 15:13:49.520263
+============================================================
+
+[PASS] policy_5.xml
+[PASS] policy_41.xml
+[PASS] policy_11.xml
+[PASS] policy_36.xml
+[FAIL] policy_50.xml
+[PASS] policy_25.xml
+[PASS] policy_13.xml
+[PASS] policy_20.xml
+[PASS] policy_43.xml
+[PASS] policy_3.xml
+[PASS] policy_42.xml
+[PASS] policy_31.xml
+[PASS] policy_46.xml
+[PASS] policy_40.xml
+[FAIL] policy_7.xml
+[FAIL] policy_10.xml
+[PASS] policy_29.xml
+[PASS] policy_44.xml
+[PASS] policy_38.xml
+[FAIL] policy_2.xml
+[FAIL] policy_23.xml
+[PASS] policy_35.xml
+[PASS] policy_30.xml
+[PASS] policy_34.xml
+[PASS] policy_6.xml
+[FAIL] policy_8.xml
+[FAIL] policy_18.xml
+[PASS] policy_24.xml
+[PASS] policy_33.xml
+[PASS] policy_48.xml
+[PASS] policy_4.xml
+[PASS] policy_9.xml
+[PASS] policy_45.xml
+[PASS] policy_16.xml
+[FAIL] policy_37.xml
+[FAIL] policy_47.xml
+[PASS] policy_14.xml
+[FAIL] policy_12.xml
+[FAIL] policy_49.xml
+[PASS] policy_22.xml
+[FAIL] policy_17.xml
+[FAIL] policy_39.xml
+[FAIL] policy_21.xml
+[PASS] policy_26.xml
+[PASS] policy_19.xml
+[PASS] policy_32.xml
+[FAIL] policy_28.xml
+[FAIL] policy_15.xml
+[FAIL] policy_1.xml
+[PASS] policy_27.xml
+
+[FAIL] policy_50.xml
+Error:
+libyang err : Duplicate instance of "primary-action". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/action/primary-action, data location /ietf-i2nsf-cons-facing-interface:action/primary-action, line number 31.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_50.xml".
+
+[FAIL] policy_7.xml
+Error:
+libyang err : Invalid leafref value "adult-content" - no existing target instance "/endpoint-groups/url-group/name". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition/url-category/url-name, data location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy[name='Restrict_Adult_Content_Access']/rules[name='Restrict_Access_From_All_Devices']/condition/url-category/url-name.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_7.xml".
+
+[FAIL] policy_10.xml
+Error:
+libyang err : Node "policy" not found in the "ietf-i2nsf-cons-facing-interface" module. (Line number 3.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_10.xml".
+
+[FAIL] policy_2.xml
+Error:
+libyang err : Invalid leafref value "company-devices" - no target instance "/endpoint-groups/voice-group/name" with the same value. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition/voice/destination-id, data location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy[name='Block_Malicious_VoIP_Packets']/rules[name='Block_Malicious_VoIP_Rule']/condition/voice/destination-id[.='company-devices'].)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_2.xml".
+
+[FAIL] policy_23.xml
+Error:
+libyang err : Invalid identityref "send-alert" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/action/secondary-action/log-action, data location /ietf-i2nsf-cons-facing-interface:secondary-action, line number 26.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_23.xml".
+
+[FAIL] policy_8.xml
+Error:
+libyang err : When condition "../frequency!='only-once'" not satisfied. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition/context/time/period, data location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy[name='Block_Weekday_Night_Games']/rules[name='Block_All_Games_Weekday_Nights']/condition/context/time/period.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_8.xml".
+
+[FAIL] policy_18.xml
+Error:
+libyang err : Invalid identityref "copy" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/action/primary-action/action, data location /ietf-i2nsf-cons-facing-interface:primary-action, line number 31.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_18.xml".
+
+[FAIL] policy_37.xml
+Error:
+libyang err : Node "name" not found as a child of "threat-prevention" node. (Schema location /ietf-i2nsf-cons-facing-interface:threat-prevention, data location /ietf-i2nsf-cons-facing-interface:threat-prevention, line number 13.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_37.xml".
+
+[FAIL] policy_47.xml
+Error:
+libyang err : Node "name" not found as a child of "threat-prevention" node. (Schema location /ietf-i2nsf-cons-facing-interface:threat-prevention, data location /ietf-i2nsf-cons-facing-interface:threat-prevention, line number 17.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_47.xml".
+
+[FAIL] policy_12.xml
+Error:
+libyang err : Node "name" not found as a child of "threat-prevention" node. (Schema location /ietf-i2nsf-cons-facing-interface:threat-prevention, data location /ietf-i2nsf-cons-facing-interface:threat-prevention, line number 13.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_12.xml".
+
+[FAIL] policy_49.xml
+Error:
+libyang err : Missing mandatory prefix for XML metadata "name". (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups, data location /ietf-i2nsf-cons-facing-interface:endpoint-groups, line number 3.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_49.xml".
+
+[FAIL] policy_17.xml
+Error:
+libyang err : Duplicate instance of "primary-action". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/action/primary-action, data location /ietf-i2nsf-cons-facing-interface:action/primary-action, line number 39.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_17.xml".
+
+[FAIL] policy_39.xml
+Error:
+libyang err : Missing mandatory prefix for XML metadata "name". (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups, data location /ietf-i2nsf-cons-facing-interface:endpoint-groups, line number 3.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_39.xml".
+
+[FAIL] policy_21.xml
+Error:
+libyang err : Invalid identityref "transform" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/action/primary-action/action, data location /ietf-i2nsf-cons-facing-interface:primary-action, line number 26.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_21.xml".
+
+[FAIL] policy_28.xml
+Error:
+libyang err : When condition "../frequency!='only-once'" not satisfied. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition/context/time/period, data location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy[name='Backup_Data_Transfer_Restriction']/rules[name='Work_Hours_Transfer_Limit']/condition/context/time/period.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_28.xml".
+
+[FAIL] policy_15.xml
+Error:
+libyang err : Invalid identityref "send-error-notification" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/action/secondary-action/log-action, data location /ietf-i2nsf-cons-facing-interface:secondary-action, line number 29.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_15.xml".
+
+[FAIL] policy_1.xml
+Error:
+libyang err : When condition "../frequency!='only-once'" not satisfied. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition/context/time/period, data location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy[name='Block_SNS_Access_During_Business_Hours']/rules[name='Block_SNS_Access']/condition/context/time/period.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_1.xml".
+
+============================================================
+Validation Summary: 33 passed, 17 failed.

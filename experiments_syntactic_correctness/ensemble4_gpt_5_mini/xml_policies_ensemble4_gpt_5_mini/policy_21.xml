@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>IoT_Sensors</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>HTTP_to_CoAP_Gateway</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>Internal_CoAP_Service</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>IoT_HTTP_to_CoAP_Translation_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Translate_HTTP_From_IoT_To_CoAP_Rule</name>
+    <condition>
+      <firewall>
+        <source>IoT_Sensors</source>
+        <destination>HTTP_to_CoAP_Gateway</destination>
+        <range-port-number>
+          <start>80</start>
+          <end>80</end>
+        </range-port-number>
+        <range-port-number>
+          <start>443</start>
+          <end>443</end>
+        </range-port-number>
+      </firewall>
+      <context>
+        <device-type>
+          <device>iot-device</device>
+        </device-type>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>transformation</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <rules>
+    <name>Forward_Translated_CoAP_To_Internal_Rule</name>
+    <condition>
+      <firewall>
+        <source>HTTP_to_CoAP_Gateway</source>
+        <destination>Internal_CoAP_Service</destination>
+        <range-port-number>
+          <start>5683</start>
+          <end>5683</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>forwarding</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

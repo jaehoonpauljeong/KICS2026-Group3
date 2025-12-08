@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>unknown-or-unclassified-traffic</name>
+  </user-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Traffic_Discard_Policy</name>
+  <rules>
+    <name>Discard_Unknown_Unclassified_Traffic</name>
+    <condition>
+      <firewall>
+        <source>unknown-or-unclassified-traffic</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

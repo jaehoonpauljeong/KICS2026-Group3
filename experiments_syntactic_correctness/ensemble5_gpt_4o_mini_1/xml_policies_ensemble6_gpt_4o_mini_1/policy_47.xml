@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <user-group>
+      <name>Malicious Traffic</name>
+      <range-ipv4-address>
+        <start>192.0.2.1</start>
+        <end>192.0.2.50</end>
+      </range-ipv4-address>
+    </user-group>
+  </endpoint-groups>
+  <threat-prevention>
+    <threat-feed-list>
+      <name>zeus-ioc</name>
+      <ioc>malicious.example</ioc>
+      <ioc>hash:abcd1234</ioc>
+      <format>stix</format>
+    </threat-feed-list>
+  </threat-prevention>
+  <i2nsf-cfi-policy>
+    <name>Threat_Indicator_Compromise_Management</name>
+    <rules>
+      <name>Drop_Log_And_Block_Zeus_IOC</name>
+      <condition>
+        <firewall>
+          <source>Malicious Traffic</source>
+        </firewall>
+        <threat-feed>
+          <name>zeus-ioc</name>
+        </threat-feed>
+      </condition>
+      <action>
+        <primary-action>
+          <action>drop</action>
+        </primary-action>
+        <secondary-action>
+          <log-action>rule-log</log-action>
+        </secondary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>any-devices</name>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Restrict_Adult_Content_Access</name>
+  <rules>
+    <name>Restrict_Access_To_Adult_Content</name>
+    <condition>
+      <firewall>
+        <source>any-devices</source>
+      </firewall>
+      <url-category>
+        <url-name>adult-content</url-name>
+      </url-category>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

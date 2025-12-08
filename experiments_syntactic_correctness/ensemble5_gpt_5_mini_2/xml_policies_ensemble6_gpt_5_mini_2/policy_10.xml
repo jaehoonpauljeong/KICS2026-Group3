@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>Employees</name>
+    <!-- Placeholder corporate IPv4 prefix (TEST-NET) -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Representing "any IPv4 Internet destination" as a device-group -->
+  <device-group>
+    <name>Internet_Websites_IPv4</name>
+    <ipv4-prefix>0.0.0.0/0</ipv4-prefix>
+  </device-group>
+
+  <!-- Representing "any IPv6 Internet destination" as a separate device-group -->
+  <device-group>
+    <name>Internet_Websites_IPv6</name>
+    <ipv6-prefix>::/0</ipv6-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Employee_Unrestricted_Web_Access</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Permit_Employee_Unrestricted_Web_Browsing</name>
+
+    <condition>
+      <firewall>
+        <!-- Source refers to the endpoint-group defined in endpoint-groups.xml -->
+        <source>Employees</source>
+
+        <!-- Destination(s) refer to device-groups defined in endpoint-groups.xml -->
+        <destination>Internet_Websites_IPv4</destination>
+        <destination>Internet_Websites_IPv6</destination>
+
+        <!-- transport-layer-protocol is not required because application protocols are used below -->
+      </firewall>
+
+      <context>
+        <!-- User identity condition: group id is required by the model -->
+        <users>
+          <group>
+            <id>200</id>
+            <name>Employees</name>
+          </group>
+        </users>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- "Permit" mapped to the I2NSF action identity 'pass' -->
+        <action>pass</action>
+      </primary-action>
+      <!-- No secondary (logging) action included per intent -->
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

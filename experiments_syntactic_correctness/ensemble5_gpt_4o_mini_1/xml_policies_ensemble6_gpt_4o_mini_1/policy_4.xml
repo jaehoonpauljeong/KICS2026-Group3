@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <device-group name="sons_computers">
+      <range-ipv4-address>
+        <start>192.0.2.1</start>
+        <end>192.0.2.50</end>
+      </range-ipv4-address>
+    </device-group>
+  </endpoint-groups>
+  <threat-prevention>
+    <threat-feed-list>
+      <name>malicious_websites</name>
+      <ioc>http://malicious-website1.com</ioc>
+      <ioc>http://malicious-website2.com</ioc>
+      <format>stix</format>
+    </threat-feed-list>
+  </threat-prevention>
+  <i2nsf-cfi-policy>
+    <name>Block_Malicious_Websites</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+      <name>Block_Sons_Computers</name>
+      <condition>
+        <firewall>
+          <source>sons_computers</source>
+        </firewall>
+        <threat-feed>
+          <name>malicious_websites</name>
+        </threat-feed>
+      </condition>
+      <action>
+        <primary-action>
+          <action>drop</action>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>

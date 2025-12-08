@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Standalone endpoint-groups document: contains all endpoint groups referenced by the policy -->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>Untrusted_Networks</name>
+    <!-- Placeholder/test-net source range per intent -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>Admin_Servers</name>
+    <!-- Placeholder/test-net destination range per intent -->
+    <ipv4-prefix>192.0.2.0/28</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<!-- Standalone i2nsf-cfi-policy document: references endpoint-groups by name only -->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Admin_Port_Access_and_Log</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Block_Admin_Port_Attempt_Rule</name>
+
+    <condition>
+      <firewall>
+        <!-- Reference endpoint groups by name (no IP details here) -->
+        <source>Untrusted_Networks</source>
+        <destination>Admin_Servers</destination>
+
+        <!-- Single-port match for admin port 22 -->
+        <range-port-number>
+          <start>22</start>
+          <end>22</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Block the traffic (drop) -->
+        <action>drop</action>
+      </primary-action>
+
+      <secondary-action>
+        <!-- Log the attempt for auditing as requested in the intent -->
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

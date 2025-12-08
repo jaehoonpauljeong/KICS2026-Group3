@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>Guest_Network</name>
+    <!-- Placeholder IPv4 prefix for the guest network (RFC 5737 documentation prefix) -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>GuestNetwork_RateLimit_1000pps</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Enforce_RateLimit_Guest_1000pps</name>
+
+    <condition>
+      <firewall>
+        <source>Guest_Network</source>
+      </firewall>
+
+      <ddos>
+        <rate-limit>
+          <packet-rate-threshold>1000</packet-rate-threshold>
+        </rate-limit>
+      </ddos>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

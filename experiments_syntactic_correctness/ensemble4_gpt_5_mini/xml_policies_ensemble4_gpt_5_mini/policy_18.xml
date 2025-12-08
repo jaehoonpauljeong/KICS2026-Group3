@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- User group representing internal mail senders (placeholder/test-net) -->
+  <user-group>
+    <name>Internal-Email-Senders</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Device group representing external mail recipients / outbound mail servers (placeholder/test-net) -->
+  <device-group>
+    <name>External-Mail-Recipients</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Device group representing the monitoring system where copies are sent (single host placeholder) -->
+  <device-group>
+    <name>Monitoring-System</name>
+    <ipv4-prefix>198.51.100.10/32</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Copy_Outgoing_Email_To_Monitoring</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Copy_And_Forward_Outgoing_Email</name>
+
+    <condition>
+      <firewall>
+        <source>Internal-Email-Senders</source>
+        <destination>External-Mail-Recipients</destination>
+
+        <range-port-number>
+          <start>25</start>
+          <end>25</end>
+        </range-port-number>
+        <range-port-number>
+          <start>587</start>
+          <end>587</end>
+        </range-port-number>
+        <range-port-number>
+          <start>465</start>
+          <end>465</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>mirror</action>
+      </primary-action>
+    </action>
+
+  </rules>
+</i2nsf-cfi-policy>

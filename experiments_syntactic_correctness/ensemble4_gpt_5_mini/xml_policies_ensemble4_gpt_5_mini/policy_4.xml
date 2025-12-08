@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>parent_admin</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+  <device-group>
+    <name>son_devices</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <threat-feed-list>
+    <threat-feed>
+      <name>malicious-sites-feed</name>
+      <ioc>domain:badexample.com</ioc>
+      <ioc>url:http://malware.example/payload</ioc>
+      <ioc>domain:phishingsite.test</ioc>
+      <format>stix</format>
+    </threat-feed>
+  </threat-feed-list>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface"
+                  xmlns:ext="urn:example:ietf:i2nsf:extensions">
+  <name>Block_Sons_Devices_Malicious_Websites</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Block_Log_Notify_From_Sons_Devices_To_Malicious_Sites</name>
+
+    <condition>
+      <firewall>
+        <source>son_devices</source>
+      </firewall>
+
+      <threat-feed>
+        <name>malicious-sites-feed</name>
+      </threat-feed>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+
+      <ext:notification>
+        <ext:recipient-group>parent_admin</ext:recipient-group>
+        <ext:method>email</ext:method>
+        <ext:message>Blocked connection from son_devices to malicious site (logged by rule Block_Log_Notify_From_Sons_Devices_To_Malicious_Sites)</ext:message>
+        <ext:min-ti-confidence>high</ext:min-ti-confidence>
+      </ext:notification>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

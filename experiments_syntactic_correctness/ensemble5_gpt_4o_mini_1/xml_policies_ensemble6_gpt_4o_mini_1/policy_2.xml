@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <voice-group>
+      <name>VoIP_VoCN_Endpoints</name>
+      <sip-id>sip:2001@company.com</sip-id>
+    </voice-group>
+    <device-group>
+      <name>Malicious_Traffic_Endpoints</name>
+      <range-ipv4-address>
+        <start>192.0.2.1</start>
+        <end>192.0.2.254</end>
+      </range-ipv4-address>
+    </device-group>
+  </endpoint-groups>
+  
+  <threat-prevention>
+    <threat-feed-list>
+      <name>malicious_voip_traffic_feed</name>
+      <ioc>malicious_voip_signal_pattern</ioc>
+      <format>stix</format>
+    </threat-feed-list>
+  </threat-prevention>
+
+  <i2nsf-cfi-policy>
+    <name>Block_Malicious_VoIP_VoCN_Packets</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+      <name>Block_Malicious_Packets</name>
+      <condition>
+        <firewall>
+          <source>Malicious_Traffic_Endpoints</source>
+          <destination>VoIP_VoCN_Endpoints</destination>
+        </firewall>
+      </condition>
+      <action>
+        <primary-action>
+          <action>drop</action>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>

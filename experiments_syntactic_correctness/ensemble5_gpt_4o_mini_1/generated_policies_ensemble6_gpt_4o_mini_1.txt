@@ -1,0 +1,2027 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <url-group>
+    <name>sns-websites</name>
+    <url>http://example.com/sns</url>
+  </url-group>
+  <user-group>
+    <name>employees</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.254</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <threat-feed-list>
+    <name>sns-threatawareness</name>
+    <ioc>malicious.example</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_SNS_Access_During_Business_Hours</name>
+  <rules>
+    <name>Block_Access_During_Business_Hours</name>
+    <condition>
+      <firewall>
+        <source>employees</source>
+      </firewall>
+      <url-category>
+        <url-name>sns-websites</url-name>
+      </url-category>
+      <context>
+        <time>
+          <period>
+            <start-time>09:00:00Z</start-time>
+            <end-time>18:00:00Z</end-time>
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+          </period>
+          <frequency>weekly</frequency>
+        </time>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <voice-group>
+      <name>VoIP_VoCN_Endpoints</name>
+      <sip-id>sip:2001@company.com</sip-id>
+    </voice-group>
+    <device-group>
+      <name>Malicious_Traffic_Endpoints</name>
+      <range-ipv4-address>
+        <start>192.0.2.1</start>
+        <end>192.0.2.254</end>
+      </range-ipv4-address>
+    </device-group>
+  </endpoint-groups>
+  
+  <threat-prevention>
+    <threat-feed-list>
+      <name>malicious_voip_traffic_feed</name>
+      <ioc>malicious_voip_signal_pattern</ioc>
+      <format>stix</format>
+    </threat-feed-list>
+  </threat-prevention>
+
+  <i2nsf-cfi-policy>
+    <name>Block_Malicious_VoIP_VoCN_Packets</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+      <name>Block_Malicious_Packets</name>
+      <condition>
+        <firewall>
+          <source>Malicious_Traffic_Endpoints</source>
+          <destination>VoIP_VoCN_Endpoints</destination>
+        </firewall>
+      </condition>
+      <action>
+        <primary-action>
+          <action>drop</action>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>web-servers</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.50</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <threat-feed-list>
+    <name>flood-attack-feed</name>
+    <ioc>flood-attack-suspicious</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Mitigate_Flood_Attacks_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Flood_Attack_Mitigation_Rule</name>
+    <condition>
+      <firewall>
+        <source>web-servers</source>
+      </firewall>
+      <context>
+        <application/>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <device-group name="sons_computers">
+      <range-ipv4-address>
+        <start>192.0.2.1</start>
+        <end>192.0.2.50</end>
+      </range-ipv4-address>
+    </device-group>
+  </endpoint-groups>
+  <threat-prevention>
+    <threat-feed-list>
+      <name>malicious_websites</name>
+      <ioc>http://malicious-website1.com</ioc>
+      <ioc>http://malicious-website2.com</ioc>
+      <format>stix</format>
+    </threat-feed-list>
+  </threat-prevention>
+  <i2nsf-cfi-policy>
+    <name>Block_Malicious_Websites</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+      <name>Block_Sons_Computers</name>
+      <condition>
+        <firewall>
+          <source>sons_computers</source>
+        </firewall>
+        <threat-feed>
+          <name>malicious_websites</name>
+        </threat-feed>
+      </condition>
+      <action>
+        <primary-action>
+          <action>drop</action>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>Corporate_User_Endpoints</name>
+    <range-ipv4-address>
+      <start>192.0.2.0</start>
+      <end>192.0.2.255</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No specific threat feeds defined in the policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_SNS_Access_During_Office_Hours</name>
+  <rules>
+    <name>Block_Access_Office_Hours</name>
+    <condition>
+      <firewall>
+        <source>Corporate_User_Endpoints</source>
+      </firewall>
+      <context>
+        <time>
+          <period>
+            <start-time>09:00:00Z</start-time>
+            <end-time>17:00:00Z</end-time>
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+            <frequency>weekly</frequency>
+          </period>
+        </time>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <url-group>
+    <name>VideoStreamingEndpoints</name>
+    <url>https://youtube.com</url>
+  </url-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <!-- No specific threat feeds are defined in the policy intent -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Access_To_YouTube</name>
+  <rules>
+    <name>Block_YouTube_Access</name>
+    <condition>
+      <firewall>
+        <source>VideoStreamingEndpoints</source>
+        <destination>
+          <url-category>
+            <url-name>VideoStreamingEndpoints</url-name>
+          </url-category>
+        </destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>all-devices</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Access_Restriction_To_Adult_Content</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Restrict_Access_For_Adult_Content</name>
+    <condition>
+      <firewall>
+        <source>all-devices</source>
+      </firewall>
+      <url-category>
+        <url-name>adult-content</url-name>
+      </url-category>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>weekday_game_endpoints</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.255</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds specified in the policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Weekday_Night_Games</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Block_All_Games_Weekday_Night</name>
+    <condition>
+      <firewall>
+        <source>weekday_game_endpoints</source>
+      </firewall>
+      <context>
+        <time>
+          <period>
+            <start-time>18:00:00Z</start-time>
+            <end-time>23:59:59Z</end-time>
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+          </period>
+          <frequency>daily</frequency>
+        </time>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>internal-HR-system</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.254</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds have been defined in the policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Allow_Internal_HR_Traffic</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Allow_HR_Traffic_Through_Firewall</name>
+    <condition>
+      <firewall>
+        <source>internal-HR-system</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>corporate-network-users</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.254</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <!-- No threat feeds defined as per current policy intent -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Corporate_Network_Web_Browsing_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Permit_Employees_Web_Browsing</name>
+    <condition>
+      <firewall>
+        <source>corporate-network-users</source>
+        <destination>http</destination>
+        <range-port-number>
+          <start>80</start>
+          <end>443</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <device-group>
+      <name>Trusted_Devices_Endpoint_Group</name>
+      <range-ipv4-address>
+        <start>192.0.2.0</start>
+        <end>192.0.2.255</end>
+      </range-ipv4-address>
+    </device-group>
+  </endpoint-groups>
+  <threat-prevention>
+    <threat-feed-list>
+      <name>no_specific_threat_feed</name>
+      <ioc>none</ioc>
+      <format>none</format>
+    </threat-feed-list>
+  </threat-prevention>
+  <i2nsf-cfi-policy>
+    <name>Trusted_Device_Traffic_Policy</name>
+    <rules>
+      <name>Allow_Trusted_Device_Traffic</name>
+      <condition>
+        <firewall>
+          <source>Trusted_Devices_Endpoint_Group</source>
+        </firewall>
+      </condition>
+      <action>
+        <primary-action>
+          <action>pass</action>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>Malicious_IP_Addresses_Group</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <threat-feed-list>
+      <name>known-malicious-ip-feed</name>
+      <ioc>malicious.example.com</ioc>
+      <format>stix</format>
+  </threat-feed-list>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Malicious_IP_Traffic_Drop</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Drop_Known_Malicious_IPs</name>
+    <condition>
+      <firewall>
+        <source>Malicious_IP_Addresses_Group</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>guest-network</name>
+    <range-ipv4-address>
+      <start>192.0.2.0</start>
+      <end>192.0.2.255</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No specific threat feeds are defined in the policy. -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Guest_Network_Incoming_Connections</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Block_Guest_Network_Connections</name>
+    <condition>
+      <firewall>
+        <source>guest-network</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+      <secondary-action>
+        <log-action></log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <user-group>
+      <name>Unknown_or_Unclassified_Traffic</name>
+      <range-ipv4-address>
+        <start>192.0.2.1</start>
+        <end>192.0.2.50</end>
+      </range-ipv4-address>
+    </user-group>
+  </endpoint-groups>
+  <threat-prevention>
+    <!-- No specific threat feeds are referenced in this policy -->
+  </threat-prevention>
+  <i2nsf-cfi-policy>
+    <name>Discard_Unknown_Unclassified_Traffic</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+      <name>Discard_Traffic</name>
+      <condition>
+        <firewall>
+          <source>Unknown_or_Unclassified_Traffic</source>
+        </firewall>
+      </condition>
+      <action>
+        <primary-action>
+          <action>drop</action>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <user-group>
+        <name>Unauthorized_Login_Endpoint_Group</name>
+        <range-ipv4-address>
+            <start>192.0.2.1</start>
+            <end>192.0.2.50</end>
+        </range-ipv4-address>
+    </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <!-- No threat feeds specified in the intent -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>Unauthorized_Login_Prevention</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+        <name>Reject_Unauthorized_Login_Attempts</name>
+        <condition>
+            <firewall>
+                <source>Unauthorized_Login_Endpoint_Group</source>
+            </firewall>
+        </condition>
+        <action>
+            <primary-action>
+                <action>reject</action>
+            </primary-action>
+            <secondary-action>
+                <log-action>send-notification</log-action>
+            </secondary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <url-group>
+    <name>disallowed_ports_group</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </url-group>
+</endpoint-groups>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Refuse_Traffic_On_Disallowed_Ports</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Actively_Refuse_Disallowed_Ports</name>
+    <condition>
+      <firewall>
+        <source>disallowed_ports_group</source>
+        <destination>disallowed_ports_group</destination>
+        <range-port-number>
+          <start>1</start>
+          <end>65535</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>suspicious_database_traffic</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.50</end>
+    </range-ipv4-address>
+  </user-group>
+  <user-group>
+    <name>analysis_server</name>
+    <range-ipv4-address>
+      <start>198.51.100.1</start>
+      <end>198.51.100.50</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Mirror_Suspicious_Database_Traffic</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Mirror_And_Allow</name>
+    <condition>
+      <firewall>
+        <source>suspicious_database_traffic</source>
+        <destination>analysis_server</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>mirror</action>
+      </primary-action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Email Server Group</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.254</end>
+    </range-ipv4-address>
+  </device-group>
+  <device-group>
+    <name>Monitoring System Group</name>
+    <range-ipv4-address>
+      <start>192.0.2.100</start>
+      <end>192.0.2.150</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No specific threat feeds defined for this policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Outgoing_Email_Traffic_Monitoring</name>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Copy_Outgoing_Email_Traffic</name>
+    <condition>
+      <firewall>
+        <source>Email Server Group</source>
+        <destination>Monitoring System Group</destination>
+        <range-port-number>
+          <start>25</start>
+          <end>587</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>forwarding</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>iot-devices</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.50</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>IoT_Device_Traffic_Forwarding</name>
+  <rules>
+    <name>Forward_Traffic_To_Gateway</name>
+    <condition>
+      <firewall>
+        <source>iot-devices</source>
+      </firewall>
+      <firewall>
+        <destination>specialized-gateway</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>forwarding</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>Video_Streaming_Endpoints</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.254</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds referenced currently -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Video_Streaming_Proxy_Routing</name>
+  <rules>
+    <name>Route_Video_Streaming_Traffic</name>
+    <condition>
+      <firewall>
+        <source>Video_Streaming_Endpoints</source>
+        <destination>Proxy_Server_In_DMZ</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>forwarding</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>iot-sensors</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.255</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>IoT_HTTP_to_COAP_Translation</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Incoming_HTTP_Requests_Translation</name>
+    <condition>
+      <firewall>
+        <source>iot-sensors</source>
+        <destination>internal-service</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>transformation</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>sensitive-financial-data</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.50</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+</threat-prevention>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Secure_Financial_Data_Traffic_Encapsulation</name>
+  <rules>
+    <name>Encapsulate_Sensitive_Data_Traffic</name>
+    <condition>
+      <firewall>
+        <source>sensitive-financial-data</source>
+        <destination>central-server</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>tunnel-encapsulation</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>network_monitoring_endpoints</name>
+    <mac-address>00:1A:2B:3C:4D:5E</mac-address>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.50</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <!-- No threat feeds mentioned in the policy intent -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>PortScanAlertPolicy</name>
+  <rules>
+    <name>SendAlertOnPortScan</name>
+    <condition>
+      <firewall>
+        <source>network_monitoring_endpoints</source>
+        <destination>network_monitoring_endpoints</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Streaming Media Endpoints</name>
+    <range-ipv4-address>
+      <start>192.0.2.0</start>
+      <end>192.0.2.255</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No specific threat feeds were defined in the policy. -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Throttle_Streaming_Media_Traffic</name>
+  <rules>
+    <name>Limit_Streaming_Traffic_100MBps</name>
+    <condition>
+      <firewall>
+        <source>Streaming Media Endpoints</source>
+      </firewall>
+      <ddos>
+        <rate-limit>
+          <byte-rate-threshold>100000000</byte-rate-threshold>
+        </rate-limit>
+      </ddos>
+    </condition>
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>100000000</limit>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group name="guest-network">
+    <name>guest-network</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+</endpoint-groups>
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds defined in this policy -->
+</threat-prevention>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Guest_Network_Bandwidth_Control</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules name="Limit_Guest_Network_Bandwidth">
+    <condition>
+      <firewall>
+        <source>guest-network</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>1000</limit>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>web_server_endpoints</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.50</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>traffic-management-threat-feed</name>
+  <ioc>none</ioc>
+  <format>none</format>
+</threat-prevention>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>ConnectionFlowLimitPolicy</name>
+  <rules>
+    <name>CapNewConnectionAttempts</name>
+    <condition>
+      <ddos>
+        <rate-limit>
+          <flow-rate-threshold>20</flow-rate-threshold>
+        </rate-limit>
+      </ddos>
+      <firewall>
+        <source>web_server_endpoints</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>20</limit>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>icmp_traffic_endpoints</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.254</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No specific threat feeds referenced in this policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>ICMP_Rate_Limiting_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Apply_ICMP_Rate_Limit</name>
+    <condition>
+      <firewall>
+        <source>icmp_traffic_endpoints</source>
+        <icmp>
+          <message>echo</message>
+        </icmp>
+      </firewall>
+      <ddos>
+        <rate-limit>
+          <packet-rate-threshold>500</packet-rate-threshold>
+        </rate-limit>
+      </ddos>
+    </condition>
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>500</limit>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <user-group>
+      <name>Backup_Data_Transfer_Endpoints</name>
+      <range-ipv4-address>
+        <start>192.0.2.0</start>
+        <end>192.0.2.255</end>
+      </range-ipv4-address>
+    </user-group>
+  </endpoint-groups>
+  <threat-prevention>
+    <!-- No threat feeds are defined for this policy -->
+  </threat-prevention>
+  <i2nsf-cfi-policy>
+    <name>Backup_Data_Transfer_Restriction</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+      <name>Restrict_Backup_Transfer_Work_Hours</name>
+      <condition>
+        <firewall>
+          <source>Backup_Data_Transfer_Endpoints</source>
+        </firewall>
+        <context>
+          <time>
+            <period>
+              <start-time>08:00:00</start-time>
+              <end-time>18:00:00</end-time>
+              <day>monday</day>
+              <day>tuesday</day>
+              <day>wednesday</day>
+              <day>thursday</day>
+              <day>friday</day>
+              <frequency>daily</frequency>
+            </period>
+          </time>
+        </context>
+      </condition>
+      <action>
+        <primary-action>
+          <action>rate-limit</action>
+          <limit>10485760</limit>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <url-group>
+    <name>Admin Ports</name>
+    <range-ipv4-address>
+      <start>192.0.2.0</start>
+      <end>192.0.2.255</end>
+    </range-ipv4-address>
+  </url-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds mentioned in the policy intent -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Admin_Port_Traffic</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Block_Traffic_To_Admin_Port</name>
+    <condition>
+      <firewall>
+        <source>Admin Ports</source>
+        <destination>Admin Ports</destination>
+        <range-port-number>
+          <start>22</start>
+          <end>22</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>File Download Endpoints</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.50</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds specified -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>FileDownloadLoggingPolicy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>LogOnFileDownload</name>
+    <condition>
+      <firewall>
+        <source>File Download Endpoints</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action> <!-- Allow the file download -->
+      </primary-action>
+      <secondary-action>
+        <log-action>rule-log</log-action> <!-- Log the event -->
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>LoginAttempts</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.50</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <threat-feed-list>
+    <name>generic-threat-feed</name>
+    <ioc>generic-threat-example</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Login_Attempt_Monitoring_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Permit_And_Log_Login_Attempts</name>
+    <condition>
+      <firewall>
+        <source>LoginAttempts</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>database-access-endpoints</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Permit_Database_Access_And_Log_Session_Details</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Permit_Access_Log_Session</name>
+    <condition>
+      <firewall>
+        <source>database-access-endpoints</source>
+      </firewall>
+      <context>
+        <time>
+          <start-date-time>2025-09-01T08:00:00Z</start-date-time>
+          <end-date-time>2025-09-01T18:00:00Z</end-date-time>
+        </time>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <user-group name="vpn-users">
+        <range-ipv4-address>
+            <start>192.0.2.1</start>
+            <end>192.0.2.50</end>
+        </range-ipv4-address>
+    </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>Allow_VPN_Connections_With_Logging</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules name="Log_VPN_Session_Activity">
+        <condition>
+            <firewall>
+                <source>vpn-users</source>
+            </firewall>
+        </condition>
+        <action>
+            <primary-action>
+                <action>pass</action>
+            </primary-action>
+            <secondary-action>
+                <log-action>session-log</log-action>
+            </secondary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>employees</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.50</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No specific threat feeds are referenced in this policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Employee_Web_Browsing_Allowance</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Log_Web_Browsing_Activity</name>
+    <condition>
+      <firewall>
+        <source>employees</source>
+        <destination>
+          <name>web-resources</name>
+        </destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <user-group>
+      <name>guest-network</name>
+      <range-ipv4-address>
+        <start>192.0.2.1</start>
+        <end>192.0.2.254</end>
+      </range-ipv4-address>
+    </user-group>
+  </endpoint-groups>
+  <threat-prevention>
+    <!-- No threat feeds specified -->
+  </threat-prevention>
+  <i2nsf-cfi-policy>
+    <name>Drop_Guest_Network_SSH_Connections</name>
+    <rules>
+      <name>Log_Drop_SSH_Connections</name>
+      <condition>
+        <firewall>
+          <source>guest-network</source>
+          <range-port-number>
+            <start>22</start>
+            <end>22</end>
+          </range-port-number>
+        </firewall>
+      </condition>
+      <action>
+        <primary-action>
+          <action>drop</action>
+        </primary-action>
+        <secondary-action>
+          <log-action>rule-log</log-action>
+        </secondary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <user-group>
+      <name>Finance_Department_Endpoints</name>
+      <range-ipv4-address>
+        <start>192.0.2.1</start>
+        <end>192.0.2.50</end>
+      </range-ipv4-address>
+    </user-group>
+  </endpoint-groups>
+
+  <threat-prevention>
+    <!-- No threat feeds specified, so empty for now -->
+  </threat-prevention>
+
+  <i2nsf-cfi-policy>
+    <name>Permit_And_Log_Finance_Department_Traffic</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+
+    <rules>
+      <name>Allow_Finance_Database_Traffic</name>
+      <condition>
+        <firewall>
+          <source>Finance_Department_Endpoints</source>
+        </firewall>
+      </condition>
+      <action>
+        <primary-action>
+          <action>pass</action>
+        </primary-action>
+        <secondary-action>
+          <log-action>session-log</log-action>
+        </secondary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>Unauthorized_VPN_Access_Attempts</name>
+    <range-ipv4-address>
+      <start>192.0.2.0</start>
+      <end>192.0.2.255</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface" />
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Unauthorized_VPN_Login_Control</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Reject_and_Record_Unauthorized_Login_Attempts</name>
+    <condition>
+      <firewall>
+        <source>Unauthorized_VPN_Access_Attempts</source>
+        <destination>vpn-server</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>reject</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>external-clients</name>
+    <range-ipv4-address>
+      <start>198.51.100.0</start>
+      <end>198.51.100.255</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds are referenced in the policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Allow_Web_Server_Access_With_Logging</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Log_External_Client_Access</name>
+    <condition>
+      <firewall>
+        <source>external-clients</source>
+        <destination>web-server</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>employees</name>
+    <range-ipv4-address>
+      <start>192.0.2.0</start>
+      <end>192.0.2.255</end>
+    </range-ipv4-address>
+  </user-group>
+  <device-group>
+    <name>restricted-finance-servers</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.100</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+</threat-prevention>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Employee_Access_Control_Policy</name>
+  <rules>
+    <name>Unauthorized_Access_to_Finance_Servers</name>
+    <condition>
+      <firewall>
+        <source>employees</source>
+        <destination>restricted-finance-servers</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Firewall Configuration Management</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No specific threat feeds are defined for this policy. -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Firewall_Configuration_Change_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Follow_Security_Protocols_On_Change</name>
+    <condition>
+      <firewall>
+        <source>Firewall Configuration Management</source>
+        <destination>Firewall Configuration Management</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <url-group>
+    <name>DNS_Management_Systems</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.254</end>
+    </range-ipv4-address>
+  </url-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <threat-feed-list>
+    <name>dns-threat-feed</name>
+    <ioc>malicious-dns-changing-attempts</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>DNS_Alteration_Detection_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Unauthorized_DNS_Alteration_Rule</name>
+    <condition>
+      <firewall>
+        <source>DNS_Management_Systems</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>reject</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Database Servers</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds referenced in the intent -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Database_Memory_Usage_Alert_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Memory_Threshold_Exceed_Alert</name>
+    <condition>
+      <firewall>
+        <source>Database Servers</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <device-group>
+      <name>firewall-systems</name>
+      <range-ipv4-address>
+        <start>192.0.2.0</start>
+        <end>192.0.2.255</end>
+      </range-ipv4-address>
+    </device-group>
+  </endpoint-groups>
+  <threat-prevention>
+    <!-- No specific threat feeds mentioned in the intent -->
+  </threat-prevention>
+  <i2nsf-cfi-policy>
+    <name>High_CPU_Load_Management_Policy</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+      <name>Alert_On_High_CPU_Load</name>
+      <condition>
+        <firewall>
+          <source>firewall-systems</source>
+        </firewall>
+      </condition>
+      <action>
+        <primary-action>
+          <action>invoke-signaling</action>
+        </primary-action>
+        <secondary-action>
+          <log-action>rule-log</log-action>
+        </secondary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <endpoint-groups>
+        <device-group>
+            <name>Core_Network_Interfaces</name>
+            <range-ipv4-address>
+                <start>192.0.2.1</start>
+                <end>192.0.2.254</end>
+            </range-ipv4-address>
+        </device-group>
+    </endpoint-groups>
+    <threat-prevention>
+        <threat-feed-list>
+            <name>DefaultThreatFeed</name>
+            <ioc>none</ioc>
+            <format>stix</format>
+        </threat-feed-list>
+    </threat-prevention>
+    <i2nsf-cfi-policy>
+        <name>Core_Network_Interface_Failure_Handling</name>
+        <rules>
+            <name>Core_Interface_Down_Failover_Alert</name>
+            <condition>
+                <firewall>
+                    <source>Core_Network_Interfaces</source>
+                </firewall>
+            </condition>
+            <action>
+                <primary-action>
+                    <action>invoke-signaling</action>
+                </primary-action>
+                <secondary-action>
+                    <log-action>session-log</log-action>
+                </secondary-action>
+            </action>
+        </rules>
+    </i2nsf-cfi-policy>
+</policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Critical_Infrastructure_Servers</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.255</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>CPU_Overload_Management_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Implement_Overload_Measures</name>
+    <condition>
+      <firewall>
+        <source>Critical_Infrastructure_Servers</source>
+        <destination>Critical_Infrastructure_Servers</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>100.0</limit>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Firewall Devices</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Firewall_Performance_Monitoring_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Configuration_Change_High_Memory_Usage</name>
+    <condition>
+      <firewall>
+        <source>Firewall Devices</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <user-group>
+      <name>Malicious Traffic</name>
+      <range-ipv4-address>
+        <start>192.0.2.1</start>
+        <end>192.0.2.50</end>
+      </range-ipv4-address>
+    </user-group>
+  </endpoint-groups>
+  <threat-prevention>
+    <threat-feed-list>
+      <name>zeus-ioc</name>
+      <ioc>malicious.example</ioc>
+      <ioc>hash:abcd1234</ioc>
+      <format>stix</format>
+    </threat-feed-list>
+  </threat-prevention>
+  <i2nsf-cfi-policy>
+    <name>Threat_Indicator_Compromise_Management</name>
+    <rules>
+      <name>Drop_Log_And_Block_Zeus_IOC</name>
+      <condition>
+        <firewall>
+          <source>Malicious Traffic</source>
+        </firewall>
+        <threat-feed>
+          <name>zeus-ioc</name>
+        </threat-feed>
+      </condition>
+      <action>
+        <primary-action>
+          <action>drop</action>
+        </primary-action>
+        <secondary-action>
+          <log-action>rule-log</log-action>
+        </secondary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Potential_Ransomware_Detected_Endpoints</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.254</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <threat-feed-list>
+    <name>ransomware-detection-feed</name>
+    <ioc>hash:abcd1234</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Antivirus_Ransomware_Profile_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>File_Transfer_Flagged_Actions</name>
+    <condition>
+      <anti-virus>
+        <profile>strict-av-profile</profile>
+      </anti-virus>
+      <firewall>
+        <source>Potential_Ransomware_Detected_Endpoints</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Monthly_Maintenance_Systems</name>
+    <range-ipv4-address>
+      <start>192.0.2.0</start>
+      <end>192.0.2.255</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Monthly_Maintenance_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>First_Sunday_Maintenance_Rule</name>
+    <condition>
+      <context>
+        <time>
+          <period>
+            <start-time>02:00:00Z</start-time>
+            <end-time>04:00:00Z</end-time>
+            <day>Sunday</day>
+          </period>
+          <frequency>monthly</frequency>
+        </time>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <voice-group>
+    <name>blacklist_sip</name>
+    <sip-id>sip:*@example.com</sip-id>
+  </voice-group>
+  <voice-group>
+    <name>voice communication endpoints</name>
+    <sip-id>sip:1000@corp.com</sip-id>
+    <sip-id>sip:2000@corp.com</sip-id>
+  </voice-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Call_Management_Policy</name>
+  <rules>
+    <name>Reject_And_Mirror_Blocked_SIP_Sessions</name>
+    <condition>
+      <voice>
+        <source-id>blacklist_sip</source-id>
+      </voice>
+    </condition>
+    <action>
+      <primary-action>
+        <action>reject</action>
+      </primary-action>
+      <primary-action>
+        <action>mirror</action>
+        <limit>analysis-server</limit>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
+
+
+

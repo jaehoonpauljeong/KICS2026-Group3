@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!--
+    Placeholder endpoint-groups because the original intent did not specify explicit
+    source/destination endpoint groups. Per the guidance, these are provided as
+    placeholders (TEST-NET ranges) and are referenced by name from the policy.
+  -->
+  <device-group>
+    <name>protected_internal_endpoints</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>external_peers</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!--
+    Declared threat feeds referenced by the policy.
+    - zeus-ioc: the external IOC feed referenced in the rule (format is required by the YANG model).
+    - zeus-blocklist: runtime blocklist feed where matched IOCs SHOULD be added by the enforcement/orchestration.
+      (Note: the dynamic "add matched IOC(s) to the blocklist" operation is not expressible as an ECA
+      action in the provided YANG model; see policy document comment for handling.)
+  -->
+  <threat-feed-list>
+    <name>zeus-ioc</name>
+    <format>stix</format>
+    <!-- ioc entries are expected to be populated from the external zeus feed (not listed here). -->
+  </threat-feed-list>
+
+  <threat-feed-list>
+    <name>zeus-blocklist</name>
+    <format>stix</format>
+    <!-- Runtime blocklist: matched IOCs should be appended here by the enforcement/orchestration component. -->
+  </threat-feed-list>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>zeus_ioc_blocklist_policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>drop_log_and_block_ioc_rule</name>
+
+    <!--
+      Condition:
+      - firewall source/destination are placeholders (see endpoint-groups document).
+        The original intent specified "any" for source/destination. Per the guidance,
+        placeholder endpoint-group names are provided when explicit endpoints are missing.
+      - threat-feed references the named IOC feed "zeus-ioc".
+    -->
+    <condition>
+      <firewall>
+        <source>protected_internal_endpoints</source>
+        <destination>external_peers</destination>
+      </firewall>
+
+      <threat-feed>
+        <name>zeus-ioc</name>
+      </threat-feed>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Drop matching traffic -->
+        <action>drop</action>
+      </primary-action>
+
+      <secondary-action>
+        <!-- Log the IOC match (chosen type: rule-log) -->
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+
+  <!--
+    Important operational note (model limitation / implementation requirement):
+
+    The original intent requires: "add the matched IOC(s) to the blocklist".
+    The supplied I2NSF YANG fragments do not provide a native ECA action that atomically
+    appends matched IOC values into a threat-prevention IOC list. To realize that behavior
+    in production you must deploy one of the following approaches:
+
+      1) Out-of-band / orchestration-driven update (recommended):
+         - The enforcement engine or a separate orchestration component watches for IOC-match
+           events (e.g., from the NSF alerting/monitoring or rule match notifications).
+         - When this rule matches, the component appends the matched IOC(s) to the runtime
+           blocklist defined above as 'zeus-blocklist' by adding entries under:
+             /threat-prevention/threat-feed-list[name='zeus-blocklist']/ioc
+         - The NSF then enforces the blocklist entries as configured.
+
+      2) Model extension:
+         - Extend the policy model to add an explicit action such as 'add-ioc-to-blocklist' or
+           allow parameters for 'invoke-signaling' that specify the target feed and IOC payload,
+           then implement the action in the NSF/orchestrator.
+
+    The policy XML files supplied here:
+      - perform the drop and rule-log actions (encoded in the rule).
+      - declare the zeus-ioc feed and the zeus-blocklist feed (so the orchestrator knows
+        where to read IOCs and where to store matched IOCs).
+
+    Implementers should ensure the orchestration/integration layer performs the IOC copy
+    from the match context into the 'zeus-blocklist' feed at runtime.
+  -->
+</i2nsf-cfi-policy>

@@ -1,0 +1,29 @@
+<!-- intent: Copy all outgoing email traffic to the monitoring system for inspection (and still forward it). -->
+<!-- expected: primary-action: mirror -->
+xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>copy_outgoing_email_traffic_policy</name>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>copy_outgoing_email_traffic</name>
+    <condition>
+      <firewall>
+        <transport-layer-protocol>tcp</transport-layer-protocol>
+        <destination>monitoring_system</destination>
+      </firewall>
+      <application>
+        <protocol>email</protocol>
+      </application>
+    </condition>
+    <action>
+      <primary-action>
+        <action>mirror</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

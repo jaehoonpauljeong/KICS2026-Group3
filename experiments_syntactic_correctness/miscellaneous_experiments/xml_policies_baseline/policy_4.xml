@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>block_web_security_policy</name>
+    <rules>
+        <name>block_web</name>
+        <condition>
+            <firewall-condition>
+                <source>Son's_PC</source>
+            </firewall-condition>
+            <url-category>
+                <url-name>malicious_websites</url-name>
+            </url-category>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>

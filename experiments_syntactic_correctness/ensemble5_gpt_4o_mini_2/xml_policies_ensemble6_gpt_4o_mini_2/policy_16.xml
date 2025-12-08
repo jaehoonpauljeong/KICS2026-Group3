@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Disallowed Ports Group</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.50</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <threat-feed-list>
+    <name>disallowed-ports-threat</name>
+    <ioc>no-threats-available</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+</threat-prevention>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Actively_Refuse_Traffic_On_Disallowed_Ports</name>
+  <rules>
+    <name>Refuse_Disallowed_Ports</name>
+    <condition>
+      <firewall>
+        <source>Disallowed Ports Group</source>
+      </firewall>
+      <range-port-number>
+        <start>1</start>
+        <end>65535</end>
+      </range-port-number>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Endpoint groups document (contains all endpoint groups referenced by the policy)
+  Namespace: urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface
+-->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Corporate network (source of SIP calls) -->
+  <user-group>
+    <name>corporate_network</name>
+    <!-- Placeholder TEST-NET-2 prefix per intent -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Analysis server(s) that will receive mirrored media -->
+  <device-group>
+    <name>analysis_servers</name>
+    <!-- Single-host placeholder (TEST-NET-1) -->
+    <ipv4-prefix>192.0.2.10/32</ipv4-prefix>
+  </device-group>
+
+  <!-- Local SIP-URI blacklist -->
+  <voice-group>
+    <name>blacklist_sip</name>
+    <!-- Placeholder SIP URIs (populate with your actual blacklist entries) -->
+    <sip-id>sip:malicious1@example.net</sip-id>
+    <sip-id>sip:spamcaller@bad.com</sip-id>
+  </voice-group>
+</endpoint-groups>
+
+<!--
+  I2NSF CFI policy document referencing endpoint groups by name only
+-->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_And_Mirror_Blacklist_SIP_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <!-- Rule 1: Reject SIP session initiation from corporate_network when caller is in blacklist_sip -->
+  <rules>
+    <name>Reject_Call_And_Mirror_BlacklistSIP_Initiation</name>
+    <condition>
+      <firewall>
+        <!-- source constrained to corporate network -->
+        <source>corporate_network</source>
+      </firewall>
+
+      <voice>
+        <!-- caller identity group (voice-group) -->
+        <source-id>blacklist_sip</source-id>
+      </voice>
+    </condition>
+    <action>
+      <primary-action>
+        <!-- reject the signaling (terminate session initiation) -->
+        <action>reject</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!--
+    Rule 2: Mirror session media to analysis_servers for sessions initiated by blacklist SIP URIs.
+    The rule matches media (RTP) port range and mirrors matched flows to analysis_servers.
+  -->
+  <rules>
+    <name>Mirror_Session_Media_To_Analysis_Server</name>
+    <condition>
+      <firewall>
+        <!-- source of media (same corporate network) -->
+        <source>corporate_network</source>
+        <!-- destination specified as the analysis_servers endpoint-group so the policy references the mirror sink by name -->
+        <destination>analysis_servers</destination>
+        <!-- common RTP ephemeral port range (adjust to match your deployment) -->
+        <range-port-number>
+          <start>10000</start>
+          <end>20000</end>
+        </range-port-number>
+      </firewall>
+
+      <voice>
+        <!-- ensure this media mirroring applies to sessions initiated by blacklist SIP URIs -->
+        <source-id>blacklist_sip</source-id>
+      </voice>
+    </condition>
+    <action>
+      <primary-action>
+        <!-- mirror the matched media flows to the configured destination (analysis_servers) -->
+        <action>mirror</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

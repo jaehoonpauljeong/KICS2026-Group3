@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>All_Users</name>
+    <!-- Represents 'any user' for the policy scope. Using 0.0.0.0/0 as an explicit "any" placeholder. -->
+    <ipv4-prefix>0.0.0.0/0</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>All_Devices</name>
+    <!-- Represents 'all devices'. Using 0.0.0.0/0 as an explicit "any" placeholder. -->
+    <ipv4-prefix>0.0.0.0/0</ipv4-prefix>
+  </device-group>
+
+  <url-group>
+    <name>adult-content</name>
+    <!-- Example placeholder URIs representing adult content site categories.
+         In a production deployment these would be populated with actual URLs or feeds
+         that map to the "adult" content category. -->
+    <url>https://adult.example</url>
+    <url>https://explicit.example</url>
+  </url-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Restrict_Adult_Content_All_Devices</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Deny_Access_Adult_Content</name>
+
+    <condition>
+      <firewall>
+        <source>All_Users</source>
+        <source>All_Devices</source>
+      </firewall>
+
+      <url-category>
+        <url-name>adult-content</url-name>
+      </url-category>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

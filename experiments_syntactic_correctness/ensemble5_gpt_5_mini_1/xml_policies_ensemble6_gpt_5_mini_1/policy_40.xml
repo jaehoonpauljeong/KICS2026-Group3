@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Device group: firewall devices whose configuration changes trigger the rule -->
+  <device-group>
+    <name>firewall-devices</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- User group: security / operations personnel who will review the changes -->
+  <user-group>
+    <name>security-ops-workstations</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Device group: SIEM / log collector (included as an endpoint-group for operational mapping) -->
+  <device-group>
+    <name>logging-siem-collector</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Firewall_ConfigChange_LoggingAndReview</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>LogAndReview_Firewall_ConfigChange</name>
+
+    <condition>
+      <firewall>
+        <source>firewall-devices</source>
+      </firewall>
+
+      <context>
+        <users>
+          <group>
+            <id>200</id>
+            <name>security-ops-workstations</name>
+          </group>
+        </users>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- User group representing the on-call operations/DBA contact (logical endpoint).
+       Placeholder TEST-NET prefix used per intent. -->
+  <user-group>
+    <name>operations-oncall</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Device group containing the database server(s) targeted by the policy.
+       Placeholder TEST-NET prefix used per intent. -->
+  <device-group>
+    <name>database-servers</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Device group representing the diagnostics collection & storage endpoint(s).
+       Placeholder TEST-NET prefix used per intent. -->
+  <device-group>
+    <name>diagnostics-collector</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>database_memory_alert_mitigation_policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>db_memory_usage_exceeds_80pct_instant_alert_collect_mitigate</name>
+
+    <condition>
+      <firewall>
+        <source>diagnostics-collector</source>
+        <destination>database-servers</destination>
+      </firewall>
+
+      <context>
+        <users>
+          <group>
+            <id>200</id>
+            <name>operations-oncall</name>
+          </group>
+        </users>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

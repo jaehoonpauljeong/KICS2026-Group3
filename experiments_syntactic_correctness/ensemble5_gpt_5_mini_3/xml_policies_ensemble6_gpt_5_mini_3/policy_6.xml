@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>All_Users_Devices</name>
+    <!-- Placeholder IPv4 prefix representing the protected clients' address space.
+         Replace with your actual user/device address space before production use. -->
+    <ipv4-prefix>10.0.0.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>YouTube_Services</name>
+    <!-- Placeholder TEST-NET IPv4 prefix for YouTube/Google service endpoints.
+         Replace with actual YouTube/Google IP ranges before production use. -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <url-group>
+    <name>YouTube_URLs</name>
+    <!-- URL entries must be valid inet:uri. Include schemes to satisfy inet:uri. -->
+    <url>https://www.youtube.com/</url>
+    <url>https://youtu.be/</url>
+    <url>https://www.youtube-nocookie.com/</url>
+  </url-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_YouTube_Access_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Deny_YouTube_Domains_Rule</name>
+
+    <condition>
+      <firewall>
+        <!-- Reference endpoint-group names only (details are in the standalone endpoint-groups document). -->
+        <source>All_Users_Devices</source>
+        <destination>YouTube_Services</destination>
+      </firewall>
+
+      <!-- Also include URL-based matching by referencing the url-group name.
+           Implementations may use this for hostname/URL-based blocking (SNI/HTTP Host inspection) if supported. -->
+      <url-category>
+        <url-name>YouTube_URLs</url-name>
+      </url-category>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Block/deny the network connection -->
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

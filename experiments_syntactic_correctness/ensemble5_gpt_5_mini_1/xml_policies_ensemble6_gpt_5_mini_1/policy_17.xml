@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>DB_SERVERS</name>
+    <!-- Placeholder RFC5737 TEST-NET prefix for DB servers -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>ANALYSIS_SERVER</name>
+    <!-- Placeholder single-host address for the traffic collector/analysis server -->
+    <ipv4-prefix>198.51.100.10/32</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>CLIENTS</name>
+    <!-- Placeholder RFC5737 TEST-NET prefix for client hosts -->
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Payload-content / signature placeholder referenced by the rule -->
+  <payload-content>
+    <name>suspicious-db-signature</name>
+    <ioc>signature:suspicious-db-query-pattern</ioc>
+    <format>stix</format>
+  </payload-content>
+</threat-prevention>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Mirror_Suspicious_Database_Traffic</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Mirror_And_Allow_Suspicious_DB_Traffic</name>
+
+    <condition>
+      <firewall>
+        <!-- Source and destination are endpoint-group name references (device-group names defined in endpoint-groups doc) -->
+        <source>CLIENTS</source>
+        <destination>DB_SERVERS</destination>
+
+        <!-- Match common DB ports (MySQL, PostgreSQL, MSSQL) -->
+        <range-port-number>
+          <start>3306</start>
+          <end>3306</end>
+        </range-port-number>
+
+        <range-port-number>
+          <start>5432</start>
+          <end>5432</end>
+        </range-port-number>
+
+        <range-port-number>
+          <start>1433</start>
+          <end>1433</end>
+        </range-port-number>
+      </firewall>
+
+      <!-- Trigger refinement: reference a payload-content signature that denotes "suspicious" DB traffic -->
+      <payload>
+        <content>suspicious-db-signature</content>
+      </payload>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Instruct the NSF to mirror matched traffic. Many NSFs implement mirror as duplication that allows the original flow to continue. -->
+        <action>mirror</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

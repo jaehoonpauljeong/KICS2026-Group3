@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- External/untrusted sources (placeholder, matches Known-Malicious-IP-Feed example range) -->
+  <user-group>
+    <name>Untrusted-External</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Internal VoIP clients (employees / softphones) -->
+  <user-group>
+    <name>Internal-VoIP-Clients</name>
+    <range-ipv4-address>
+      <start>192.0.2.16</start>
+      <end>192.0.2.31</end>
+    </range-ipv4-address>
+  </user-group>
+
+  <!-- VoIP/VoCN service hosts (SIP servers, media gateways) -->
+  <device-group>
+    <name>VoIP-Services</name>
+    <ipv4-prefix>192.0.2.0/28</ipv4-prefix>
+  </device-group>
+
+  <!-- SIEM / log collection endpoint (placeholder) -->
+  <device-group>
+    <name>SIEM-Log-Server</name>
+    <ipv4-prefix>192.0.2.32/32</ipv4-prefix>
+  </device-group>
+
+  <!-- SIP identity groups for voice-rule matching -->
+  <voice-group>
+    <name>Internal-VoIP-Clients</name>
+    <sip-id>sip:1001@corp.example</sip-id>
+  </voice-group>
+
+  <voice-group>
+    <name>VoIP-Services</name>
+    <sip-id>sip:voip-service@corp.example</sip-id>
+  </voice-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Known IP blocklist feed -->
+  <threat-feed-list>
+    <name>Known-Malicious-IP-Feed</name>
+    <ioc>198.51.100.0/24</ioc>
+    <ioc>198.51.100.55</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+
+  <!-- Known malicious signalling domains (SIP domains) -->
+  <threat-feed-list>
+    <name>Malicious-Domains-Feed</name>
+    <ioc>malicious.example</ioc>
+    <ioc>bad-sip.example</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+
+  <!-- SIP/SDP/RTP signatures and protocol-anomaly patterns (placeholders) -->
+  <threat-feed-list>
+    <name>SIP-RTP-Signatures</name>
+    <ioc>sip:INVITE:malformed-headers</ioc>
+    <ioc>sdp:invalid-attribute</ioc>
+    <ioc>rtp:invalid-sequence</ioc>
+    <format>openioc</format>
+  </threat-feed-list>
+
+  <!-- Behavioral / rate-based indicators (e.g., sources making excessive call attempts) -->
+  <threat-feed-list>
+    <name>High-Call-Rate-Feed</name>
+    <ioc>calls-per-second&gt;100</ioc>
+    <ioc>simultaneous-sessions&gt;200</ioc>
+    <format>misp</format>
+  </threat-feed-list>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Malicious_VoIP_VoCN_Traffic</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Drop_Malicious_VoIP_VoCN_At_Edge</name>
+
+    <condition>
+      <firewall>
+        <!-- Sources: untrusted external addresses (placeholder group) -->
+        <source>Untrusted-External</source>
+
+        <!-- Destination: company VoIP/VoCN servers -->
+        <destination>VoIP-Services</destination>
+
+        <!-- SIP signaling ports (5060-5061) -->
+        <range-port-number>
+          <start>5060</start>
+          <end>5061</end>
+        </range-port-number>
+
+        <!-- Typical RTP dynamic port range (placeholder, adjust per deployment) -->
+        <range-port-number>
+          <start>10000</start>
+          <end>20000</end>
+        </range-port-number>
+      </firewall>
+
+      <!-- Behavioral / rate based detection for excessive/abnormal call attempts -->
+      <ddos>
+        <rate-limit>
+          <!-- packet-rate-threshold (pps) -- placeholder tuned for VoIP environment -->
+          <packet-rate-threshold>10000</packet-rate-threshold>
+          <!-- byte-rate-threshold (Bps) -->
+          <byte-rate-threshold>5000000</byte-rate-threshold>
+          <!-- flow-rate-threshold (new flows / calls per second) interpreted as call-attempts threshold -->
+          <flow-rate-threshold>200</flow-rate-threshold>
+        </rate-limit>
+      </ddos>
+
+      <!-- Voice-specific conditions: source and destination logical SIP identities -->
+      <voice>
+        <source-id>Internal-VoIP-Clients</source-id>
+        <destination-id>VoIP-Services</destination-id>
+        <!-- suspicious/unknown user-agent patterns (example placeholder) -->
+        <user-agent>BadUA/1.0</user-agent>
+        <user-agent>malformed-sip-client</user-agent>
+      </voice>
+
+      <!-- Reference threat feeds / signature repositories to match known-malicious IPs/domains and payload signatures -->
+      <threat-feed>
+        <name>Known-Malicious-IP-Feed</name>
+        <name>Malicious-Domains-Feed</name>
+        <name>SIP-RTP-Signatures</name>
+        <name>High-Call-Rate-Feed</name>
+      </threat-feed>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Enforcement at the network edge / firewall/IPS: drop matching packets -->
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

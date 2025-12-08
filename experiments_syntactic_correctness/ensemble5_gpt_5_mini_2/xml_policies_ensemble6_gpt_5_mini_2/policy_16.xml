@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Placeholder endpoint groups referenced by the policy.
+       These use TEST-NET addresses per the intent's note and must be replaced
+       with real prefixes in production. -->
+  <device-group>
+    <name>internal_endpoints</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>external_endpoints</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Refuse_Disallowed_Ports</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <!-- TCP rule: actively refuse traffic when TCP packets/flows are to/from disallowed ports -->
+  <rules>
+    <name>RefuseTraffic_OnDisallowed_Port_TCP</name>
+    <condition>
+      <firewall>
+        <!-- Endpoint group names only; details live in the endpoint-groups document above -->
+        <source>internal_endpoints</source>
+        <source>external_endpoints</source>
+        <destination>internal_endpoints</destination>
+        <destination>external_endpoints</destination>
+
+        <!-- Disallowed ports (placeholders). Each range is start/end (single-port ranges use equal start and end).
+             Replace these with your authoritative "disallowed" port list or expand as required. -->
+        <range-port-number>
+          <start>19</start>
+          <end>19</end>
+        </range-port-number>
+        <range-port-number>
+          <start>23</start>
+          <end>23</end>
+        </range-port-number>
+        <range-port-number>
+          <start>137</start>
+          <end>139</end>
+        </range-port-number>
+        <range-port-number>
+          <start>445</start>
+          <end>445</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <!-- 'reject' used to indicate active refusal (implementation detail: send TCP RST where supported). -->
+        <action>reject</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- UDP rule: actively refuse traffic when UDP packets/flows are to/from disallowed ports -->
+  <rules>
+    <name>RefuseTraffic_OnDisallowed_Port_UDP</name>
+    <condition>
+      <firewall>
+        <source>internal_endpoints</source>
+        <source>external_endpoints</source>
+        <destination>internal_endpoints</destination>
+        <destination>external_endpoints</destination>
+
+        <!-- Reuse the same disallowed-port placeholders for UDP -->
+        <range-port-number>
+          <start>19</start>
+          <end>19</end>
+        </range-port-number>
+        <range-port-number>
+          <start>23</start>
+          <end>23</end>
+        </range-port-number>
+        <range-port-number>
+          <start>137</start>
+          <end>139</end>
+        </range-port-number>
+        <range-port-number>
+          <start>445</start>
+          <end>445</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <!-- 'reject' used to indicate active refusal (implementation detail: send ICMP port-unreachable for UDP where supported). -->
+        <action>reject</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!--
+    Endpoint groups referenced by the policy "Block_Admin_Port_Access_With_Audit".
+    These use TEST-NET address space as placeholders and MUST be adjusted before deployment.
+  -->
+  <user-group>
+    <name>Untrusted_Sources</name>
+    <!-- Placeholder: external/untrusted source addresses -->
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>Admin_Servers</name>
+    <!-- Placeholder: servers hosting admin interfaces -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Admin_Port_Access_With_Audit</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Deny_Admin_Port_And_Log_Attempt</name>
+
+    <condition>
+      <firewall>
+        <!-- Reference endpoint-group names only (no raw IPs here) -->
+        <source>Untrusted_Sources</source>
+        <destination>Admin_Servers</destination>
+
+        <!-- Admin port must be specified numerically in the model.
+             Example uses SSH port 22 (start=22 end=22). Change as needed. -->
+        <range-port-number>
+          <start>22</start>
+          <end>22</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Primary enforcement: drop (block) the matching traffic -->
+        <action>drop</action>
+      </primary-action>
+
+      <secondary-action>
+        <!-- Request rule-level logging for auditing -->
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

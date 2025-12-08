@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <voice-group>
+    <name>blacklist_sip</name>
+    <sip-id>sip:2001@corp.com</sip-id>
+    <sip-id>sip:2002@corp.com</sip-id> <!-- Placeholder for additional SIP URIs -->
+  </voice-group>
+  <voice-group>
+    <name>analysis-server</name>
+    <sip-id>sip:analysis@corp.com</sip-id>
+  </voice-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No specific threat feeds were provided in the intent -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Reject_Calls_And_Mirror_Media_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>RejectCalls_MirrorMedia_When_Blacklisted_SIP</name>
+    <condition>
+      <firewall>
+        <source>blacklist_sip</source>
+      </firewall>
+      <voice>
+        <source-id>blacklist_sip</source-id>
+        <destination-id>analysis-server</destination-id>
+      </voice>
+    </condition>
+    <action>
+      <primary-action>
+        <action>reject</action>
+      </primary-action>
+      <primary-action>
+        <action>mirror</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

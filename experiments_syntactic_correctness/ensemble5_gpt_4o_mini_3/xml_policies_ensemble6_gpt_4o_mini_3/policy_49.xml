@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Network Devices</name>
+    <range-ipv4-address>
+      <start>192.0.2.0</start>
+      <end>192.0.2.255</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface"/>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Monthly_Maintenance_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>First_Sunday_Maintenance_Rule</name>
+    <condition>
+      <context>
+        <time>
+          <start-date-time>2023-09-03T02:00:00Z</start-date-time>
+          <end-date-time>2023-09-03T04:00:00Z</end-date-time>
+          <period>
+            <start-time>02:00:00Z</start-time>
+            <end-time>04:00:00Z</end-time>
+            <day>sunday</day>
+            <month>
+              <start>09-01</start>
+              <end>09-30</end>
+            </month>
+          </period>
+          <frequency>monthly</frequency>
+        </time>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

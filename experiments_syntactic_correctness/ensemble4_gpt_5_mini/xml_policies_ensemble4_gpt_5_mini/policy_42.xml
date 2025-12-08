@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Device group representing the database server(s) (placeholder TEST-NET range) -->
+  <device-group>
+    <name>database-servers</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Device group representing automation/mitigation service endpoints (placeholder) -->
+  <device-group>
+    <name>mitigation-services</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- User group representing the on-call DBA contact endpoint(s) (placeholder) -->
+  <user-group>
+    <name>on-call-dba</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </user-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>database_memory_protection_policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>database_memory_exceeds_80pct_notify_and_mitigate</name>
+
+    <!-- Condition: apply to the database server endpoint-group (no IPs here; group name references endpoint-groups doc) -->
+    <condition>
+      <firewall>
+        <source>database-servers</source>
+      </firewall>
+    </condition>
+
+    <!-- Action: invoke-signaling is used to trigger an external orchestration/incident-management system -->
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+
+  </rules>
+</i2nsf-cfi-policy>

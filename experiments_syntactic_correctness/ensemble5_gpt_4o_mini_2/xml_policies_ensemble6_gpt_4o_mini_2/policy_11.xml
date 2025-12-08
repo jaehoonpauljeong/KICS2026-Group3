@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <device-group>
+      <name>trusted-devices</name>
+      <range-ipv4-address>
+        <start>192.0.2.1</start>
+        <end>192.0.2.50</end>
+      </range-ipv4-address>
+    </device-group>
+  </endpoint-groups>
+  <threat-prevention />
+  <i2nsf-cfi-policy>
+    <name>Allow_Trusted_Device_Traffic</name>
+    <rules>
+      <name>Allow_Without_Filtering</name>
+      <condition>
+        <firewall>
+          <source>trusted-devices</source>
+        </firewall>
+      </condition>
+      <action>
+        <primary-action>
+          <action>pass</action>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>

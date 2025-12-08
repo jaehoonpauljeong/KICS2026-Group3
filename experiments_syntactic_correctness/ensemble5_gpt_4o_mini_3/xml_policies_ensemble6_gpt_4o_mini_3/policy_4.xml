@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <threat-feed-list>
+    <name>Flood_Attack_Mitigation</name>
+    <ioc>unknown</ioc>
+    <format>unknown</format>
+  </threat-feed-list>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Mitigate_Flood_Attacks_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Flood_Attack_Mitigation_Rule</name>
+    <condition>
+      <firewall>
+        <source>Company_Web_Server_Group</source>
+        <destination>Company_Web_Server_Group</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

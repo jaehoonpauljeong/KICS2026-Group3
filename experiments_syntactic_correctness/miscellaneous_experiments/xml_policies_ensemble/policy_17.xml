@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <!-- No specific endpoint groups defined in the policy -->
+  </endpoint-groups>
+  <threat-prevention>
+    <!-- No specific threat feeds defined in the policy -->
+  </threat-prevention>
+  <i2nsf-cfi-policy>
+    <name>Mirror_Suspicious_Database_Traffic</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+      <name>Mirror_Traffic_To_Analysis_Server</name>
+      <condition>
+        <firewall>
+          <source>unknown-source-group</source> <!-- Placeholder for missing source group -->
+        </firewall>
+      </condition>
+      <action>
+        <primary-action>
+          <action>mirror</action>
+        </primary-action>
+        <secondary-action>
+          <action>pass</action>
+        </secondary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <device-group>
+        <name>database-servers</name>
+        <range-ipv4-address>
+            <start>192.0.2.1</start>
+            <end>192.0.2.50</end>
+        </range-ipv4-address>
+    </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <!-- No threat feeds specified, this section can be omitted in real scenarios -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>Memory_Usage_Optimization_Policy</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+        <name>Optimize_For_High_Memory_Usage</name>
+        <condition>
+            <firewall>
+                <source>database-servers</source>
+            </firewall>
+        </condition>
+        <action>
+            <primary-action>
+                <action>optimize</action>
+            </primary-action>
+            <primary-action>
+                <action>notify</action>
+            </primary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>

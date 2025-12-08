@@ -1,0 +1,22 @@
+<!-- intent: Traffic from trusted devices should be allowed without any filtering. -->
+<!-- expected: primary-action: pass -->
+xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>allow_trusted_devices_policy</name>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>allow_trusted_traffic</name>
+    <condition>
+      <firewall>
+        <source>trusted_devices</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <user-group>
+      <name>admin-ports</name>
+      <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+    </user-group>
+  </endpoint-groups>
+  <threat-prevention>
+    <!-- No specific threat feeds are referenced in the original intent -->
+  </threat-prevention>
+  <i2nsf-cfi-policy>
+    <name>Block_Admin_Port_Traffic</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+      <name>Block_Traffic_And_Log_Attempt</name>
+      <condition>
+        <firewall>
+          <destination>admin-ports</destination>
+        </firewall>
+      </condition>
+      <action>
+        <primary-action>
+          <action>drop</action>
+        </primary-action>
+        <secondary-action>
+          <log-action>rule-log</log-action>
+        </secondary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>

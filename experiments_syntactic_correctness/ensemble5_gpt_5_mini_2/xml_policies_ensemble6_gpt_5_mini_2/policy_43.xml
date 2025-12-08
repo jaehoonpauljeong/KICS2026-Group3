@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>nonessential-traffic-sources</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <user-group>
+    <name>security-operations-team</name>
+  </user-group>
+
+  <device-group>
+    <name>firewall-primary</name>
+    <ipv4-prefix>198.51.100.10/32</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>firewall-standby</name>
+    <ipv4-prefix>198.51.100.11/32</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>firewall-cluster</name>
+    <ipv4-prefix>198.51.100.0/28</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Firewall_CPU_Overload_Response_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>CPU_Load_Exceeds_90pct_HighPriority_Alert_and_Mitigation</name>
+
+    <condition>
+      <firewall>
+        <source>firewall-primary</source>
+        <destination>nonessential-traffic-sources</destination>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

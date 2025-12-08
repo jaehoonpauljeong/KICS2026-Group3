@@ -1,0 +1,24 @@
+<!-- intent: Cap new connection attempts to 20 flows per second to protect the server from abuse. -->
+<!-- expected: primary-action: rate-limit, limit -> 20 -->
+xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>cap_connection_attempts_policy</name>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>cap_new_connection_attempts</name>
+    <condition>
+      <ddos>
+        <rate-limit>
+          <flow-rate-threshold>20</flow-rate-threshold>
+        </rate-limit>
+      </ddos>
+    </condition>
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,91 @@
+YANG Validation Results - 2025-10-28 15:16:07.535377
+============================================================
+
+[PASS] policy_5.xml
+[PASS] policy_41.xml
+[FAIL] policy_11.xml
+[PASS] policy_36.xml
+[PASS] policy_50.xml
+[PASS] policy_25.xml
+[PASS] policy_13.xml
+[PASS] policy_20.xml
+[PASS] policy_43.xml
+[FAIL] policy_3.xml
+[PASS] policy_42.xml
+[PASS] policy_31.xml
+[PASS] policy_46.xml
+[PASS] policy_40.xml
+[PASS] policy_7.xml
+[PASS] policy_10.xml
+[PASS] policy_29.xml
+[PASS] policy_44.xml
+[PASS] policy_38.xml
+[FAIL] policy_2.xml
+[PASS] policy_23.xml
+[PASS] policy_35.xml
+[PASS] policy_30.xml
+[FAIL] policy_34.xml
+[PASS] policy_6.xml
+[PASS] policy_8.xml
+[PASS] policy_18.xml
+[PASS] policy_24.xml
+[PASS] policy_33.xml
+[PASS] policy_48.xml
+[PASS] policy_4.xml
+[PASS] policy_9.xml
+[PASS] policy_45.xml
+[PASS] policy_16.xml
+[PASS] policy_37.xml
+[PASS] policy_47.xml
+[PASS] policy_14.xml
+[FAIL] policy_12.xml
+[FAIL] policy_49.xml
+[PASS] policy_22.xml
+[PASS] policy_17.xml
+[PASS] policy_39.xml
+[PASS] policy_21.xml
+[PASS] policy_26.xml
+[PASS] policy_19.xml
+[PASS] policy_32.xml
+[PASS] policy_28.xml
+[FAIL] policy_15.xml
+[PASS] policy_1.xml
+[PASS] policy_27.xml
+
+[FAIL] policy_11.xml
+Error:
+libyang err : No module with namespace "urn:example:vendor:i2nsf-ext" in the context. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/action, data location /ietf-i2nsf-cons-facing-interface:action, line number 30.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_11.xml".
+
+[FAIL] policy_3.xml
+Error:
+libyang err : Mandatory choice "match-type" data do not exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/device-group/match-type.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_3.xml".
+
+[FAIL] policy_2.xml
+Error:
+libyang err : Duplicate instance of "threat-feed". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition/threat-feed, data location /ietf-i2nsf-cons-facing-interface:condition/threat-feed, line number 120.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_2.xml".
+
+[FAIL] policy_34.xml
+Error:
+libyang err : Invalid identityref "http" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/device-group/application-protocol, data location /ietf-i2nsf-cons-facing-interface:device-group[name='internet-websites'], line number 14.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_34.xml".
+
+[FAIL] policy_12.xml
+Error:
+libyang err : Node "name" not found as a child of "threat-prevention" node. (Schema location /ietf-i2nsf-cons-facing-interface:threat-prevention, data location /ietf-i2nsf-cons-facing-interface:threat-prevention, line number 15.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_12.xml".
+
+[FAIL] policy_49.xml
+Error:
+libyang err : When condition "../../frequency='weekly'" not satisfied. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition/context/time/period/day, data location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy[name='Monthly_Maintenance_Policy']/rules[name='Allow_Monthly_Maintenance_Window']/condition/context/time/period/day[.='sunday'].)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_49.xml".
+
+[FAIL] policy_15.xml
+Error:
+libyang err : Invalid identityref "http" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/device-group/application-protocol, data location /ietf-i2nsf-cons-facing-interface:device-group[name='Authentication-Servers'], line number 11.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_15.xml".
+
+============================================================
+Validation Summary: 43 passed, 7 failed.

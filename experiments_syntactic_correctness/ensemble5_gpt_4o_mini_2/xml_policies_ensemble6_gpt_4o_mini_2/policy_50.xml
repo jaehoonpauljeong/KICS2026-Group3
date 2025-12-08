@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <voice-group>
+    <name>blacklist_sip</name>
+    <sip-id>sip:2001@corp.com</sip-id>
+    <sip-id>sip:2002@corp.com</sip-id>
+    <sip-id>sip:2003@corp.com</sip-id>
+    <sip-id>sip:2004@corp.com</sip-id>
+    <sip-id>sip:2005@corp.com</sip-id>
+    <sip-id>sip:2006@corp.com</sip-id>
+  </voice-group>
+  <voice-group>
+    <name>analysis_server</name>
+    <sip-id>sip:analysis@corp.com</sip-id>
+  </voice-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+	<threat-feed-list>
+		<name>sip-blacklist-threat-feed</name>
+		<ioc>sip:2001@corp.com</ioc>
+		<ioc>sip:2002@corp.com</ioc>
+		<ioc>sip:2003@corp.com</ioc>
+		<format>stix</format>
+	</threat-feed-list>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Voice_Group_Blacklist_Call_Rejection</name>
+  <rules>
+    <name>Reject_SIP_URI_Session</name>
+    <condition>
+      <voice>
+        <source-id>blacklist_sip</source-id>
+      </voice>
+    </condition>
+    <action>
+      <primary-action>
+        <action>reject</action>
+      </primary-action>
+      <primary-action>
+        <action>mirror</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

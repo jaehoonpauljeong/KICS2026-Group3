@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Endpoint groups referenced by the policy -->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>guest_network</name>
+    <!-- Placeholder TEST-NET IPv4 prefix for the guest network -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>internal_servers</name>
+    <!-- Placeholder TEST-NET IPv4 prefix for protected internal hosts -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<!-- I2NSF CFI policy referencing the endpoint groups above by name only -->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Drop_Guest_SSH_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Drop_Guest_SSH_and_Log</name>
+
+    <condition>
+      <firewall>
+        <!-- Reference endpoint-group names; actual IPs are defined in endpoint-groups -->
+        <source>guest_network</source>
+        <destination>internal_servers</destination>
+
+        <range-port-number>
+          <start>22</start>
+          <end>22</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+
+      <secondary-action>
+        <!-- Log each dropped attempt to the rule log as requested -->
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

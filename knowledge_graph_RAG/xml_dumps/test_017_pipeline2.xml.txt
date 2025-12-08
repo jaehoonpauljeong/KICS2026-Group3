@@ -1,0 +1,29 @@
+<!-- intent: Mirror suspicious database traffic to an analysis server while still allowing it to reach its destination. -->
+<!-- expected: primary-action: mirror -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>security_policy_for_mirroring_suspicious_database_traffic</name>
+    <rules>
+        <name>Mirror_suspicious_database_traffic</name>
+        <condition>
+            <firewall>
+                <source>analysis_server</source>
+                <destination>database_servers</destination>
+            </firewall>
+            <application>
+                <protocol>database</protocol>
+            </application>
+        </condition>
+        <action>
+            <primary-action>
+                <action>mirror</action>
+            </primary-action>
+            <secondary-action>
+                <action>allow</action>
+            </secondary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

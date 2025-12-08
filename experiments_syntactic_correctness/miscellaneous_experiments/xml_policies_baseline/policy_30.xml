@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>allow_file_downloads_policy</name>
+    <rules>
+        <name>allow_file_downloads</name>
+        <condition>
+            <firewall-condition>
+                <destination>any</destination>
+            </firewall-condition>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>allow</action>
+            </primary-action>
+            <secondary-action>
+                <log-action>log</log-action>
+            </secondary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>firewall-admins</name>
+    <range-ipv4-address>
+      <start>192.168.1.1</start>
+      <end>192.168.1.50</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Firewall_Configuration_Change_Management</name>
+  <rules>
+    <name>Document_and_Review_Change</name>
+    <condition>
+      <firewall>
+        <source>firewall-admins</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>document-change</log-action>
+      </secondary-action>
+      <secondary-action>
+        <log-action>review-compliance</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

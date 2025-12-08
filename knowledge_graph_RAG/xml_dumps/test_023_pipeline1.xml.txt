@@ -1,0 +1,32 @@
+<!-- intent: Send an alert to the monitoring system for any detected port scans (but allow traffic). -->
+<!-- expected: primary-action: invoke-signaling -->
+xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>alert_port_scan_policy</name>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>alert_port_scan</name>
+    <event>
+      <system-event>traffic-flows</system-event>
+    </event>
+    <condition>
+      <firewall>
+        <transport-layer-protocol>tcp</transport-layer-protocol>
+        <range-port-number>
+          <start>1</start>
+          <end>65535</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

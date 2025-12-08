@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Endpoint group representing the internal HR system (source of traffic).
+       Using an IPv4 documentation prefix (RFC5737) as a placeholder. -->
+  <device-group>
+    <name>HR_Internal</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Allow_Internal_HR_All_Traffic_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Allow_HR_System_All_Traffic_Rule</name>
+
+    <condition>
+      <firewall>
+        <!-- Source references the endpoint-group defined in endpoint-groups above.
+             Destination is omitted to indicate "any destination". Protocols/ports/time
+             are omitted to indicate "any". -->
+        <source>HR_Internal</source>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- "pass" encodes the intended "allow/permit" action per the model -->
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

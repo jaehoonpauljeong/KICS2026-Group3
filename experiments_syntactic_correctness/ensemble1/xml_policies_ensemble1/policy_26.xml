@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>new-connection-attempts</name>
+    <ipv4-prefix>0.0.0.0/0</ipv4-prefix>
+  </user-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Connection_Abuse_Protection_Policy</name>
+  <rules>
+    <name>Cap_New_Connection_Attempts</name>
+    <condition>
+      <firewall>
+        <source>new-connection-attempts</source>
+      </firewall>
+      <ddos>
+        <rate-limit>
+          <flow-rate-threshold>20</flow-rate-threshold>
+        </rate-limit>
+      </ddos>
+    </condition>
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>20</limit>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

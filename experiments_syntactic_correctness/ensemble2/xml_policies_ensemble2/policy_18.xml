@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>outgoing-email-users</name>
+    <range-ipv4-address>
+      <start>192.168.1.1</start>
+      <end>192.168.1.50</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Outgoing_Email_Traffic_Monitoring_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Copy_Outgoing_Email_Traffic</name>
+    <condition>
+      <firewall>
+        <source>outgoing-email-users</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>forward</action>
+      </primary-action>
+      <secondary-action>
+        <action>mirror</action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

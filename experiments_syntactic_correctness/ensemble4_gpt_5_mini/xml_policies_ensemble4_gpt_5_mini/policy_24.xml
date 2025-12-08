@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>STREAMING_CLIENTS</name>
+    <!-- Placeholder/test-net IPv4 prefix for the source client group -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>STREAMING_SERVERS</name>
+    <!-- Placeholder/test-net IPv4 prefix for the destination server group -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Throttle_StreamingMedia_To_100MBps</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>ThrottleStreamingMediaRule_100MBps</name>
+
+    <condition>
+      <firewall>
+        <!-- Reference endpoint-group names only (detailed addresses in endpoint-groups doc) -->
+        <source>STREAMING_CLIENTS</source>
+        <destination>STREAMING_SERVERS</destination>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>100000000</limit>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

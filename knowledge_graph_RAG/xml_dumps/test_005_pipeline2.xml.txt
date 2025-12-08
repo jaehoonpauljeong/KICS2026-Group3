@@ -1,0 +1,38 @@
+<!-- intent: Block SNS access during office hours with a weekly frequency (9am-5pm; Monday-Friday). -->
+<!-- expected: primary-action: drop -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>block_sns_access_during_office_hours</name>
+    <rules>
+        <name>Block_SNS_Access_Office_Hours</name>
+        <condition>
+            <firewall>
+                <destination>SNS_services</destination>
+            </firewall>
+            <context>
+                <time>
+                    <period>
+                        <start-time>09:00</start-time>
+                        <end-time>17:00</end-time>
+                    </period>
+                    <frequency>weekly</frequency>
+                    <day>
+                        <day>Monday</day>
+                        <day>Tuesday</day>
+                        <day>Wednesday</day>
+                        <day>Thursday</day>
+                        <day>Friday</day>
+                    </day>
+                </time>
+            </context>
+        </condition>
+        <action>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

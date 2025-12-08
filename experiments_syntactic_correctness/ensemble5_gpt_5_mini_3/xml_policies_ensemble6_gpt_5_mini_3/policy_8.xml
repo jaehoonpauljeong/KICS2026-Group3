@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>WEEKDAY_NIGHT_ENDPOINTS</name>
+    <!-- Placeholder/testing IPv4 prefix (TEST-NET-2) for devices/users affected by the rule -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <url-group>
+    <name>GAME_DOMAINS</name>
+    <!-- Example game/service domains (as https URIs). Replace or extend with authoritative lists as needed. -->
+    <url>https://store.steampowered.com/</url>
+    <url>https://steamcommunity.com/</url>
+    <url>https://epicgames.com/</url>
+    <url>https://www.epicgames.com/</url>
+    <url>https://www.xbox.com/</url>
+    <url>https://www.playstation.com/</url>
+    <url>https://www.blizzard.com/</url>
+    <url>https://www.riotgames.com/</url>
+    <url>https://www.fortnite.com/</url>
+  </url-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Weekday_Night_Games_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Block_Games_Weekday_Nights_Rule</name>
+
+    <!-- Time-based condition: weekly on Monday-Friday during night hours.
+         Default chosen night period: 22:00–06:00 (times in UTC, Z-suffix).
+         If your environment uses a different timezone, convert local times to UTC here. -->
+    <condition>
+      <firewall>
+        <!-- Source is the named endpoint-group declared in the endpoint-groups document -->
+        <source>WEEKDAY_NIGHT_ENDPOINTS</source>
+        <!-- Destination details (game domains) are expressed via url-category below -->
+      </firewall>
+
+      <url-category>
+        <!-- Reference to the url-group containing game domains -->
+        <url-name>GAME_DOMAINS</url-name>
+      </url-category>
+
+      <context>
+        <time>
+          <period>
+            <start-time>22:00:00Z</start-time>
+            <end-time>06:00:00Z</end-time>
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+          </period>
+          <frequency>weekly</frequency>
+        </time>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- DENY semantics mapped to model's 'drop' action -->
+        <action>drop</action>
+      </primary-action>
+      <!-- No secondary logging action specified per intent -->
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,30 @@
+<!-- intent: Drop all incoming SSH connections from the guest network and log each attempt in the rule log. -->
+<!-- expected: primary-action: drop -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>drop_ssh_connections_from_guest_network</name>
+    <rules>
+        <name>drop_incoming_ssh_connections</name>
+        <condition>
+            <firewall>
+                <source>guest_network</source>
+                <transport-layer-protocol>tcp</transport-layer-protocol>
+                <range-port-number>
+                    <start>22</start>
+                    <end>22</end>
+                </range-port-number>
+            </firewall>
+        </condition>
+        <action>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+            <secondary-action>
+                <log-action>log_attempt</log-action>
+            </secondary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

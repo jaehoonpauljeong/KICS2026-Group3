@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>web-servers</name>
+    <ipv4-prefix>198.51.100.10/32</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>backend-servers</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>cdn-scrubbers</name>
+    <ipv4-prefix>192.0.2.0/28</ipv4-prefix>
+  </device-group>
+
+  <user-group>
+    <name>dynamic-offenders</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </user-group>
+
+  <user-group>
+    <name>security-ops</name>
+    <ipv4-prefix>192.0.2.100/32</ipv4-prefix>
+  </user-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Flood_Mitigation_Company_WebServer</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Auto_Throttle_Rate</name>
+    <condition>
+      <firewall>
+        <destination>web-servers</destination>
+        <range-port-number>
+          <start>80</start>
+          <end>443</end>
+        </range-port-number>
+      </firewall>
+      <ddos>
+        <rate-limit>
+          <packet-rate-threshold>10000</packet-rate-threshold>
+          <byte-rate-threshold>50000000</byte-rate-threshold>
+          <flow-rate-threshold>2000</flow-rate-threshold>
+        </rate-limit>
+      </ddos>
+    </condition>
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>10485760</limit>
+      </primary-action>
+    </action>
+  </rules>
+
+  <rules>
+    <name>Enable_TCP_Hardening_and_WAF</name>
+    <condition>
+      <firewall>
+        <destination>web-servers</destination>
+      </firewall>
+      <ddos>
+        <rate-limit>
+          <packet-rate-threshold>10000</packet-rate-threshold>
+          <byte-rate-threshold>50000000</byte-rate-threshold>
+          <flow-rate-threshold>2000</flow-rate-threshold>
+        </rate-limit>
+      </ddos>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <rules>
+    <name>Redirect_To_CDN_Scrubber</name>
+    <condition>
+      <firewall>
+        <destination>web-servers</destination>
+      </firewall>
+      <ddos>
+        <rate-limit>
+          <packet-rate-threshold>15000</packet-rate-threshold>
+          <byte-rate-threshold>100000000</byte-rate-threshold>
+          <flow-rate-threshold>3000</flow-rate-threshold>
+        </rate-limit>
+      </ddos>
+    </condition>
+    <action>
+      <primary-action>
+        <action>tunnel-encapsulation</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <rules>
+    <name>Block_Dynamic_Offenders</name>
+    <condition>
+      <firewall>
+        <source>dynamic-offenders</source>
+        <destination>web-servers</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <rules>
+    <name>Escalate_To_ISP_or_IR</name>
+    <condition>
+      <firewall>
+        <destination>web-servers</destination>
+      </firewall>
+      <ddos>
+        <rate-limit>
+          <packet-rate-threshold>100000</packet-rate-threshold>
+          <byte-rate-threshold>1000000000</byte-rate-threshold>
+          <flow-rate-threshold>20000</flow-rate-threshold>
+        </rate-limit>
+      </ddos>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

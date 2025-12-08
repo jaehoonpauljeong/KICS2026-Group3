@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No endpoint groups defined in the policy -->
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Allow_File_Downloads_With_Logging</name>
+  <rules>
+    <name>Generate_Log_On_File_Download</name>
+    <action>
+      <primary-action>
+        <action>log-action</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No endpoint groups defined as per the policy intent -->
+</endpoint-groups>
+
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface"
+    xmlns:nsfcfi="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cfi-policy">
+  <name>Drop_Guest_Network_SSH_Connections</name>
+  <rules>
+    <name>Drop_SSH_Connections_From_Guest_Network</name>
+    <condition>
+      <firewall>
+        <source>guest-network</source> <!-- Placeholder for the guest network endpoint group -->
+        <transport-layer-protocol>nsfcfi:ssh</transport-layer-protocol>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

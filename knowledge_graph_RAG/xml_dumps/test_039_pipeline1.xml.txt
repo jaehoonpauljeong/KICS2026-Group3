@@ -1,0 +1,25 @@
+<!-- intent: If any employee attempts to access restricted finance servers without authorization, drop the traffic and trigger this rule. -->
+<!-- expected: event -> system-event: access-violation -->
+xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>restrict_finance_access_policy</name>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>drop_restricted_finance_access</name>
+    <event>
+      <system-event>access-violation</system-event>
+    </event>
+    <condition>
+      <firewall>
+        <destination>restricted_finance_servers</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

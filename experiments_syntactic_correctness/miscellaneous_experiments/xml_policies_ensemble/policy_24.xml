@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No endpoint groups defined in the policy -->
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds defined in the policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Throttle_Streaming_Media_Traffic</name>
+  <rules>
+    <name>Limit_Streaming_Traffic</name>
+    <condition>
+      <firewall>
+        <source>streaming-media-traffic</source> <!-- Placeholder for endpoint group -->
+      </firewall>
+      <context>
+        <application>
+          <protocol>streaming</protocol> <!-- Assuming a protocol for streaming media -->
+        </application>
+        <traffic>
+          <rate>100</rate> <!-- Rate in MB/s -->
+          <threshold>100</threshold> <!-- Threshold in MB/s -->
+        </traffic>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>100</limit> <!-- Limit in MB/s -->
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

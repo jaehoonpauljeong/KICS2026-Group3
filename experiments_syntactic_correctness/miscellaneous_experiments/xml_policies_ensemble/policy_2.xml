@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No specific endpoint groups defined in the policy -->
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds defined in the policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface"
+    xmlns:nsfcfi="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cfi-policy">
+  <name>Block_Malicious_VoIP_VoCN_Packets</name>
+  <rules>
+    <name>Block_Malicious_Packets</name>
+    <condition>
+      <firewall>
+        <source>malicious-sources</source> <!-- Placeholder for source endpoint group -->
+        <destination>the-company</destination> <!-- Placeholder for destination endpoint group -->
+        <transport-layer-protocol>nsfcfi:udp</transport-layer-protocol> <!-- VoIP typically uses UDP -->
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action> <!-- Action to block the packets -->
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

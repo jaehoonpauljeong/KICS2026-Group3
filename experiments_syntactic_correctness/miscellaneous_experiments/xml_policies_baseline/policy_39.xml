@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>restrict_finance_access_policy</name>
+    <rules>
+        <name>restrict_finance_access</name>
+        <event>
+            <system-event>employee_access_attempt</system-event>
+        </event>
+        <condition>
+            <firewall-condition>
+                <source>employee_network</source>
+                <destination>restricted_finance_servers</destination>
+            </firewall-condition>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+            <secondary-action>
+                <log-action>trigger_rule</log-action>
+            </secondary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>

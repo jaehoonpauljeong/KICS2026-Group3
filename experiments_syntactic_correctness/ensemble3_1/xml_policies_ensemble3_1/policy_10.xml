@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <user-group>
+      <name>employees</name>
+      <range-ipv4-address>
+        <start>192.168.10.1</start>
+        <end>192.168.10.50</end>
+      </range-ipv4-address>
+    </user-group>
+    <url-group>
+      <name>web-access</name>
+      <url>http://*</url>
+      <url>https://*</url>
+    </url-group>
+  </endpoint-groups>
+  <i2nsf-cfi-policy>
+    <name>Employee_Web_Browsing_Policy</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+      <name>Permit_Employee_Web_Browsing</name>
+      <condition>
+        <firewall>
+          <source>employees</source>
+          <destination>web-access</destination>
+        </firewall>
+      </condition>
+      <action>
+        <primary-action>
+          <action>pass</action>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>

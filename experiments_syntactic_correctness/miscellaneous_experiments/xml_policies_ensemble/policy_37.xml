@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No endpoint groups defined in the policy -->
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds defined in the policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Unauthorized_VPN_Login_Protection</name>
+  <rules>
+    <name>Reject_and_Record_Unauthorized_Login_Attempts</name>
+    <condition>
+      <firewall>
+        <source>unauthorized-vpn-attempts</source> <!-- Placeholder for source endpoint group -->
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action> <!-- Using 'drop' to reject the unauthorized login attempt -->
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

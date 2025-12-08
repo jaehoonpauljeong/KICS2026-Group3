@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>all-devices</name>
+    <range-ipv4-address>
+      <start>192.168.0.1</start>
+      <end>192.168.0.255</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Restrict_Adult_Content_Access</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Restrict_Access_From_All_Devices</name>
+    <condition>
+      <firewall>
+        <source>all-devices</source>
+      </firewall>
+      <url-category>
+        <url-name>adult-content</url-name>
+      </url-category>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

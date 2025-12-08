@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  endpoint-groups document
+  Namespace: urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface
+  Contains the endpoint-group(s) referenced by the policy.  The IPv4 CIDRs below are placeholders (RFC 5737 TEST-NET); replace with your real threat-feed / group contents in production.
+-->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Known-Malicious-Sources</name>
+    <!-- Placeholder test-net prefix representing malicious IPs; replace with real feed-derived prefixes or ranges -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<!--
+  threat-prevention document
+  Contains the threat-feed referenced by the policy.
+  format is set to "stix" as an example; change to the actual feed format (stix, misp, openioc, iodef) as appropriate.
+  IOC entries are placeholders for demonstration.
+-->
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Known-Malicious-IP-List</name>
+  <!-- Placeholder IOC(s); format and content should match your feed -->
+  <ioc>ip:198.51.100.0/24</ioc>
+  <format>stix</format>
+</threat-prevention>
+
+<!--
+  i2nsf-cfi-policy document
+  References endpoint groups and threat feeds by name only.
+  Implements: IF source ∈ Known-Malicious-Sources (threat-feed Known-Malicious-IP-List) THEN silently drop (no logging configured).
+-->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Known_Malicious_IPs</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Silently_Drop_Traffic_From_Known_Malicious_IPs</name>
+
+    <condition>
+      <firewall>
+        <!-- Reference to endpoint-groups/device-group/name in the endpoint-groups document -->
+        <source>Known-Malicious-Sources</source>
+        <!-- destination left unspecified (applies to any destination) -->
+      </firewall>
+
+      <threat-feed>
+        <!-- Reference to threat-prevention/name in the threat-prevention document -->
+        <name>Known-Malicious-IP-List</name>
+      </threat-feed>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- 'drop' implements a silent discard (no TCP RST/ICMP by policy action). No secondary log-action is set per requirement. -->
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

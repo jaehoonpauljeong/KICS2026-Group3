@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Endpoint groups document: contains the endpoint groups referenced by the policy.
+-->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Clients initiating file transfers -->
+  <user-group>
+    <name>user-workstations</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- File storage / receivers -->
+  <device-group>
+    <name>file-servers</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Admin / SOC recipients (quarantine management and alert recipients) -->
+  <user-group>
+    <name>admin-console</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </user-group>
+</endpoint-groups>
+
+<!--
+  Threat-prevention document: declare the AV/threat feed (ransomware-detect)
+-->
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <threat-feed-list>
+    <name>ransomware-detect</name>
+    <!-- Example IOC entries (placeholders). In practice populate with actual IOCs the AV profile uses. -->
+    <ioc>hash:sha256:EXAMPLE_PLACEHOLDER_HASH_1</ioc>
+    <ioc>domain:malicious-example[.]local</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+</threat-prevention>
+
+<!--
+  The main I2NSF CFI policy document. This references endpoint groups and the threat-feed by name.
+-->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>antivirus_ransomware_response_policy</name>
+  <language>en-US</language>
+
+  <!-- Use numeric priorities so the signaling rule executes first (higher priority). -->
+  <priority-usage>priority-by-number</priority-usage>
+  <resolution-strategy>pmre</resolution-strategy>
+
+  <!-- Rule A: Invoke external quarantine/alerting service -->
+  <rules>
+    <name>invoke_quarantine_and_alert_on_ransomware_flag</name>
+    <priority>200</priority>
+
+    <condition>
+      <firewall>
+        <source>user-workstations</source>
+        <destination>file-servers</destination>
+
+        <!-- Common file-transfer ports (explicit port matches). -->
+        <range-port-number>
+          <start>21</start>
+          <end>21</end>
+        </range-port-number>
+        <range-port-number>
+          <start>22</start>
+          <end>22</end>
+        </range-port-number>
+        <range-port-number>
+          <start>80</start>
+          <end>80</end>
+        </range-port-number>
+        <range-port-number>
+          <start>443</start>
+          <end>443</end>
+        </range-port-number>
+        <range-port-number>
+          <start>445</start>
+          <end>445</end>
+        </range-port-number>
+      </firewall>
+
+      <!-- The core trigger: an AV profile (ransomware-detect) flagged the file transfer -->
+      <anti-virus>
+        <profile>ransomware-detect</profile>
+      </anti-virus>
+
+      <!-- Reference the threat feed resource declared in the threat-prevention document -->
+      <threat-feed>
+        <name>ransomware-detect</name>
+      </threat-feed>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Use invoke-signaling to notify/quarantine via an external controller/service. -->
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- Rule B: Block/drop the flagged transfer -->
+  <rules>
+    <name>block_quarantine_log_on_flagged_transfer</name>
+    <priority>100</priority>
+
+    <condition>
+      <firewall>
+        <source>user-workstations</source>
+        <destination>file-servers</destination>
+
+        <!-- Repeat same port matches so this rule matches the same flows as the signaling rule -->
+        <range-port-number>
+          <start>21</start>
+          <end>21</end>
+        </range-port-number>
+        <range-port-number>
+          <start>22</start>
+          <end>22</end>
+        </range-port-number>
+        <range-port-number>
+          <start>80</start>
+          <end>80</end>
+        </range-port-number>
+        <range-port-number>
+          <start>443</start>
+          <end>443</end>
+        </range-port-number>
+        <range-port-number>
+          <start>445</start>
+          <end>445</end>
+        </range-port-number>
+      </firewall>
+
+      <anti-virus>
+        <profile>ransomware-detect</profile>
+      </anti-virus>
+
+      <threat-feed>
+        <name>ransomware-detect</name>
+      </threat-feed>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Block the transfer -->
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- Policy metadata (human-readable) -->
+  <rules>
+    <name>policy_metadata</name>
+    <priority>1</priority>
+    <condition>
+      <!-- This is a metadata-only rule (no action) to store human description; leaving empty condition. -->
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- User-group representing internal senders (placeholder TEST-NET range) -->
+  <user-group>
+    <name>internal-email-sources</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Device-group representing external destinations (placeholder TEST-NET range) -->
+  <device-group>
+    <name>external-email-destinations</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Device-group representing the monitoring collector (single-host placeholder) -->
+  <device-group>
+    <name>email-monitoring-collector</name>
+    <range-ipv4-address>
+      <start>198.51.100.10</start>
+      <end>198.51.100.10</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Copy_Outbound_Email_To_Monitoring</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-number</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Copy_Outbound_Email_to_Monitoring_Mirror</name>
+    <priority>100</priority>
+    <condition>
+      <firewall>
+        <source>internal-email-sources</source>
+        <destination>external-email-destinations</destination>
+
+        <range-port-number>
+          <start>25</start>
+          <end>25</end>
+        </range-port-number>
+        <range-port-number>
+          <start>587</start>
+          <end>587</end>
+        </range-port-number>
+        <range-port-number>
+          <start>465</start>
+          <end>465</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>mirror</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <rules>
+    <name>Copy_Outbound_Email_to_Monitoring_Forward_Original</name>
+    <priority>10</priority>
+    <condition>
+      <firewall>
+        <source>internal-email-sources</source>
+        <destination>external-email-destinations</destination>
+
+        <range-port-number>
+          <start>25</start>
+          <end>25</end>
+        </range-port-number>
+        <range-port-number>
+          <start>587</start>
+          <end>587</end>
+        </range-port-number>
+        <range-port-number>
+          <start>465</start>
+          <end>465</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>cpu_load_management_policy</name>
+    <rules>
+        <name>cpu_load_rule</name>
+        <event>
+            <system-event>cpu-load-above-threshold</system-event>
+        </event>
+        <condition>
+            <firewall-condition>
+                <source>Firewall</source>
+                <destination>Management_Traffic</destination>
+                <transport-layer-protocol>tcp</transport-layer-protocol>
+            </firewall-condition>
+            <ddos>
+                <rate-limit>
+                    <packet-rate-threshold>1000</packet-rate-threshold>
+                </rate-limit>
+            </ddos>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>allow</action>
+            </primary-action>
+            <secondary-action>
+                <log-action>rate-limit</log-action>
+            </secondary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>

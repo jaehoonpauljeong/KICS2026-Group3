@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Source group: Corporate users and devices (placeholder IPv4 prefix) -->
+  <user-group>
+    <name>Corporate_Users_Devices</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Destination group: Social networking sites (URL-based list) -->
+  <url-group>
+    <name>Social_Networking_Sites</name>
+    <url>https://www.facebook.com</url>
+    <url>https://twitter.com</url>
+    <url>https://www.linkedin.com</url>
+    <url>https://www.instagram.com</url>
+  </url-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_SNS_Access_Business_Hours_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Deny_SNS_Access_During_Business_Hours</name>
+
+    <condition>
+      <firewall>
+        <!-- Source: corporate users/devices (referenced by name in endpoint-groups) -->
+        <source>Corporate_Users_Devices</source>
+      </firewall>
+
+      <!-- Destination/category: reference the URL group defined in endpoint-groups -->
+      <url-category>
+        <url-name>Social_Networking_Sites</url-name>
+      </url-category>
+
+      <context>
+        <time>
+          <!-- Recurring weekly business hours: Monday-Friday 09:00-17:00 (times expressed in UTC 'Z').
+               Note: implementation should apply corporate timezone mapping if needed. -->
+          <period>
+            <start-time>09:00:00Z</start-time>
+            <end-time>17:00:00Z</end-time>
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+          </period>
+          <frequency>weekly</frequency>
+        </time>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Block/deny action -->
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

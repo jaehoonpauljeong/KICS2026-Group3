@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- endpoint-groups document: contains endpoint groups referenced by the policy -->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Known-Malicious-Sources</name>
+    <!-- Placeholder/test-net IPv4 prefix (RFC 5737) used per intent notes -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Optional placeholder destination group (not required by the rule; included only as a safe placeholder) -->
+  <device-group>
+    <name>Protected-Assets</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<!-- threat-prevention document: contains the known-malicious IP feed referenced by the policy -->
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <threat-feed-list>
+    <name>Known-Malicious-IP-Feed</name>
+    <!-- IOC entries. Using a simple ipv4: prefix notation as placeholder; replace with your real feed format/content. -->
+    <ioc>ipv4:198.51.100.0/24</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+</threat-prevention>
+
+<!-- i2nsf-cfi-policy document: the policy referencing endpoint group(s) and threat feed by name -->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>drop_known_malicious_ips_policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>drop_if_src_in_known_malicious_list</name>
+
+    <condition>
+      <!-- Explicit condition: source membership in the endpoint-group that maps to malicious IP addresses -->
+      <firewall>
+        <source>Known-Malicious-Sources</source>
+      </firewall>
+
+      <!-- Canonical condition: the source IP matches an entry in the threat feed -->
+      <threat-feed>
+        <name>Known-Malicious-IP-Feed</name>
+      </threat-feed>
+
+      <!--
+        Notes on conditions encoded:
+        - Source membership (Known-Malicious-Sources) points to the endpoint-groups document where the IPv4 prefix is defined.
+        - The threat-feed element references the named threat feed defined in the threat-prevention document.
+        - No transport/protocol/port constraints are specified (applies to all protocols and ports).
+        - No time/context constraints are specified.
+      -->
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Silently drop matching packets (no logging, no reply/forward) -->
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

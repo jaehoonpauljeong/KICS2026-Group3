@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+<name>security_policy_for_blocking_sns</name>
+<rules>
+    <name>block_access_to_sns_during_office_hours</name>
+    <condition>
+    <firewall>
+        <source>employees</source>
+    </firewall>
+    <url-category>
+        <url-name>sns-websites</url-name>
+    </url-category>
+    <context>
+        <time>
+        <start-date-time>2021-03-11T09:00:00.00Z</start-date-time>
+        <end-date-time>2021-12-31T18:00:00.00Z</end-date-time>
+        <period>
+            <start-time>09:00:00Z</start-time>
+            <end-time>18:00:00Z</end-time>
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+        </period>
+        <frequency>weekly</frequency>
+        </time>
+    </context>
+    </condition>
+    <action>
+    <primary-action>
+        <action>drop</action>
+    </primary-action>
+    </action>
+</rules>
+</i2nsf-cfi-policy>
+
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+<name>
+    security_policy_for_blocking_malicious_voip_packets
+</name>
+<rules>
+    <name>Block_malicious_voip_and_vocn_packets</name>
+    <condition>
+    <voice>
+        <source-id>malicious-id</source-id>
+    </voice>
+    <firewall>
+        <destination>employees</destination>
+    </firewall>
+    </condition>
+    <action>
+    <primary-action>
+        <action>drop</action>
+    </primary-action>
+    </action>
+</rules>
+</i2nsf-cfi-policy>
+
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+<name>security_policy_for_ddos_attacks</name>
+<rules>
+    <name>1000_packets_per_second</name>
+    <condition>
+    <firewall>
+        <destination>webservers</destination>
+    </firewall>
+    <ddos>
+        <rate-limit>
+        <packet-rate-threshold>1000</packet-rate-threshold>
+        </rate-limit>
+    </ddos>
+    </condition>
+    <action>
+    <primary-action>
+        <action>drop</action>
+    </primary-action>
+    </action>
+</rules>
+</i2nsf-cfi-policy>

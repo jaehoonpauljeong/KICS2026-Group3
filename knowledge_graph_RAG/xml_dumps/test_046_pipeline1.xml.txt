@@ -1,0 +1,24 @@
+<!-- intent: If a configuration change is made while memory usage on the firewall is critically high, drop any non-management traffic until stability is restored. -->
+<!-- expected: event -> system-event: configuration-change, system-alarm: memory-alarm, primary-action: drop -->
+xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>configuration_change_memory_high_policy</name>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>drop_non_management_traffic_on_memory_high</name>
+    <event>
+      <system-event>configuration-change</system-event>
+      <system-alarm>memory-alarm</system-alarm>
+    </event>
+    <condition>
+      <firewall/>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Endpoint groups document: contains the HR_Internal source group referenced by the policy -->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>HR_Internal</name>
+    <!-- Placeholder IPv4 prefix for the internal HR system (TEST-NET range as requested) -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+</endpoint-groups>
+
+<!-- I2NSF CFI policy document: references endpoint groups by name only -->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>HR_System_Unrestricted_Access_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Allow_From_HR_System_All_Traffic</name>
+
+    <condition>
+      <firewall>
+        <!-- Reference to the source endpoint-group defined in the endpoint-groups document.
+             Destination, transport-layer-protocol, and ports are intentionally omitted to
+             represent "any" (unrestricted) as required by the intent. -->
+        <source>HR_Internal</source>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- 'pass' is the model identity for allow/permit -->
+        <action>pass</action>
+      </primary-action>
+      <!-- No secondary (logging) action requested by intent; omitted on purpose -->
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

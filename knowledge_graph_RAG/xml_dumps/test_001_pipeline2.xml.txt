@@ -1,0 +1,31 @@
+<!-- intent: Block SNS Access during Business Hours -->
+<!-- expected: primary-action: drop -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>block_sns_access_business_hours_policy</name>
+    <rules>
+        <name>block_sns_access_during_business_hours</name>
+        <condition>
+            <firewall>
+                <source>all_users</source>
+                <destination>SNS_services</destination>
+            </firewall>
+            <context>
+                <time>
+                    <start-date-time>2023-10-01T09:00:00Z</start-date-time>
+                    <end-date-time>2023-10-01T17:00:00Z</end-date-time>
+                </time>
+            </context>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>
+``` 
+
+In this XML, I specified a firewall condition to block SNS services from all users during business hours, represented by a time condition. The policy is structured according to the I2NSF schema and follows the Event-Condition-Action (ECA) model. If you need further adjustments or a different context, please let me know!

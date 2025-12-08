@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>employee_devices</name>
+    <!-- Placeholder IPv4 prefix (TEST-NET) for the source endpoint group -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>gaming_servers</name>
+    <!-- Placeholder IPv4 prefix (TEST-NET) for the destination (game servers) -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Weeknight_Gaming</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Block_Games_On_Weeknights</name>
+
+    <condition>
+      <firewall>
+        <!-- reference endpoint-group names defined in endpoint-groups.xml -->
+        <source>employee_devices</source>
+        <destination>gaming_servers</destination>
+        <!-- No specific transport-layer-protocol or port range is specified:
+             block applies to any protocol/port for traffic matching the endpoint groups. -->
+      </firewall>
+
+      <context>
+        <time>
+          <period>
+            <!-- Nightly window: 20:00 UTC to 06:00 UTC (spans midnight) -->
+            <start-time>20:00:00Z</start-time>
+            <end-time>06:00:00Z</end-time>
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+          </period>
+          <frequency>weekly</frequency>
+        </time>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

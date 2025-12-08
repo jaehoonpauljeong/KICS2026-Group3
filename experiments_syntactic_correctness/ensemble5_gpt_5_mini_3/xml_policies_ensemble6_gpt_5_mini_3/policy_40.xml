@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Endpoint groups referenced by the policy -->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Administrators (operator workstations / management hosts) -->
+  <user-group>
+    <name>administrators</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+    <!-- MACs could be added here if known -->
+  </user-group>
+
+  <!-- Security & Operations (recipients for notifications / orchestration endpoints) -->
+  <user-group>
+    <name>security-operations</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Firewall devices (targets of configuration changes) -->
+  <device-group>
+    <name>firewall-devices</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+    <!-- Indicate these are network infrastructure devices -->
+  </device-group>
+</endpoint-groups>
+
+<!-- Minimal threat-prevention stub to satisfy modules that require a threat-feed container.
+     No actual threat IOC's are used by this policy intent. -->
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <threat-feed-list>
+    <name>none-specified</name>
+    <!-- No IOC entries; provide required format with a placeholder -->
+    <format>stix</format>
+  </threat-feed-list>
+</threat-prevention>
+
+<!-- The I2NSF CFI policy referencing endpoint groups by name only -->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Firewall_Configuration_Change_Response</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Log_Notify_Verify_On_Firewall_Config_Change</name>
+
+    <!-- Conditions: refer to endpoint-groups by name only -->
+    <condition>
+      <firewall>
+        <!-- Source (who initiated the change) -->
+        <source>administrators</source>
+        <!-- Destination (the firewall device(s) whose config changed) -->
+        <destination>firewall-devices</destination>
+      </firewall>
+
+      <context>
+        <!-- Identify the acting user-group (id required by model) -->
+        <users>
+          <group>
+            <id>200</id>
+            <name>administrators</name>
+          </group>
+        </users>
+
+        <!-- Device type context to indicate these are network infra devices -->
+        <device-type>
+          <device>network-infrastructure-device</device>
+        </device-type>
+
+        <!-- Time conditions left unspecified (rule applies at all times) -->
+      </context>
+    </condition>
+
+    <action>
+      <!-- Primary action: invoke-signaling to trigger notifications and automated verification workflows -->
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,28 @@
+<!-- intent: Copy all outgoing email traffic to the monitoring system for inspection (and still forward it). -->
+<!-- expected: primary-action: mirror -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>security_policy_for_email_monitoring</name>
+    <rules>
+        <name>copy_outgoing_email_traffic</name>
+        <condition>
+            <firewall>
+                <destination>monitoring_system</destination>
+            </firewall>
+            <smtp>
+                <source>outgoing_emails</source>
+            </smtp>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>forward</action>
+            </primary-action>
+            <secondary-action>
+                <log-action>copy</log-action>
+            </secondary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>
+```

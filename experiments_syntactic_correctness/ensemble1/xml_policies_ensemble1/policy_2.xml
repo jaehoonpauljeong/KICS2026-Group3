@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>malicious-sources</name>
+    <range-ipv4-address>
+      <start>0.0.0.0</start>
+      <end>255.255.255.255</end>
+    </range-ipv4-address>
+  </device-group>
+  <device-group>
+    <name>company</name>
+    <range-ipv4-address>
+      <start>192.168.1.0</start>
+      <end>192.168.1.255</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>malicious-voip-threat-feed</name>
+  <ioc>voip-malware-signature</ioc>
+  <format>stix</format>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Malicious_VoIP_VoCN_Packets</name>
+  <rules>
+    <name>Block_Malicious_Packets</name>
+    <condition>
+      <firewall>
+        <source>malicious-sources</source>
+        <destination>company</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

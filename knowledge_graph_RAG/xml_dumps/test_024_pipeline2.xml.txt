@@ -1,0 +1,26 @@
+<!-- intent: Throttle streaming media traffic to 100 MB/s to prevent network congestion. -->
+<!-- expected: primary-action: rate-limit, limit -> 1000 -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>throttle_streaming_media_traffic</name>
+    <rules>
+        <name>limit_streaming_media_traffic</name>
+        <condition>
+            <firewall>
+                <destination>streaming_servers</destination>
+            </firewall>
+            <application>
+                <protocol>streaming_media</protocol>
+            </application>
+        </condition>
+        <action>
+            <primary-action>
+                <action>throttle</action>
+                <limit>100</limit>
+            </primary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

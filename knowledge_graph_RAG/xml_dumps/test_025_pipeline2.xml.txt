@@ -1,0 +1,28 @@
+<!-- intent: Limit guest network bandwidth to 1000 packets per second. -->
+<!-- expected: primary-action: rate-limit, limit -> 1000 -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>limit_guest_network_bandwidth_policy</name>
+    <rules>
+        <name>limit_guest_bandwidth</name>
+        <condition>
+            <firewall>
+                <destination>guest_network</destination>
+            </firewall>
+            <ddos>
+                <rate-limit>
+                    <packet-rate-threshold>1000</packet-rate-threshold>
+                </rate-limit>
+            </ddos>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>limit</action>
+                <limit>1000</limit>
+            </primary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>
+```

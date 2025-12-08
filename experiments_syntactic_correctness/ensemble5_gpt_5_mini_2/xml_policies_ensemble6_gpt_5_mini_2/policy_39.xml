@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>Employee_Endpoints</name>
+    <!-- Placeholder/test-net IPv4 prefix for employee devices -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>Restricted_Finance_Servers</name>
+    <!-- Placeholder/test-net IPv4 prefix for finance servers -->
+    <ipv4-prefix>192.0.2.0/28</ipv4-prefix>
+    <!-- Optionally indicate protocols hosted on these devices (if known). Omitted to match "all access attempts". -->
+  </device-group>
+
+  <device-group>
+    <name>Audit_SIEM</name>
+    <!-- Placeholder/test-net IPv4 prefix for SIEM / logging collector -->
+    <ipv4-prefix>203.0.113.0/28</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Finance_Server_Access_Control_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>DenyAndAudit_Unauthorized_Finance_Access</name>
+
+    <!-- Condition: any employee (source) attempting to access the restricted finance servers (destination).
+         Protocol/port not specified (applies to all transport protocols). -->
+    <condition>
+      <firewall>
+        <source>Employee_Endpoints</source>
+        <destination>Restricted_Finance_Servers</destination>
+      </firewall>
+      <!-- "without authorization" requires an external authz check (not expressible in this model excerpt).
+           Implement authz verification in the identity/IDP side or extend the model to reference an authorization DB. -->
+    </condition>
+
+    <!-- Actions:
+         1) Primary: deny/block immediately -> drop
+         2) Secondary: record full audit logs -> rule-log
+         Notification and investigation triggers must be handled out-of-band (IR orchestration). -->
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+
+      <secondary-action>
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+
+  </rules>
+</i2nsf-cfi-policy>

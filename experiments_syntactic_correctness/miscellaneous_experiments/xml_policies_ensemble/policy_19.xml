@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>iot-devices</name>
+    <ipv4-prefix>10.0.0.0/24</ipv4-prefix>
+    <range-ipv4-address>
+      <start>10.0.0.1</start>
+      <end>10.0.0.50</end>
+    </range-ipv4-address>
+    <ipv6-prefix>fd00::/64</ipv6-prefix>
+    <range-ipv6-address>
+      <start>fd00::1</start>
+      <end>fd00::20</end>
+    </range-ipv6-address>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>IoT_Device_Traffic_Forwarding_Policy</name>
+  <rules>
+    <name>Forward_IoT_Traffic_To_Gateway</name>
+    <condition>
+      <firewall>
+        <source>iot-devices</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>forwarding</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

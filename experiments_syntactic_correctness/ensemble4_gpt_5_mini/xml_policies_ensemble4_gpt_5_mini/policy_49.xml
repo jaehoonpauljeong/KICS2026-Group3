@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>maintenance-admins</name>
+    <ipv4-prefix>192.0.2.0/28</ipv4-prefix>
+  </user-group>
+  <device-group>
+    <name>maintenance-targets</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Monthly_Maintenance_FirstSunday_02-04UTC</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Permit_Scheduled_Maintenance_FirstSunday_02-04UTC</name>
+    <condition>
+      <firewall>
+        <source>maintenance-admins</source>
+        <destination>maintenance-targets</destination>
+      </firewall>
+      <context>
+        <time>
+          <period>
+            <start-time>02:00:00Z</start-time>
+            <end-time>04:00:00Z</end-time>
+            <day>sunday</day>
+            <date>1</date>
+            <date>2</date>
+            <date>3</date>
+            <date>4</date>
+            <date>5</date>
+            <date>6</date>
+            <date>7</date>
+          </period>
+          <frequency>monthly</frequency>
+        </time>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

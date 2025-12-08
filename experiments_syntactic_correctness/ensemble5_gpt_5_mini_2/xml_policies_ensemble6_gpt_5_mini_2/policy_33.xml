@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Standalone endpoint-groups document.
+  Contains endpoint groups referenced by the policy (placeholder/test-net IPv4 ranges).
+-->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>VPN-Clients</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>VPN-Gateways</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>Internal-Resources</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<!--
+  i2nsf-cfi-policy document referencing the above endpoint groups by name only.
+  Primary action permits (pass) and secondary action requests session-log.
+-->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>VPN_Session_Logging_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Allow_VPN_and_Log_Session</name>
+
+    <condition>
+      <firewall>
+        <!-- References to endpoint groups by name only (endpoint details are in the endpoint-groups document above) -->
+        <source>VPN-Clients</source>
+        <destination>VPN-Gateways</destination>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+
+      <secondary-action>
+        <!-- Request creation of a session-level log for every matching session -->
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

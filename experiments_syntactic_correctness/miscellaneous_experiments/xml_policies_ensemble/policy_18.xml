@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No endpoint groups defined in the policy -->
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds defined in the policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Outgoing_Email_Traffic_Monitoring</name>
+  <rules>
+    <name>Copy_Outgoing_Email_Traffic</name>
+    <condition>
+      <firewall>
+        <source>outgoing-email-traffic</source> <!-- Placeholder for the endpoint group -->
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>mirror</action> <!-- Copy to monitoring system -->
+      </primary-action>
+      <secondary-action>
+        <action>forward</action> <!-- Forward the email traffic -->
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

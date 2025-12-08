@@ -1,0 +1,38 @@
+<!-- (Invalid) Intent: Book a meeting room for tomorrow from 3pm to 4pm.  -->
+
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>Meeting_Room_Booking_System</name>
+    <range-ipv4-address>
+      <start>192.0.2.1</start>
+      <end>192.0.2.254</end>
+    </range-ipv4-address>
+  </user-group>
+</endpoint-groups>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Meeting_Room_Booking_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Book_Meeting_Room_Availability_Check</name>
+    <condition>
+      <context>
+        <time>
+          <start-date-time>2023-10-10T15:00:00Z</start-date-time>
+          <end-date-time>2023-10-10T16:00:00Z</end-date-time>
+          <frequency>only-once</frequency>
+        </time>
+      </context>
+      <firewall>
+        <source>Meeting_Room_Booking_System</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

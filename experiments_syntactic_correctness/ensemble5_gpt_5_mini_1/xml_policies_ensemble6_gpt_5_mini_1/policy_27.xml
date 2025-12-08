@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>External_Sources</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+  <device-group>
+    <name>Protected_Hosts</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>ICMP_PingFlood_RateLimit_500pps</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>RateLimit_ICMP_500pps</name>
+    <condition>
+      <firewall>
+        <source>External_Sources</source>
+        <destination>Protected_Hosts</destination>
+        <icmp>
+          <message>echo</message>
+          <message>echo-reply</message>
+          <message>destination-unreachable</message>
+          <message>time-exceeded</message>
+          <message>parameter-problem</message>
+          <message>redirect</message>
+          <message>router-solicitation</message>
+          <message>router-advertisement</message>
+          <message>extended-echo-request</message>
+          <message>extended-echo-reply</message>
+          <message>experimental-mobility-protocols</message>
+        </icmp>
+      </firewall>
+
+      <ddos>
+        <rate-limit>
+          <packet-rate-threshold>500</packet-rate-threshold>
+        </rate-limit>
+      </ddos>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>32000</limit>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

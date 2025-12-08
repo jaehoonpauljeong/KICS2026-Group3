@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>employees</name>
+    <!-- Placeholder IPv4 prefix for the 'employees' user-group (RFC5737 test-net) -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>internet-websites</name>
+    <!-- Placeholder IPv4 prefix representing web destinations reachable by employees (RFC5737 test-net) -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+    <!-- Indicate these devices support web application protocols -->
+    <application-protocol>http</application-protocol>
+    <application-protocol>https</application-protocol>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Allow_Employee_Web_Browsing_With_Logging</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Employee_Web_Browsing_Allow_And_Log</name>
+
+    <condition>
+      <firewall>
+        <!-- Source identity/group: employees -->
+        <source>employees</source>
+
+        <!-- Destination placeholder group: internet-websites (see endpoint-groups document) -->
+        <destination>internet-websites</destination>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- 'pass' maps to allow/permit behavior in the I2NSF model -->
+        <action>pass</action>
+      </primary-action>
+
+      <secondary-action>
+        <!-- Per-trigger (rule) logging as requested -->
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

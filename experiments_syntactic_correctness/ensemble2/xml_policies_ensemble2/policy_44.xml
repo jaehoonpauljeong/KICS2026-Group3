@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>core-network-interfaces</name>
+    <range-ipv4-address>
+      <start>192.168.1.1</start>
+      <end>192.168.1.50</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Core_Network_Interface_Failover_Policy</name>
+  <rules>
+    <name>Core_Network_Interface_Down_Notification</name>
+    <condition>
+      <firewall>
+        <source>core-network-interfaces</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+      <secondary-action>
+        <action>notify</action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

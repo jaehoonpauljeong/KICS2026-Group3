@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>iot-devices</name>
+    <range-ipv4-address>
+      <start>10.0.0.1</start>
+      <end>10.0.0.50</end>
+    </range-ipv4-address>
+    <application-protocol>http</application-protocol>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface"
+    xmlns:nsfcfi="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cfi-policy">
+  <name>IoT_HTTP_to_CoAP_Translation_Policy</name>
+  <rules>
+    <name>Translate_HTTP_to_CoAP</name>
+    <condition>
+      <firewall>
+        <source>iot-devices</source>
+        <context>
+          <application>
+            <protocol>nsfcfi:http</protocol>
+          </application>
+        </context>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>transform</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>EPG_LOW_PRIORITY_PROCESSES</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+  <device-group>
+    <name>EPG_NONCRITICAL_WORKLOADS</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+  <device-group>
+    <name>EPG_AUTOSCALE_FAILOVER_TARGETS</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>cpu_overload_mitigation_policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>throttle_and_autoscale_on_cpu_overload</name>
+    <condition>
+      <firewall>
+        <!-- Endpoint-group names only (details in the standalone endpoint-groups document) -->
+        <source>EPG_LOW_PRIORITY_PROCESSES</source>
+        <source>EPG_NONCRITICAL_WORKLOADS</source>
+        <destination>EPG_AUTOSCALE_FAILOVER_TARGETS</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <!-- invoke-signaling is used to call an external orchestrator/workflow engine
+             that must perform CPU throttling, workload reduction/suspension, notifications,
+             and autoscaling/failover according to out-of-band-specified thresholds and sequencing -->
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

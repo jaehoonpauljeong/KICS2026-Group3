@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>Client_Users</name>
+    <!-- Placeholder/test IPv4 prefix for client endpoints -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>Database_Servers</name>
+    <!-- Placeholder/test IPv4 prefix for database servers -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Permit_Database_Access_With_Session_Logging</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Allow_DB_Connection_And_Record_Full_Session</name>
+
+    <condition>
+      <firewall>
+        <!-- References to endpoint-groups by name only (details are in endpoint-groups doc) -->
+        <source>Client_Users</source>
+        <destination>Database_Servers</destination>
+
+        <!-- Example DB ports: MySQL and PostgreSQL (start == end for a single port) -->
+        <range-port-number>
+          <start>3306</start>
+          <end>3306</end>
+        </range-port-number>
+        <range-port-number>
+          <start>5432</start>
+          <end>5432</end>
+        </range-port-number>
+      </firewall>
+
+      <!-- NOTE: user identity, authenticated role, executed queries and session timestamps
+           are intended to be recorded by the 'session-log' secondary action.
+           They are not represented as explicit condition fields here because they are
+           primarily logging/session attributes rather than matching predicates. -->
+    </condition>
+
+    <action>
+      <!-- Primary action: allow/permit the DB connection -->
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+
+      <!-- Secondary action: record full session details (session logging). -->
+      <secondary-action>
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

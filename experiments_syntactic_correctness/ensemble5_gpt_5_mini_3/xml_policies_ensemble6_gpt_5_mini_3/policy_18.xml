@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Source group: internal senders initiating outbound mail -->
+  <user-group>
+    <name>Internal-Email-Senders</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Destination group: external mail servers / outbound mail gateway -->
+  <device-group>
+    <name>Outbound-Mail-Gateway</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Monitoring sink (inspection system). Defined here as a device-group placeholder. -->
+  <device-group>
+    <name>Monitoring-System</name>
+    <ipv4-prefix>203.0.113.10/32</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Copy_Outgoing_Email_To_Monitoring</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>CopyOutgoingEmail_AllowAndMirror</name>
+
+    <condition>
+      <firewall>
+        <!-- Source: internal senders -->
+        <source>Internal-Email-Senders</source>
+
+        <!-- Destination: outbound mail gateway / external recipients -->
+        <destination>Outbound-Mail-Gateway</destination>
+
+        <!-- SMTP ports: 25, 587, 465 -->
+        <range-port-number>
+          <start>25</start>
+          <end>25</end>
+        </range-port-number>
+        <range-port-number>
+          <start>587</start>
+          <end>587</end>
+        </range-port-number>
+        <range-port-number>
+          <start>465</start>
+          <end>465</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>mirror</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

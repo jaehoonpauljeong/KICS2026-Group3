@@ -1,0 +1,81 @@
+YANG Validation Results - 2025-10-27 22:35:36.675257
+============================================================
+
+[PASS] policy_5.xml
+[PASS] policy_41.xml
+[PASS] policy_11.xml
+[PASS] policy_36.xml
+[PASS] policy_50.xml
+[PASS] policy_25.xml
+[PASS] policy_13.xml
+[FAIL] policy_20.xml
+[FAIL] policy_43.xml
+[PASS] policy_3.xml
+[PASS] policy_42.xml
+[PASS] policy_31.xml
+[PASS] policy_46.xml
+[PASS] policy_40.xml
+[PASS] policy_7.xml
+[PASS] policy_10.xml
+[PASS] policy_29.xml
+[PASS] policy_44.xml
+[PASS] policy_38.xml
+[PASS] policy_2.xml
+[PASS] policy_23.xml
+[PASS] policy_35.xml
+[PASS] policy_30.xml
+[PASS] policy_34.xml
+[PASS] policy_6.xml
+[PASS] policy_8.xml
+[PASS] policy_18.xml
+[PASS] policy_24.xml
+[PASS] policy_33.xml
+[PASS] policy_48.xml
+[PASS] policy_4.xml
+[PASS] policy_9.xml
+[PASS] policy_45.xml
+[PASS] policy_16.xml
+[PASS] policy_37.xml
+[PASS] policy_47.xml
+[PASS] policy_14.xml
+[PASS] policy_12.xml
+[FAIL] policy_49.xml
+[FAIL] policy_22.xml
+[PASS] policy_17.xml
+[PASS] policy_39.xml
+[PASS] policy_21.xml
+[PASS] policy_26.xml
+[FAIL] policy_19.xml
+[PASS] policy_32.xml
+[PASS] policy_28.xml
+[PASS] policy_15.xml
+[PASS] policy_1.xml
+[PASS] policy_27.xml
+
+[FAIL] policy_20.xml
+Error:
+libyang err : Invalid identityref "http" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/device-group/application-protocol, data location /ietf-i2nsf-cons-facing-interface:device-group[name='video-clients'], line number 13.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_20.xml".
+
+[FAIL] policy_43.xml
+Error:
+libyang err : Mandatory choice "match-type" data do not exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/user-group/match-type.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_43.xml".
+
+[FAIL] policy_49.xml
+Error:
+libyang err : When condition "../../frequency='weekly'" not satisfied. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition/context/time/period/day, data location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy[name='Monthly_Maintenance_Window_Policy']/rules[name='FirstSunday_02_00_to_04_00_UTC_Maintenance_Invoke_Orchestrator']/condition/context/time/period/day[.='sunday'].)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_49.xml".
+
+[FAIL] policy_22.xml
+Error:
+libyang err : Node "ioc" not found as a child of "payload-content" node. (Schema location /ietf-i2nsf-cons-facing-interface:threat-prevention/payload-content, data location /ietf-i2nsf-cons-facing-interface:payload-content[name='sensitive-financial-data'], line number 26.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_22.xml".
+
+[FAIL] policy_19.xml
+Error:
+libyang err : No module with namespace "urn:ietf:params:xml:ns:i2nsf:ext:forwarding" in the context. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/action/primary-action, data location /ietf-i2nsf-cons-facing-interface:primary-action, line number 48.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_19.xml".
+
+============================================================
+Validation Summary: 45 passed, 5 failed.

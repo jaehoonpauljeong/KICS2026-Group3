@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!--
+    Placeholder endpoint groups because the intent references "unknown / unclassified" traffic
+    but did not supply concrete source/destination identity lists. Replace these placeholders
+    with real endpoint-group entries (or a dynamic classification output) when available.
+  -->
+  <user-group>
+    <name>unclassified_sources</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>any_destinations</name>
+    <ipv4-prefix>0.0.0.0/0</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Discard_Unknown_Unclassified_Traffic</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Drop_Unknown_Traffic_No_Notification</name>
+
+    <condition>
+      <firewall>
+        <source>unclassified_sources</source>
+        <destination>any_destinations</destination>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

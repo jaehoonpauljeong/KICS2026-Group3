@@ -1,0 +1,463 @@
+awesome — here’s a clean, **idempotent** Cypher bundle you can paste into Neo4j Browser / Cypher Shell to stand up the **Identity**, **Catalog**, and **Lexeme** portions of the KG (no CSVs). It creates constraints, seeds core identities, a few example catalog rows you can edit/extend, and the lexeme→target links.
+
+---
+
+# 0) Constraints & Indexes (run once)
+
+```cypher
+// Canonical IDs for all identityref values
+CREATE CONSTRAINT identity_machine_name_unique IF NOT EXISTS
+FOR (i:Identity) REQUIRE i.machine_name IS UNIQUE;
+
+// Prevent duplicate synonyms per locale
+CREATE CONSTRAINT lexeme_text_locale_unique IF NOT EXISTS
+FOR (l:Lexeme) REQUIRE (l.text, l.locale) IS UNIQUE;
+
+// --- Optional full-text index for Lexemes
+CALL db.index.fulltext.createNodeIndex(
+  'lexemeTextIndex', ['Lexeme'], ['text']
+) YIELD name
+RETURN name;
+```
+
+---
+
+# 1) Identity Nodes (YANG identityrefs)
+
+> Identities carry two labels: `:Identity` and their base class (e.g., `:PrimaryAction`).
+> `machine_name` is the canonical ID you’ll use in serialization (e.g., `drop`).
+
+## 1A. PrimaryAction
+
+```cypher
+WITH [
+  {m:'pass', dname:'Allow/Pass', desc:'Allows traffic to proceed (permit)'},
+  {m:'drop', dname:'Drop', desc:'Denies matching traffic (silent drop)'},
+  {m:'reject', dname:'Reject', desc:'Denies traffic with error (ICMP/TCP RST)'},
+  {m:'rate-limit', dname:'Rate Limit', desc:'Throttle traffic by rate'},
+  {m:'mirror', dname:'Mirror', desc:'Copy traffic to monitor while forwarding'},
+  {m:'invoke-signaling', dname:'Invoke Signaling', desc:'Notify/control-plane action'},
+  {m:'tunnel-encapsulation', dname:'Tunnel Encapsulation', desc:'Encapsulate in a tunnel'},
+  {m:'forwarding', dname:'Forwarding', desc:'Forward to specific next hop/segment'},
+  {m:'transformation', dname:'Transformation', desc:'Packet/protocol transformation'}
+] AS rows
+UNWIND rows AS r
+MERGE (i:Identity:PrimaryAction {machine_name:r.m})
+SET i.display_name = r.dname, i.description = r.desc;
+```
+
+## 1B. SecondaryAction
+
+```cypher
+WITH [
+  {m:'rule-log', dname:'Rule Log', desc:'Log that a rule fired'},
+  {m:'session-log', dname:'Session Log', desc:'Log session/flow details'}
+] AS rows
+UNWIND rows AS r
+MERGE (i:Identity:SecondaryAction {machine_name:r.m})
+SET i.display_name = r.dname, i.description = r.desc;
+```
+
+## 1C. ResolutionStrategy
+
+```cypher
+WITH [
+  {m:'fmr', dname:'First Match', desc:'First matching rule wins'},
+  {m:'lmr', dname:'Last Match', desc:'Last matching rule wins'},
+  {m:'pmre', dname:'Priority (Allow Errors)', desc:'Priority-based; conflicts possible'},
+  {m:'pmrn', dname:'Priority (No Errors)', desc:'Priority-based; unique priorities'}
+] AS rows
+UNWIND rows AS r
+MERGE (i:Identity:ResolutionStrategy {machine_name:r.m})
+SET i.display_name = r.dname, i.description = r.desc;
+```
+
+## 1D. ICMPMessage (core set + a couple of subtypes)
+
+```cypher
+// Parents
+WITH [
+  {m:'echo', dname:'Echo Request', desc:'ICMP Echo Request'},
+  {m:'echo-reply', dname:'Echo Reply', desc:'ICMP Echo Reply'},
+  {m:'destination-unreachable', dname:'Destination Unreachable', desc:'ICMP unreachable'},
+  {m:'redirect', dname:'Redirect', desc:'ICMP Redirect'},
+  {m:'time-exceeded', dname:'Time Exceeded', desc:'TTL exceeded'},
+  {m:'parameter-problem', dname:'Parameter Problem', desc:'Header parameter error'},
+  {m:'experimental-mobility-protocols', dname:'Experimental Mobility Protocols', desc:'ICMPv4 type 41 / ICMPv6 type 150'},
+  {m:'router-advertisement', dname:'Router Advertisement', desc:'ICMP RA'},
+  {m:'router-solicitation', dname:'Router Solicitation', desc:'ICMP RS'},
+  {m:'extended-echo-request', dname:'Extended Echo Request', desc:'ICMPv6 extended echo'},
+  {m:'extended-echo-reply', dname:'Extended Echo Reply', desc:'ICMPv6 extended echo reply'}
+] AS rows
+UNWIND rows AS r
+MERGE (i:Identity:ICMPMessage {machine_name:r.m})
+SET i.display_name = r.dname, i.description = r.desc;
+
+// Subtypes (examples) with hierarchy edges
+WITH [
+  {child:'port-unreachable',                    parent:'destination-unreachable', dname:'Port Unreachable', desc:'ICMPv4 type 3 code 3 / ICMPv6 type 1 code 4'},
+  {child:'request-no-error',                    parent:'extended-echo-request',   dname:'Extended Echo Request: No Error', desc:'ICMPv4 type 42 code 0 / ICMPv6 type 160 code 0'},
+  {child:'reply-no-error',                      parent:'extended-echo-reply',     dname:'Extended Echo Reply: No Error',   desc:'ICMPv4 type 43 code 0 / ICMPv6 type 161 code 0'},
+  {child:'malformed-query',                     parent:'extended-echo-reply',     dname:'Extended Echo Reply: Malformed Query', desc:'ICMPv4 type 43 code 1 / ICMPv6 type 161 code 1'},
+  {child:'no-such-interface',                   parent:'extended-echo-reply',     dname:'Extended Echo Reply: No Such Interface', desc:'ICMPv4 type 43 code 2 / ICMPv6 type 161 code 2'},
+  {child:'no-such-table-entry',                 parent:'extended-echo-reply',     dname:'Extended Echo Reply: No Such Table Entry', desc:'ICMPv4 type 43 code 3 / ICMPv6 type 161 code 3'},
+  {child:'multiple-interfaces-satisfy-query',   parent:'extended-echo-reply',     dname:'Extended Echo Reply: Multiple Interfaces Satisfy Query', desc:'ICMPv4 type 43 code 4 / ICMPv6 type 161 code 4'}
+] AS subs
+UNWIND subs AS s
+MERGE (c:Identity:ICMPMessage {machine_name:s.child})
+  ON CREATE SET c.display_name=s.dname, c.description=s.desc
+MERGE (p:Identity:ICMPMessage {machine_name:s.parent})
+MERGE (c)-[:SUBTYPE_OF]->(p);
+```
+
+## 1E. DeviceType
+
+```cypher
+WITH [
+  {m:'computer', dname:'Computer', desc:'PC / server'},
+  {m:'mobile-phone', dname:'Mobile Phone', desc:'Smartphone / cellular'},
+  {m:'voip-vocn-phone', dname:'VoIP/VoCN Phone', desc:'VoIP or cellular network phone'},
+  {m:'tablet', dname:'Tablet', desc:'Tablet device'},
+  {m:'network-infrastructure-device', dname:'Network Device', desc:'Router/switch/AP, etc.'},
+  {m:'iot-device', dname:'IoT Device', desc:'Embedded/IoT device'},
+  {m:'ot', dname:'OT Device', desc:'Industrial/Operational Tech'},
+  {m:'vehicle', dname:'Vehicle', desc:'Connected vehicle'}
+] AS rows
+UNWIND rows AS r
+MERGE (i:Identity:DeviceType {machine_name:r.m})
+SET i.display_name = r.dname, i.description = r.desc;
+```
+
+## 1F. ApplicationProtocol
+
+```cypher
+WITH [
+  {m:'http', dname:'HTTP', desc:'HTTP/1.1'},
+  {m:'https', dname:'HTTPS', desc:'HTTP/1.1 over TLS'},
+  {m:'http2', dname:'HTTP/2', desc:'HTTP/2'},
+  {m:'https2', dname:'HTTP/2 (TLS)', desc:'HTTP/2 over TLS'},
+  {m:'ftp', dname:'FTP', desc:'File Transfer Protocol'},
+  {m:'ssh', dname:'SSH', desc:'Secure Shell'},
+  {m:'telnet', dname:'Telnet', desc:'Telnet protocol'},
+  {m:'smtp', dname:'SMTP', desc:'Simple Mail Transfer Protocol'},
+  {m:'pop3', dname:'POP3', desc:'Post Office Protocol v3'},
+  {m:'pop3s', dname:'POP3 (TLS)', desc:'POP3 over TLS'},
+  {m:'imap', dname:'IMAP', desc:'Internet Message Access Protocol'},
+  {m:'imaps', dname:'IMAP (TLS)', desc:'IMAP over TLS'}
+] AS rows
+UNWIND rows AS r
+MERGE (i:Identity:ApplicationProtocol {machine_name:r.m})
+SET i.display_name = r.dname, i.description = r.desc;
+```
+
+## 1G. IOCFormat (signature types)
+
+```cypher
+WITH [
+  {m:'stix',   dname:'STIX (JSON)', desc:'Structured Threat Information Expression v2.1 (JSON)'},
+  {m:'misp',   dname:'MISP Core',   desc:'Malware Information Sharing Platform Core format'},
+  {m:'openioc',dname:'OpenIOC',     desc:'OpenIOC 1.1 schema'},
+  {m:'iodef',  dname:'IODEF (JSON)',desc:'Incident Object Description Exchange Format (JSON)'}
+] AS rows
+UNWIND rows AS r
+MERGE (i:Identity:IOCFormat {machine_name:r.m})
+SET i.display_name = r.dname, i.description = r.desc;
+```
+
+## 1H. System-Event (Event)
+```cypher
+WITH [
+  {m:'access-violation',     dname:'Access Violation',     desc:'User attempts an operation beyond authorization.'},
+  {m:'configuration-change', dname:'Configuration Change', desc:'A configuration or policy setting was modified.'},
+  {m:'session-table-event',  dname:'Session Table Event',  desc:'Session/connection table updated (create/remove/expire).'},
+  {m:'traffic-flows',        dname:'Traffic Flows',        desc:'Traffic flow behavior matched/changed per monitored criteria.'}
+] AS rows
+UNWIND rows AS r
+MERGE (i:Identity:SystemEvent {machine_name:r.m})
+SET i.display_name = r.dname,
+    i.description  = r.desc;
+```
+
+## 1I. System-Alarm (Event)
+```
+WITH [
+  {m:'memory-alarm',    dname:'Memory Alarm',    desc:'System memory usage exceeded threshold.'},
+  {m:'cpu-alarm',       dname:'CPU Alarm',       desc:'CPU utilization exceeded threshold.'},
+  {m:'disk-alarm',      dname:'Disk Alarm',      desc:'Disk usage exceeded threshold / low free space.'},
+  {m:'hardware-alarm',  dname:'Hardware Alarm',  desc:'Detected hardware failure or malfunction.'},
+  {m:'interface-alarm', dname:'Interface Alarm', desc:'Interface/link state change (down/up).'}
+] AS rows
+UNWIND rows AS r
+MERGE (i:Identity:SystemAlarm {machine_name:r.m})
+SET i.display_name = r.dname,
+    i.description  = r.desc;
+```
+
+---
+
+# 2) Lexical Helpers (Lexeme → REFERS\_TO)
+
+> Small curated set you can grow later. These enable NL shortcuts.
+
+## For 1A to 1G:
+```cypher
+// Create/update Lexemes
+WITH [
+  // pass
+  {text:'allow',           locale:'en'},
+  {text:'permit',          locale:'en'},
+  {text:'accept',          locale:'en'},
+  {text:'let through',     locale:'en'},
+  {text:'allowlist',       locale:'en'},
+
+  // drop
+  {text:'block',           locale:'en'},
+  {text:'deny',            locale:'en'},
+  {text:'discard',         locale:'en'},
+  {text:'blackhole',       locale:'en'},
+  {text:'filter out',      locale:'en'},
+
+  // reject
+  {text:'actively deny',   locale:'en'},
+  {text:'refuse',          locale:'en'},
+  {text:'send rst',        locale:'en'},
+  {text:'icmp unreachable',locale:'en'},
+  {text:'reset connection',locale:'en'},
+
+  // rate-limit
+  {text:'throttle',        locale:'en'},
+  {text:'police',          locale:'en'},
+  {text:'cap bandwidth',   locale:'en'},
+  {text:'limit rate',      locale:'en'},
+  {text:'traffic shaping', locale:'en'},
+
+  // mirror
+  {text:'span',            locale:'en'},
+  {text:'tap',             locale:'en'},
+  {text:'duplicate',       locale:'en'},
+  {text:'copy to monitor', locale:'en'},
+  {text:'tee',             locale:'en'},
+
+  // invoke-signaling
+  {text:'signal',               locale:'en'},
+  {text:'notify controller',    locale:'en'},
+  {text:'raise event',          locale:'en'},
+  {text:'trigger alarm',        locale:'en'},
+  {text:'send notification',    locale:'en'},
+
+  // tunnel-encapsulation
+  {text:'encapsulate',     locale:'en'},
+  {text:'tunnel',          locale:'en'},
+  {text:'gre',             locale:'en'},
+  {text:'ipsec tunnel',    locale:'en'},
+  {text:'wrap packet',     locale:'en'},
+
+  // forwarding
+  {text:'forward',         locale:'en'},
+  {text:'route',           locale:'en'},
+  {text:'send to next hop',locale:'en'},
+  {text:'steer',           locale:'en'},
+  {text:'redirect',        locale:'en'},
+
+  // transformation
+  {text:'transform',       locale:'en'},
+  {text:'rewrite',         locale:'en'},
+  {text:'modify header',   locale:'en'},
+  {text:'normalize',       locale:'en'},
+  {text:'translate protocol', locale:'en'}
+] AS rows
+UNWIND rows AS r
+MERGE (l:Lexeme {text: toLower(r.text), locale: r.locale});
+
+// Wire Lexemes → PrimaryAction targets (idempotent)
+
+// pass
+MATCH (t:Identity:PrimaryAction {machine_name:'pass'})
+WITH t
+UNWIND ['allow','permit','accept','let through','allowlist'] AS w
+MATCH (l:Lexeme {text:w, locale:'en'})
+MERGE (l)-[:REFERS_TO]->(t);
+
+// drop
+MATCH (t:Identity:PrimaryAction {machine_name:'drop'})
+WITH t
+UNWIND ['block','deny','discard','blackhole','filter out'] AS w
+MATCH (l:Lexeme {text:w, locale:'en'})
+MERGE (l)-[:REFERS_TO]->(t);
+
+// reject
+MATCH (t:Identity:PrimaryAction {machine_name:'reject'})
+WITH t
+UNWIND ['actively deny','refuse','send rst','icmp unreachable','reset connection'] AS w
+MATCH (l:Lexeme {text:w, locale:'en'})
+MERGE (l)-[:REFERS_TO]->(t);
+
+// rate-limit
+MATCH (t:Identity:PrimaryAction {machine_name:'rate-limit'})
+WITH t
+UNWIND ['throttle','police','cap bandwidth','limit rate','traffic shaping'] AS w
+MATCH (l:Lexeme {text:w, locale:'en'})
+MERGE (l)-[:REFERS_TO]->(t);
+
+// mirror
+MATCH (t:Identity:PrimaryAction {machine_name:'mirror'})
+WITH t
+UNWIND ['span','tap','duplicate','copy to monitor','tee'] AS w
+MATCH (l:Lexeme {text:w, locale:'en'})
+MERGE (l)-[:REFERS_TO]->(t);
+
+// invoke-signaling
+MATCH (t:Identity:PrimaryAction {machine_name:'invoke-signaling'})
+WITH t
+UNWIND ['signal','notify controller','raise event','trigger alarm','send notification'] AS w
+MATCH (l:Lexeme {text:w, locale:'en'})
+MERGE (l)-[:REFERS_TO]->(t);
+
+// tunnel-encapsulation
+MATCH (t:Identity:PrimaryAction {machine_name:'tunnel-encapsulation'})
+WITH t
+UNWIND ['encapsulate','tunnel','gre','ipsec tunnel','wrap packet'] AS w
+MATCH (l:Lexeme {text:w, locale:'en'})
+MERGE (l)-[:REFERS_TO]->(t);
+
+// Forwarding
+MATCH (t:Identity:PrimaryAction {machine_name:'forwarding'})
+WITH t
+UNWIND ['forward','route','send to next hop','steer','redirect'] AS w
+MATCH (l:Lexeme {text:w, locale:'en'})
+MERGE (l)-[:REFERS_TO]->(t);
+
+// transformation
+MATCH (t:Identity:PrimaryAction {machine_name:'transformation'})
+WITH t
+UNWIND ['transform','rewrite','modify header','normalize','translate protocol'] AS w
+MATCH (l:Lexeme {text:w, locale:'en'})
+MERGE (l)-[:REFERS_TO]->(t);
+```
+
+## For 1H to 1I:
+```cypher
+// Create/update Lexemes
+WITH [
+  // system-event
+  // access-violation
+  {t:'unauthorized access',   loc:'en'},
+  {t:'access control violation', loc:'en'},
+  {t:'privilege violation',   loc:'en'},
+  {t:'permission denied event', loc:'en'},
+
+  // configuration-change
+  {t:'config change',         loc:'en'},
+  {t:'settings update',       loc:'en'},
+  {t:'policy change',         loc:'en'},
+  {t:'reconfigure',           loc:'en'},
+
+  // session-table-event
+  {t:'connection created',    loc:'en'},
+  {t:'session created',       loc:'en'},
+  {t:'session removed',       loc:'en'},
+  {t:'flow expired',          loc:'en'},
+  {t:'conn table update',     loc:'en'},
+
+  // traffic-flows
+  {t:'abnormal traffic flows', loc:'en'},
+  {t:'flow anomaly',           loc:'en'},
+  {t:'traffic pattern change', loc:'en'},
+  {t:'monitored flow matched', loc:'en'},
+
+  // system-alarm
+  // memory-alarm
+  {t:'high memory usage',     loc:'en'},
+  {t:'memory threshold exceeded', loc:'en'},
+  {t:'low available memory',  loc:'en'},
+
+  // cpu-alarm
+  {t:'high cpu usage',        loc:'en'},
+  {t:'cpu overload',          loc:'en'},
+  {t:'cpu threshold exceeded',loc:'en'},
+
+  // disk-alarm
+  {t:'low disk space',        loc:'en'},
+  {t:'high disk usage',       loc:'en'},
+  {t:'disk threshold exceeded', loc:'en'},
+
+  // hardware-alarm
+  {t:'hardware failure',      loc:'en'},
+  {t:'device malfunction',    loc:'en'},
+  {t:'component failure',     loc:'en'},
+
+  // interface-alarm
+  {t:'interface down',        loc:'en'},
+  {t:'link state change',     loc:'en'},
+  {t:'network port down',     loc:'en'}
+] AS rows
+UNWIND rows AS r
+MERGE (:Lexeme {text: toLower(r.t), locale: r.loc});
+
+
+// Wire Lexemes → PrimaryAction targets (idempotent)
+// system-event
+// access-violation
+MATCH (t:Identity:SystemEvent {machine_name:'access-violation'})
+WITH t, ['unauthorized access','access control violation','privilege violation','permission denied event'] AS words
+UNWIND words AS w
+MATCH (l:Lexeme {text:toLower(w), locale:'en'}) MERGE (l)-[:REFERS_TO]->(t);
+
+// configuration-change
+MATCH (t:Identity:SystemEvent {machine_name:'configuration-change'})
+WITH t, ['config change','settings update','policy change','reconfigure'] AS words
+UNWIND words AS w
+MATCH (l:Lexeme {text:toLower(w), locale:'en'}) MERGE (l)-[:REFERS_TO]->(t);
+
+// session-table-event
+MATCH (t:Identity:SystemEvent {machine_name:'session-table-event'})
+WITH t, ['connection created','session created','session removed','flow expired','conn table update'] AS words
+UNWIND words AS w
+MATCH (l:Lexeme {text:toLower(w), locale:'en'}) MERGE (l)-[:REFERS_TO]->(t);
+
+// traffic-flows
+MATCH (t:Identity:SystemEvent {machine_name:'traffic-flows'})
+WITH t, ['abnormal traffic flows','flow anomaly','traffic pattern change','monitored flow matched'] AS words
+UNWIND words AS w
+MATCH (l:Lexeme {text:toLower(w), locale:'en'}) MERGE (l)-[:REFERS_TO]->(t);
+
+
+// system-alarm
+// memory-alarm
+MATCH (t:Identity:SystemAlarm {machine_name:'memory-alarm'})
+WITH t, ['high memory usage','memory threshold exceeded','low available memory'] AS words
+UNWIND words AS w
+MATCH (l:Lexeme {text:toLower(w), locale:'en'}) MERGE (l)-[:REFERS_TO]->(t);
+
+// cpu-alarm
+MATCH (t:Identity:SystemAlarm {machine_name:'cpu-alarm'})
+WITH t, ['high cpu usage','cpu overload','cpu threshold exceeded'] AS words
+UNWIND words AS w
+MATCH (l:Lexeme {text:toLower(w), locale:'en'}) MERGE (l)-[:REFERS_TO]->(t);
+
+// disk-alarm
+MATCH (t:Identity:SystemAlarm {machine_name:'disk-alarm'})
+WITH t, ['low disk space','high disk usage','disk threshold exceeded'] AS words
+UNWIND words AS w
+MATCH (l:Lexeme {text:toLower(w), locale:'en'}) MERGE (l)-[:REFERS_TO]->(t);
+
+// hardware-alarm
+MATCH (t:Identity:SystemAlarm {machine_name:'hardware-alarm'})
+WITH t, ['hardware failure','device malfunction','component failure'] AS words
+UNWIND words AS w
+MATCH (l:Lexeme {text:toLower(w), locale:'en'}) MERGE (l)-[:REFERS_TO]->(t);
+
+// interface-alarm
+MATCH (t:Identity:SystemAlarm {machine_name:'interface-alarm'})
+WITH t, ['interface down','link state change','network port down'] AS words
+UNWIND words AS w
+MATCH (l:Lexeme {text:toLower(w), locale:'en'}) MERGE (l)-[:REFERS_TO]->(t);
+```
+---
+
+## Notes / Tips
+
+* All statements use `MERGE` so you can re-run safely.
+* Add more identities (e.g., **TransportProtocol** or full **ICMP** subtype set) by copying the UNWIND pattern.
+* If you prefer **relationships** over array props (e.g., IP ranges as nodes), you can normalize later without changing identity semantics.
+* This schema supports your **LLM → (class-scoped) vector lookup**: the second label (e.g., `:PrimaryAction`) is a perfect filter.

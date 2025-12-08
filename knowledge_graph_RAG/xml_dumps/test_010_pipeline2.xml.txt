@@ -1,0 +1,23 @@
+<!-- intent: Permit employees to browse the web freely from the corporate network. -->
+<!-- expected: primary-action: pass -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>permit_web_access_policy</name>
+    <rules>
+        <name>allow_employees_web_access</name>
+        <condition>
+            <firewall>
+                <source>corporate_network</source>
+                <destination>webservers</destination>
+            </firewall>
+        </condition>
+        <action>
+            <primary-action>
+                <action>permit</action>
+            </primary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

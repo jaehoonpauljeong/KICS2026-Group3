@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Standalone endpoint-groups document.
+  Contains device-groups referenced by the policy:
+    - IoT_Devices : placeholder IPv4 prefix for IoT devices (192.0.2.0/24)
+    - IoT_Specialized_Gateway : specialized gateway endpoint (198.51.100.10/32)
+-->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>IoT_Devices</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+    <!-- Placeholder: this group represents IoT devices (source or destination) -->
+    <!-- Use real device IP ranges or MAC lists in production -->
+  </device-group>
+
+  <device-group>
+    <name>IoT_Specialized_Gateway</name>
+    <ipv4-prefix>198.51.100.10/32</ipv4-prefix>
+    <!-- Placeholder: specialized gateway that should receive forwarded IoT traffic -->
+  </device-group>
+</endpoint-groups>
+
+<!--
+  i2nsf-cfi-policy document.
+  Two rules are provided to express "source OR destination" semantics:
+    1) traffic originating from an IoT device -> forwarding
+    2) traffic destined to an IoT device -> forwarding
+-->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Forward_IoT_Traffic_to_Specialized_Gateway</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <!-- Rule 1: If source is an IoT device, forward the flow -->
+  <rules>
+    <name>Forward_IoT_Device_Traffic_From_Source</name>
+    <condition>
+      <firewall>
+        <source>IoT_Devices</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>forwarding</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- Rule 2: If destination is an IoT device, forward the flow -->
+  <rules>
+    <name>Forward_IoT_Device_Traffic_To_Destination</name>
+    <condition>
+      <firewall>
+        <destination>IoT_Devices</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>forwarding</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Placeholder endpoint groups (per your inferred/test-net placeholders).
+       These groups contain the address details and are referenced by name
+       from the policy document below. -->
+  <user-group>
+    <name>VPN_Clients</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>VPN_Gateways</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>Log_Storage</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Allow_VPN_With_Session_Logging</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Allow_VPN_Initiation_And_Keep_Session_Log</name>
+
+    <condition>
+      <firewall>
+        <!-- References to endpoint-group names only (addresses live in endpoint-groups doc) -->
+        <source>VPN_Clients</source>
+        <destination>VPN_Gateways</destination>
+
+        <!-- Common VPN-related ports included as explicit ranges (each start=end for single port).
+             Transport-layer-protocol is omitted so the rule applies regardless of transport,
+             matching the "every VPN session" universality in the intent. -->
+        <range-port-number>
+          <start>500</start>
+          <end>500</end>
+        </range-port-number>
+        <range-port-number>
+          <start>4500</start>
+          <end>4500</end>
+        </range-port-number>
+        <range-port-number>
+          <start>51820</start>
+          <end>51820</end>
+        </range-port-number>
+        <range-port-number>
+          <start>1194</start>
+          <end>1194</end>
+        </range-port-number>
+        <range-port-number>
+          <start>443</start>
+          <end>443</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Allow/permit the VPN session -->
+        <action>pass</action>
+      </primary-action>
+
+      <secondary-action>
+        <!-- Generate and retain a session log (session-level logging) -->
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

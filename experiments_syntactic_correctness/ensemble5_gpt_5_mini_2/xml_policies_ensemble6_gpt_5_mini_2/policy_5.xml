@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>Office_Users</name>
+    <!-- Placeholder TEST-NET IPv4 prefix (RFC 5737) for Office users -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <url-group>
+    <name>Social_Networking_Sites</name>
+    <!-- Representative SNS URLs (replace or extend with category feed or real list in production) -->
+    <url>https://www.facebook.com</url>
+    <url>https://www.twitter.com</url>
+    <url>https://www.instagram.com</url>
+    <url>https://www.linkedin.com</url>
+  </url-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_SNS_OfficeHours_Weekly</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Deny_SNS_Access_Mon-Fri_09-17</name>
+
+    <condition>
+      <firewall>
+        <!-- Source endpoint-group referenced by name -->
+        <source>Office_Users</source>
+
+        <!-- Port range covering HTTP and HTTPS (placeholder; adjust as needed) -->
+        <range-port-number>
+          <start>80</start>
+          <end>443</end>
+        </range-port-number>
+      </firewall>
+
+      <!-- Destination specified by URL group (category: SNS sites) -->
+      <url-category>
+        <url-name>Social_Networking_Sites</url-name>
+      </url-category>
+
+      <context>
+        <time>
+          <period>
+            <!-- ISO time with seconds and timezone (UTC). Interpret as inclusive start / inclusive end per operator policy. -->
+            <start-time>09:00:00Z</start-time>
+            <end-time>17:00:00Z</end-time>
+
+            <!-- Days: Monday through Friday (lowercase tokens per model) -->
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+          </period>
+
+          <!-- Recurrence/frequency: weekly -->
+          <frequency>weekly</frequency>
+        </time>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Enforcement: deny/block the access -->
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

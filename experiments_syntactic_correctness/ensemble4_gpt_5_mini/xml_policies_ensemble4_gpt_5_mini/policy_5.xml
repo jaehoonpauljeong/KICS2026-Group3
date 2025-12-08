@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Standalone endpoint-groups document containing all endpoint groups referenced by the policy.
+  Namespace: urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface
+-->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Source endpoint group: office workstations (placeholder TEST-NET-2 prefix) -->
+  <user-group>
+    <name>office_workstations</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Destination/service endpoint group: SNS URL category (example SNS sites) -->
+  <url-group>
+    <name>sns_sites</name>
+    <url>https://www.facebook.com</url>
+    <url>https://www.twitter.com</url>
+    <url>https://www.instagram.com</url>
+    <url>https://www.linkedin.com</url>
+  </url-group>
+</endpoint-groups>
+
+<!--
+  i2nsf-cfi-policy document referencing endpoint-groups by name only.
+  This enforces: drop (block) access to SNS (url-group sns_sites)
+  for traffic from office_workstations during Mon–Fri 09:00–17:00 weekly.
+-->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_SNS_OfficeHours_Weekly</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Block_SNS_Weekday_09-17_Weekly</name>
+
+    <condition>
+      <!-- Source is the office_workstations user-group (defined in endpoint-groups document) -->
+      <firewall>
+        <source>office_workstations</source>
+      </firewall>
+
+      <!-- Destination/service is defined by URL category (sns_sites) -->
+      <url-category>
+        <url-name>sns_sites</url-name>
+      </url-category>
+
+      <!-- Time-based scheduled trigger: Mon–Fri 09:00–17:00, recurring weekly -->
+      <context>
+        <time>
+          <period>
+            <start-time>09:00:00Z</start-time>
+            <end-time>17:00:00Z</end-time>
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+          </period>
+          <frequency>weekly</frequency>
+        </time>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- 'block' expressed using the I2NSF action value 'drop' -->
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

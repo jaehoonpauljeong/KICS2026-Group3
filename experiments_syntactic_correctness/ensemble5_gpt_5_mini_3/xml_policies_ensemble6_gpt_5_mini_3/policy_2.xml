@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Device group representing external/untrusted networks (placeholder) -->
+  <device-group>
+    <name>Untrusted-Internet</name>
+    <!-- placeholder prefix representing Internet/external space -->
+    <ipv4-prefix>0.0.0.0/0</ipv4-prefix>
+  </device-group>
+
+  <!-- Device group for internal VoIP servers (SIP proxies, PBX, media gateways) -->
+  <device-group>
+    <name>Internal-VoIP-Servers</name>
+    <!-- Example internal prefix for SIP servers -->
+    <ipv4-prefix>10.1.10.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Device group for company VoIP endpoints (user phones, softphones) -->
+  <device-group>
+    <name>Company-VoIP-Endpoints</name>
+    <ipv4-prefix>10.1.11.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Optional device-group representing the enforcement point (perimeter firewall) -->
+  <device-group>
+    <name>Perimeter-Firewall</name>
+    <!-- management or logical address placeholder -->
+    <ipv4-prefix>198.51.100.10/32</ipv4-prefix>
+  </device-group>
+
+  <!-- Voice-group entries for SIP identity-based matching (placeholders) -->
+  <voice-group>
+    <name>Internal-VoIP-Servers-VoiceIDs</name>
+    <sip-id>sip:pbx@company.example</sip-id>
+    <sip-id>sip:proxy@company.example</sip-id>
+  </voice-group>
+
+  <voice-group>
+    <name>Company-VoIP-Endpoints-VoiceIDs</name>
+    <sip-id>sip:2001@company.example</sip-id>
+    <sip-id>sip:2002@company.example</sip-id>
+  </voice-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Threat feed: known malicious VoIP source IP prefixes (placeholders using RFC 5737 TEST-NET ranges) -->
+  <threat-feed-list>
+    <name>Malicious-VoIP-IP-Feed</name>
+    <ioc>ip:198.51.100.0/24</ioc>
+    <ioc>ip:203.0.113.0/24</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+
+  <!-- Additional suspicious feed -->
+  <threat-feed-list>
+    <name>Suspicious-VoIP-Sources</name>
+    <ioc>ip:192.0.2.0/24</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+
+  <!-- Generic placeholder blacklist feed -->
+  <threat-feed-list>
+    <name>VoIP-Blacklist-Placeholder</name>
+    <ioc>ip:198.51.100.128/25</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Perimeter_Block_Malicious_VoIP_Packets</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Drop_Log_Alert_Inbound_Malicious_VoIP</name>
+
+    <condition>
+      <!-- Firewall match: inbound from Untrusted-Internet to internal VoIP assets -->
+      <firewall>
+        <source>Untrusted-Internet</source>
+        <destination>Internal-VoIP-Servers</destination>
+        <destination>Company-VoIP-Endpoints</destination>
+
+        <!-- SIP control ports -->
+        <range-port-number>
+          <start>5060</start>
+          <end>5061</end>
+        </range-port-number>
+
+        <!-- Typical RTP dynamic port range (placeholder) -->
+        <range-port-number>
+          <start>16384</start>
+          <end>32767</end>
+        </range-port-number>
+      </firewall>
+
+      <!-- DDoS / anomaly threshold to help catch volumetric VoIP floods (example threshold) -->
+      <ddos>
+        <rate-limit>
+          <!-- Example packet-rate threshold (pps) for anomalous SIP/RTP volume -->
+          <packet-rate-threshold>1000</packet-rate-threshold>
+        </rate-limit>
+      </ddos>
+
+      <!-- Voice-level matching (destination SIP identities inside the company) -->
+      <voice>
+        <destination-id>Company-VoIP-Endpoints-VoiceIDs</destination-id>
+      </voice>
+
+      <!-- Threat feeds (blacklist / known malicious sources) consulted as part of the condition -->
+      <threat-feed>
+        <name>Malicious-VoIP-IP-Feed</name>
+      </threat-feed>
+      <threat-feed>
+        <name>Suspicious-VoIP-Sources</name>
+      </threat-feed>
+      <threat-feed>
+        <name>VoIP-Blacklist-Placeholder</name>
+      </threat-feed>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Block/drop matched malicious VoIP/VoCN traffic at the perimeter -->
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <device-group>
+      <name>firewall-systems</name>
+      <range-ipv4-address>
+        <start>192.0.2.0</start>
+        <end>192.0.2.255</end>
+      </range-ipv4-address>
+    </device-group>
+  </endpoint-groups>
+  <threat-prevention>
+    <!-- No specific threat feeds mentioned in the intent -->
+  </threat-prevention>
+  <i2nsf-cfi-policy>
+    <name>High_CPU_Load_Management_Policy</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+      <name>Alert_On_High_CPU_Load</name>
+      <condition>
+        <firewall>
+          <source>firewall-systems</source>
+        </firewall>
+      </condition>
+      <action>
+        <primary-action>
+          <action>invoke-signaling</action>
+        </primary-action>
+        <secondary-action>
+          <log-action>rule-log</log-action>
+        </secondary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Protected web servers (placeholder addresses) -->
+  <device-group>
+    <name>web-servers</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Edge protection (WAF/CDN/DDoS appliances or cloud edge) -->
+  <device-group>
+    <name>edge-protection</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Upstream peers / ISPs that can be asked to blackhole or filter -->
+  <device-group>
+    <name>upstream-isp-peers</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Dynamic offenders list (initially empty; to be populated during incidents) -->
+  <device-group>
+    <name>dynamic-offenders</name>
+    <!-- intentionally left without static prefixes; population occurs at runtime -->
+  </device-group>
+
+  <!-- Trusted partners / whitelist to exempt from blocking -->
+  <device-group>
+    <name>trusted-partners</name>
+    <ipv4-prefix>203.0.113.50/32</ipv4-prefix>
+  </device-group>
+
+  <!-- Forensic collector / pcap/log sink (placeholder) -->
+  <device-group>
+    <name>forensic-collector</name>
+    <ipv4-prefix>198.51.100.200/32</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Mitigate_Flood_Attacks_Web_Server</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Detect_And_Mitigate_Web_Server_Flood</name>
+
+    <condition>
+      <firewall>
+        <destination>web-servers</destination>
+        <range-port-number>
+          <start>80</start>
+          <end>443</end>
+        </range-port-number>
+      </firewall>
+
+      <ddos>
+        <rate-limit>
+          <packet-rate-threshold>100000</packet-rate-threshold>
+          <byte-rate-threshold>50000000</byte-rate-threshold>
+          <flow-rate-threshold>2000</flow-rate-threshold>
+        </rate-limit>
+      </ddos>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <rules>
+    <name>Block_Detected_Offenders</name>
+
+    <condition>
+      <firewall>
+        <source>dynamic-offenders</source>
+        <destination>web-servers</destination>
+        <range-port-number>
+          <start>80</start>
+          <end>443</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <rules>
+    <name>Mirror_Forensic_Capture_On_High_Severity</name>
+
+    <condition>
+      <firewall>
+        <destination>web-servers</destination>
+        <range-port-number>
+          <start>80</start>
+          <end>443</end>
+        </range-port-number>
+      </firewall>
+
+      <ddos>
+        <rate-limit>
+          <packet-rate-threshold>250000</packet-rate-threshold>
+          <byte-rate-threshold>200000000</byte-rate-threshold>
+          <flow-rate-threshold>5000</flow-rate-threshold>
+        </rate-limit>
+      </ddos>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>mirror</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

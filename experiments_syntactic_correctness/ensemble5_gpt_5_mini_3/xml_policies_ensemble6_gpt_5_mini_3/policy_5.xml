@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>Office-Users</name>
+    <!-- Placeholder IPv4 prefix for "Office-Users" (replace with actual office network or user-group mapping) -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <url-group>
+    <name>SNS-Services</name>
+    <!-- Representative SNS URIs used as placeholders for the SNS category. Replace or extend with production URL patterns / category entries. -->
+    <url>https://www.facebook.com</url>
+    <url>https://twitter.com</url>
+    <url>https://www.instagram.com</url>
+    <url>https://www.linkedin.com</url>
+    <url>https://www.tiktok.com</url>
+  </url-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_SNS_During_Office_Hours_Weekly</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Block_SNS_OfficeHours_Mon-Fri_09-17</name>
+
+    <condition>
+      <firewall>
+        <!-- Reference to endpoint-groups/user-group 'Office-Users' -->
+        <source>Office-Users</source>
+      </firewall>
+
+      <!-- Match SNS URLs by category / URL group reference -->
+      <url-category>
+        <url-name>SNS-Services</url-name>
+      </url-category>
+
+      <context>
+        <time>
+          <period>
+            <!-- Times are expressed in UTC (Z). Adjust to local timezone if required by deployment. -->
+            <start-time>09:00:00Z</start-time>
+            <end-time>17:00:00Z</end-time>
+
+            <!-- Days: Monday through Friday -->
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+          </period>
+
+          <!-- Recurrence: weekly -->
+          <frequency>weekly</frequency>
+        </time>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Deny / block the matched traffic -->
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

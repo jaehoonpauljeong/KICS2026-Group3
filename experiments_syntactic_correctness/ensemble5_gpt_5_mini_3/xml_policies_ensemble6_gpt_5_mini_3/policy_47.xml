@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>internal-endpoints</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Source threat feed: external ingestion/connector populates IOCs for 'zeus-ioc' -->
+  <threat-feed-list>
+    <name>zeus-ioc</name>
+    <format>stix</format>
+    <!-- <ioc> entries are expected to be populated by the external feed ingestion process. -->
+  </threat-feed-list>
+
+  <!-- Named blocklist where matched IOCs should be stored for future blocking.
+       NOTE: The I2NSF YANG model excerpt does not include a rule-side native action to
+       insert IOCs into this feed. An external orchestrator should read the rule logs/alerts
+       and add matched IOC entries here (e.g., into zeus-blocklist/ioc). -->
+  <threat-feed-list>
+    <name>zeus-blocklist</name>
+    <format>stix</format>
+    <!-- Initially empty; populated by external orchestration when matches occur. -->
+  </threat-feed-list>
+</threat-prevention>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>zeus_ioc_blocklist_and_logging_policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>drop_log_and_block_zeus_ioc</name>
+
+    <condition>
+      <firewall>
+        <!-- Reference to the endpoint-group defined in endpoint-groups.xml -->
+        <source>internal-endpoints</source>
+      </firewall>
+
+      <threat-feed>
+        <!-- Reference to the external threat feed that supplies IOCs -->
+        <name>zeus-ioc</name>
+      </threat-feed>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Drop the matching traffic -->
+        <action>drop</action>
+      </primary-action>
+
+      <secondary-action>
+        <!-- Log the match so orchestration and auditing can occur -->
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+
+    <!--
+      Operational note:
+      - This policy drops and logs traffic matching IOCs from 'zeus-ioc'.
+      - To realize "add matched IOC(s) to the blocklist (zeus-blocklist)", an external
+        orchestration component should monitor the rule logs/alerts and, for each matched IOC,
+        insert an <ioc> entry under the 'zeus-blocklist' threat-feed (see threat-prevention.xml).
+    -->
+  </rules>
+</i2nsf-cfi-policy>

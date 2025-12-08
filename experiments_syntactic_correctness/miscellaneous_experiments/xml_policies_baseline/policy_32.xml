@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>permit_database_access_policy</name>
+    <rules>
+        <name>permit_database_access</name>
+        <condition>
+            <firewall-condition>
+                <destination>Database_Server</destination>
+            </firewall-condition>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>permit</action>
+            </primary-action>
+            <secondary-action>
+                <log-action>log_full_session_details</log-action>
+            </secondary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>

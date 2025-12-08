@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Endpoint groups referenced by the policy "RejectUnauthorizedVPNLogins_RecordSessionDetails".
+  Placeholder TEST-NET address ranges are used per the user's guidance.
+-->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>VPN-Clients</name>
+    <!-- Placeholder IPv4 prefix (TEST-NET-2) -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>VPN-Auth-Servers</name>
+    <!-- Placeholder IPv4 prefix (TEST-NET-1) -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>Log-Collectors</name>
+    <!-- Placeholder IPv4 prefix for SIEM / log collector (TEST-NET-3) -->
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<!--
+  I2NSF policy: reject unauthorized VPN login attempts and record session details.
+  Note: The "VPN login attempt (unauthorized)" event is represented using the
+  existing system-event identity "access-violation" (see policy text/notes).
+  The policy requests session logging (secondary-action=session-log). The
+  detailed log fields requested (timestamp, user identifier, source IP, device info,
+  authentication method, reason for denial, session/attempt id) are recorded by the
+  NSF's session-logging facility when session-log is enabled. The model does not
+  define per-field logging schema in this excerpt, so the rule uses session-log;
+  implementers MUST ensure the NSF's session-log captures the listed fields.
+-->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>RejectUnauthorizedVPNLogins_RecordSessionDetails</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>RejectAndLog_Unauthorized_VPN_Login</name>
+
+    <condition>
+      <firewall>
+        <!-- Sources are the VPN clients initiating login attempts -->
+        <source>VPN-Clients</source>
+
+        <!-- Destination is the VPN authentication/concentrator servers -->
+        <destination>VPN-Auth-Servers</destination>
+
+        <!--
+          Transport/protocol for VPNs can vary (IKE UDP 500/4500, TLS 443, ESP etc.).
+          No transport-layer-protocol constraint is specified here to cover all VPN types.
+          If you want protocol-specific matching, add <transport-layer-protocol> and/or
+          <range-port-number> elements (e.g., UDP ports 500/4500 or TCP 443).
+        -->
+      </firewall>
+
+      <!--
+        Contextual/attribute conditions (authorization status, auth-method, device posture,
+        deny-reason, session-id) are part of the authorization decision and/or logging.
+        The current YANG excerpt does not define explicit leaves for 'auth-status',
+        'auth-method', or 'deny-reason' under condition. These attributes are expected
+        to be evaluated by the authentication/AAA component and available to the NSF
+        for enforcement/logging. If required for matching in the NSF, extend the model
+        to include these fields and reference them here.
+      -->
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Deny/reject the VPN login attempt (prevent session establishment) -->
+        <action>reject</action>
+      </primary-action>
+
+      <secondary-action>
+        <!-- Record session details for each rejected attempt -->
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+
+    <!--
+      Required operational note for implementers:
+      Ensure the session-log records the following fields for each rejected attempt:
+        - timestamp
+        - user identifier (username/user-id)
+        - source IP (and if available, source-port)
+        - device information (device type, OS if available, device-id/MAC, posture/compliance)
+        - authentication method (password, certificate, OTP/MFA, SSO)
+        - deny reason (invalid-credentials, failed-MFA, noncompliant-device, no-access-rights, etc.)
+        - session/attempt identifier (for correlation)
+      The I2NSF model excerpt used here supports session-log as a secondary action;
+      the detailed schema of session-log entries must be implemented/negotiated out-of-band
+      or by extending the data model to include explicit log-field declarations.
+    -->
+  </rules>
+</i2nsf-cfi-policy>

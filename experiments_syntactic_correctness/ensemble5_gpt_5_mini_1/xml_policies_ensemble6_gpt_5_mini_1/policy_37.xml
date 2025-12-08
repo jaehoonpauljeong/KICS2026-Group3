@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>VPN_Clients</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </user-group>
+
+  <user-group>
+    <name>Unauthenticated_Sessions</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>VPN_Servers</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>reject_unauthorized_vpn_login_and_record_session</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>reject_unauthorized_vpn_login_record_session_details</name>
+
+    <condition>
+      <firewall>
+        <source>VPN_Clients</source>
+        <destination>VPN_Servers</destination>
+
+        <range-port-number>
+          <start>500</start>
+          <end>500</end>
+        </range-port-number>
+
+        <range-port-number>
+          <start>4500</start>
+          <end>4500</end>
+        </range-port-number>
+
+        <range-port-number>
+          <start>1194</start>
+          <end>1194</end>
+        </range-port-number>
+
+        <range-port-number>
+          <start>51820</start>
+          <end>51820</end>
+        </range-port-number>
+
+        <range-port-number>
+          <start>443</start>
+          <end>443</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>reject</action>
+      </primary-action>
+
+      <secondary-action>
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

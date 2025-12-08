@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Source group: untrusted/external hosts (placeholder TEST-NET-3 range) -->
+  <user-group>
+    <name>untrusted-external</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Destination group: protected server (placeholder TEST-NET-2 address) -->
+  <device-group>
+    <name>protected-server</name>
+    <ipv4-prefix>198.51.100.10/32</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Protect_Server_NewConn_RateLimit_20fps</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Cap_NewConn_20fps</name>
+
+    <condition>
+      <firewall>
+        <!-- Refer to endpoint-groups by name only -->
+        <source>untrusted-external</source>
+        <destination>protected-server</destination>
+      </firewall>
+
+      <ddos>
+        <rate-limit>
+          <!-- Trigger when new-flow creation rate (new connections/sec) exceeds 20 -->
+          <flow-rate-threshold>20</flow-rate-threshold>
+        </rate-limit>
+      </ddos>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Excess connection attempts are dropped -->
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

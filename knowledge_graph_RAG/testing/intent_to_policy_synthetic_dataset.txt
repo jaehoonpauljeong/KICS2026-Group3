@@ -1,0 +1,163 @@
+# From the YANG original paper and the YANG LLM paper (mainly focuses on testing the "condition" field)
+Intent -> Block SNS Access during Business Hours
+Expected Output -> primary-action: drop
+
+Intent -> Block Malicious VoIP/VoCN Packets Coming to a Company
+Expected Output -> primary-action: drop
+
+Intent -> Mitigate Flood Attacks on a Company Web Server
+Expected Output -> primary-action: drop
+
+Intent -> Block my son's computers from malicious websites.
+Expected Output -> primary-action: drop
+
+Intent -> Block SNS access during office hours with a weekly frequency (9am-5pm; Monday-Friday).
+Expected Output -> primary-action: drop
+
+Intent -> Block access to Youtube, X and Instagram during school hours to all PCs within 128.0.0.0-128.0.0.255 IPv4 ranges.
+Expected Output -> primary-action: drop
+
+Intent -> Restrict access to adult content from all devices.
+Expected Output -> primary-action: drop
+
+Intent -> Block all games during the nights at weekdays.
+Expected Output -> primary-action: drop
+
+
+# Testing Primary Action:
+Intent -> Allow all traffic from the internal HR system through the firewall without restriction.
+Expected Output -> primary-action: pass
+
+Intent -> Permit employees to browse the web freely from the corporate network.
+Expected Output -> primary-action: pass
+
+Intent -> Traffic from trusted devices should be allowed without any filtering.
+Expected Output -> primary-action: pass
+
+Intent -> Silently drop any traffic coming from known malicious IP addresses.
+Expected Output -> primary-action: drop
+
+Intent -> Block all incoming connections from the guest network (no response to sender).
+Expected Output -> primary-action: drop
+
+Intent -> Unknown or unclassified traffic should be discarded without notification.
+Expected Output -> primary-action: drop
+
+Intent -> Reject any unauthorized login attempts and send an error notification back to the source.
+Expected Output -> primary-action: reject
+
+Intent -> Actively refuse traffic on disallowed ports, informing the sender that the connection is prohibited.
+Expected Output -> primary-action: reject
+
+Intent -> Mirror suspicious database traffic to an analysis server while still allowing it to reach its destination.
+Expected Output -> primary-action: mirror
+
+Intent -> Copy all outgoing email traffic to the monitoring system for inspection (and still forward it).
+Expected Output -> primary-action: mirror
+
+Intent -> Forward all IoT device traffic to a specialized gateway for additional processing.
+Expected Output -> primary-action: forwarding
+
+Intent -> Route all video streaming traffic through the proxy server in the DMZ.
+Expected Output -> primary-action: forwarding
+
+Intent -> Translate incoming HTTP requests from IoT sensors into CoAP for the internal service.
+Expected Output -> primary-action: transformation
+
+Intent -> Encapsulate sensitive financial data traffic into a secure tunnel to the central server.
+Expected Output -> primary-action: tunnel-encapsulation
+
+Intent -> Send an alert to the monitoring system for any detected port scans (but allow traffic).
+Expected Output -> primary-action: invoke-signaling
+
+
+# Testing Primary Action with Rate Limit:
+Intent -> Throttle streaming media traffic to 100 MB/s to prevent network congestion.
+Expected Output -> primary-action: rate-limit, limit -> 1000
+
+Intent -> Limit guest network bandwidth to 1000 packets per second.
+Expected Output -> primary-action: rate-limit, limit -> 1000
+
+Intent -> Cap new connection attempts to 20 flows per second to protect the server from abuse.
+Expected Output -> primary-action: rate-limit, limit -> 20
+
+Intent -> Apply a rate limit of 500 pps on ICMP traffic to mitigate ping flood attacks.
+Expected Output -> primary-action: rate-limit, limit -> 500
+
+Intent -> Restrict backup data transfers to 10 MB/s during work hours.
+Expected Output -> primary-action: rate-limit, limit -> 10
+
+
+# Testing Secondary Action (Logging):
+Intent -> Block traffic to the admin port and log the attempt for auditing.
+Expected Output -> primary-action: drop, secondary-action -> log-action: rule-log
+
+Intent -> Allow file downloads but generate a log entry each time this rule is triggered.
+Expected Output -> primary-action: pass, secondary-action -> log-action: rule-log
+
+Intent -> Monitor login attempts by permitting them but logging whenever this rule matches.
+Expected Output -> primary-action: drop, secondary-action -> log-action: rule-log
+
+Intent -> Permit database access and log the full session details for each connection.
+Expected Output -> primary-action: pass, secondary-action -> log-action: rule-log
+
+Intent -> Allow VPN connections but keep a session log of every session for review.
+Expected Output -> primary-action: pass, secondary-action -> log-action: rule-log
+
+Intent -> Allow all employee web browsing but write a rule-log entry whenever this rule is triggered.
+Expected output -> primary-action: pass, secondary-action -> log-action: rule-log
+
+Intent -> Drop all incoming SSH connections from the guest network and log each attempt in the rule log.
+Expected output -> primary-action: drop, secondary-action -> log-action: rule-log
+
+Intent -> Permit database traffic from the finance department but log the entire session information.
+Expected output -> primary-action: pass, secondary-action -> log-action: session-log
+
+Intent -> Reject unauthorized VPN login attempts and record session details for each attempt.
+Expected output -> primary-action: reject, secondary-action -> log-action: session-log
+
+Intent -> Allow web server access from external clients but maintain a session log of every connection.
+Expected output -> primary-action: pass, secondary-action -> log-action: session-log
+
+
+# System Event
+Intent -> If any employee attempts to access restricted finance servers without authorization, drop the traffic and trigger this rule.
+Expected output -> event -> system-event: access-violation, primary-action: drop
+
+Intent -> Whenever a configuration change is made on the firewall, allow the change but log the attempt for auditing.
+Expected output -> event -> system-event: configuration-change, primary-action: pass
+
+Intent -> Detect unauthorized attempts to alter DNS settings and immediately reject the request.
+Expected output -> event -> system-event: access-violation, primary-action: reject
+
+
+# System Alarm
+Intent -> If memory usage on the database server exceeds 80%, drop nonessential backup traffic.
+Expected output -> event -> system-alarm: memory-alarm, primary-action: drop
+
+Intent -> When the CPU load on the firewall is above 90%, allow only critical management traffic and rate-limit all other flows.
+Expected output -> event -> system-alarm: cpu-alarm, primary-action: rate-limit
+
+Intent -> If a core network interface goes down, reject any new connections from the external network.
+Expected output -> event -> system-alarm: interface-alarm, primary-action: reject
+
+
+# Combining System Event and System Alarm
+Intent -> During a CPU overload, if an employee also attempts unauthorized access to the HR portal, reject the attempt immediately.
+Expected output -> event -> system-event: access-violation
+                         -> system-alarm: cpu-alarm 
+                         primary-action: reject
+
+Intent -> If a configuration change is made while memory usage on the firewall is critically high, drop any non-management traffic until stability is restored.
+Expected output -> event -> system-event: configuration-change
+                         -> system-alarm: memory-alarm
+                         primary-action: drop
+
+
+
+# Resolution Strategy (later, because this one requires multi-rule policies)
+
+
+
+# Policy Usage and Rule Priority (later, because this one requires multi-rule policies)
+

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Standalone endpoint-groups document.
+  Contains all endpoint groups referenced by the CPU overload policy.
+  Placeholder RFC-5737 TEST-NET addresses are used as safe placeholders for policy authoring/testing.
+-->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Critical-Workloads</name>
+    <!-- Placeholder IPv4 prefix identifying hosts/services considered "critical" -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>Nonessential-Processes</name>
+    <!-- Placeholder IPv4 prefix identifying hosts/services/processes considered nonessential -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <user-group>
+    <name>Monitoring-and-Operators</name>
+    <!-- Placeholder IPv4 prefix for operator/monitoring endpoints and orchestration endpoints -->
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </user-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>CPU_Overload_Response_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <!-- Rule 1: Preserve / prioritize critical workloads when a CPU alarm occurs -->
+  <rules>
+    <name>CPU_Overload_Preserve_CriticalWorkloads</name>
+    <condition>
+      <firewall>
+        <!-- Scope: devices grouped as critical workloads -->
+        <source>Critical-Workloads</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <!-- Use invoke-signaling to call orchestration/automation that will take workload-preservation actions -->
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+    <!--
+      Orchestration payload (not expressible directly in this model) SHOULD include:
+        - authoritative CPU threshold and duration that triggered the alarm (e.g., cpu_usage >= X% for Y seconds),
+        - action: prioritize/preserve (e.g., pin critical processes, increase scheduler shares, ensure QoS for critical flows),
+        - constraints: do not migrate critical workloads off hosts unless compatibility, locality, and SLA constraints are met,
+        - rollback policy and authorization context.
+      The orchestration service referenced by invoke-signaling is expected to implement these details.
+    -->
+  </rules>
+
+  <!-- Rule 2: Throttle or suspend nonessential processes to relieve CPU pressure -->
+  <rules>
+    <name>CPU_Overload_Throttle_Nonessential</name>
+    <condition>
+      <firewall>
+        <!-- Scope: devices/processes identified as nonessential -->
+        <source>Nonessential-Processes</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+    <!--
+      Orchestration payload SHOULD instruct automation to:
+        - apply throttling policies (e.g., cgroups/cpu shares limits, OS-level niceness, container resource limits),
+        - suspend/checkpoint processes where safe to do so,
+        - respect dependency and data-integrity constraints (do not suspend stateful processes without checkpointing),
+        - respect rate/limit policies (how much throttling per time interval),
+        - provide status/ack back to NSF or controller.
+    -->
+  </rules>
+
+  <!-- Rule 3: Notify operators/monitoring and trigger scaling or redistribution workflows -->
+  <rules>
+    <name>CPU_Overload_Notify_and_Scale</name>
+    <condition>
+      <firewall>
+        <!-- Destination identifies where notifications or orchestration callbacks should be sent -->
+        <destination>Monitoring-and-Operators</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+    <!--
+      Orchestration payload SHOULD include:
+        - notification details (severity, measured metrics, affected endpoint groups, timestamps),
+        - autoscaling/migration instructions (scale-out counts, candidate hosts, affinity/anti-affinity, resource checks),
+        - authorization tokens / role required to perform scale/migrate,
+        - fallback/rollback criteria (timeouts, failure thresholds),
+        - any cost or SLA constraints applicable.
+      The automation endpoint named in Monitoring-and-Operators will handle notification delivery and the orchestration workflow.
+    -->
+  </rules>
+</i2nsf-cfi-policy>

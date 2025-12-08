@@ -1,0 +1,24 @@
+<!-- intent: Route all video streaming traffic through the proxy server in the DMZ. -->
+<!-- expected: primary-action: forwarding -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>route_video_streaming_traffic</name>
+    <rules>
+        <name>route_video_streaming_traffic_through_proxy</name>
+        <condition>
+            <firewall>
+                <source>all_video_streaming_clients</source>
+                <destination>video_streaming_servers</destination>
+            </firewall>
+        </condition>
+        <action>
+            <primary-action>
+                <action>route</action>
+                <limit>proxy_server_in_dmz</limit>
+            </primary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

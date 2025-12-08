@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>outgoing-email-users</name>
+    <range-ipv4-address>
+      <start>192.168.1.1</start>
+      <end>192.168.1.50</end>
+    </range-ipv4-address>
+  </user-group>
+  <device-group>
+    <name>monitoring-system</name>
+    <range-ipv4-address>
+      <start>192.168.1.100</start>
+      <end>192.168.1.100</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Outgoing_Email_Traffic_Monitoring</name>
+  <rules>
+    <name>Copy_Outgoing_Email_Traffic</name>
+    <condition>
+      <firewall>
+        <source>outgoing-email-users</source>
+        <destination>monitoring-system</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>copy</action>
+      </primary-action>
+      <primary-action>
+        <action>forward</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

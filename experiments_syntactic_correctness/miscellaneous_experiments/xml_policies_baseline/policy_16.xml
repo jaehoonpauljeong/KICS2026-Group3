@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>refuse_traffic_policy</name>
+    <rules>
+        <name>refuse_traffic</name>
+        <condition>
+            <firewall-condition>
+                <range-port-number>
+                    <start>1</start>
+                    <end>1023</end>
+                </range-port-number>
+            </firewall-condition>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>deny</action>
+            </primary-action>
+            <secondary-action>
+                <log-action>notify-sender</log-action>
+            </secondary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>

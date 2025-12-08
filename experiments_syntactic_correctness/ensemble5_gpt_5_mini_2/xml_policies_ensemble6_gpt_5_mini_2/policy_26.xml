@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Source endpoint group: all external clients (placeholder TEST‑NET) -->
+  <user-group>
+    <name>external-clients</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Destination endpoint group: protected server (placeholder TEST‑NET) -->
+  <device-group>
+    <name>protected-server</name>
+    <ipv4-prefix>198.51.100.10/32</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>cap_new_conn_rate_server_protection</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>limit_new_conn_20_fps</name>
+
+    <condition>
+      <firewall>
+        <!-- Reference endpoint groups by name only -->
+        <source>external-clients</source>
+        <destination>protected-server</destination>
+      </firewall>
+
+      <ddos>
+        <rate-limit>
+          <!-- Trigger: new-flow creation rate (flows/sec) -->
+          <flow-rate-threshold>20</flow-rate-threshold>
+        </rate-limit>
+      </ddos>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

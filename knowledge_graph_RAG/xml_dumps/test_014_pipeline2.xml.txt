@@ -1,0 +1,26 @@
+<!-- intent: Unknown or unclassified traffic should be discarded without notification. -->
+<!-- expected: primary-action: drop -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>discard_unknown_traffic_policy</name>
+    <rules>
+        <name>Discard_unknown_traffic</name>
+        <condition>
+            <firewall>
+                <source>unknown</source>
+                <destination>unclassified</destination>
+            </firewall>
+        </condition>
+        <action>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+            <secondary-action>
+                <!-- No log action specified, so this is left empty -->
+            </secondary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

@@ -1,0 +1,236 @@
+YANG Validation Report - 2025-09-20 14:56:04.728736
+============================================================
+
+Checking policy_19.xml...
+❌ policy_19.xml failed validation:
+libyang err : Invalid identityref "iot-device-traffic-detected" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/event/system-event, data location /ietf-i2nsf-cons-facing-interface:event, line number 8.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_19.xml".
+
+Checking policy_46.xml...
+❌ policy_46.xml failed validation:
+libyang err : Invalid identityref "configuration-change" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/event/system-event, data location /ietf-i2nsf-cons-facing-interface:event, line number 8.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_46.xml".
+
+Checking policy_31.xml...
+❌ policy_31.xml failed validation:
+libyang err : Invalid identityref "login-attempt" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/event/system-event, data location /ietf-i2nsf-cons-facing-interface:event, line number 8.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_31.xml".
+
+Checking policy_6.xml...
+❌ policy_6.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_6.xml".
+
+Checking policy_33.xml...
+❌ policy_33.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_33.xml".
+
+Checking policy_34.xml...
+❌ policy_34.xml failed validation:
+libyang err : Invalid identityref "web-browsing-triggered" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/event/system-event, data location /ietf-i2nsf-cons-facing-interface:event, line number 8.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_34.xml".
+
+Checking policy_17.xml...
+❌ policy_17.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_17.xml".
+
+Checking policy_35.xml...
+❌ policy_35.xml failed validation:
+libyang err : Invalid identityref "incoming_ssh_connection" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/event/system-event, data location /ietf-i2nsf-cons-facing-interface:event, line number 8.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_35.xml".
+
+Checking policy_25.xml...
+❌ policy_25.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_25.xml".
+
+Checking policy_3.xml...
+❌ policy_3.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 15.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_3.xml".
+
+Checking policy_30.xml...
+❌ policy_30.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_30.xml".
+
+Checking policy_1.xml...
+❌ policy_1.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_1.xml".
+
+Checking policy_29.xml...
+❌ policy_29.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_29.xml".
+
+Checking policy_5.xml...
+❌ policy_5.xml failed validation:
+libyang err : Invalid identityref "office_hours" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/event/system-event, data location /ietf-i2nsf-cons-facing-interface:event, line number 8.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_5.xml".
+
+Checking policy_38.xml...
+❌ policy_38.xml failed validation:
+libyang err : Invalid identityref "connection-attempt" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/event/system-event, data location /ietf-i2nsf-cons-facing-interface:event, line number 8.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_38.xml".
+
+Checking policy_20.xml...
+❌ policy_20.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_20.xml".
+
+Checking policy_22.xml...
+❌ policy_22.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_22.xml".
+
+Checking policy_43.xml...
+❌ policy_43.xml failed validation:
+libyang err : Invalid identityref "cpu-load-above-threshold" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/event/system-event, data location /ietf-i2nsf-cons-facing-interface:event, line number 8.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_43.xml".
+
+Checking policy_15.xml...
+❌ policy_15.xml failed validation:
+libyang err : Invalid identityref "unauthorized-login-attempt" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/event/system-event, data location /ietf-i2nsf-cons-facing-interface:event, line number 8.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_15.xml".
+
+Checking policy_16.xml...
+❌ policy_16.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_16.xml".
+
+Checking policy_8.xml...
+❌ policy_8.xml failed validation:
+libyang err : Node "time" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_8.xml".
+
+Checking policy_10.xml...
+❌ policy_10.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_10.xml".
+
+Checking policy_28.xml...
+❌ policy_28.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_28.xml".
+
+Checking policy_18.xml...
+❌ policy_18.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_18.xml".
+
+Checking policy_14.xml...
+❌ policy_14.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_14.xml".
+
+Checking policy_24.xml...
+❌ policy_24.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_24.xml".
+
+Checking policy_39.xml...
+❌ policy_39.xml failed validation:
+libyang err : Invalid identityref "employee_access_attempt" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/event/system-event, data location /ietf-i2nsf-cons-facing-interface:event, line number 8.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_39.xml".
+
+Checking policy_45.xml...
+❌ policy_45.xml failed validation:
+libyang err : Invalid identityref "cpu_overload" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/event/system-event, data location /ietf-i2nsf-cons-facing-interface:event, line number 8.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_45.xml".
+
+Checking policy_36.xml...
+❌ policy_36.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_36.xml".
+
+Checking policy_21.xml...
+❌ policy_21.xml failed validation:
+libyang err : Invalid identityref "incoming-http-request" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/event/system-event, data location /ietf-i2nsf-cons-facing-interface:event, line number 8.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_21.xml".
+
+Checking policy_37.xml...
+❌ policy_37.xml failed validation:
+libyang err : Invalid identityref "unauthorized-vpn-login-attempt" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/event/system-event, data location /ietf-i2nsf-cons-facing-interface:event, line number 8.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_37.xml".
+
+Checking policy_40.xml...
+❌ policy_40.xml failed validation:
+libyang err : Invalid identityref "configuration_change" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/event/system-event, data location /ietf-i2nsf-cons-facing-interface:event, line number 8.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_40.xml".
+
+Checking policy_7.xml...
+❌ policy_7.xml failed validation:
+libyang err : Node "url-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_7.xml".
+
+Checking policy_41.xml...
+❌ policy_41.xml failed validation:
+libyang err : Invalid identityref "unauthorized_dns_change" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/event/system-event, data location /ietf-i2nsf-cons-facing-interface:event, line number 8.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_41.xml".
+
+Checking policy_4.xml...
+❌ policy_4.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_4.xml".
+
+Checking policy_9.xml...
+❌ policy_9.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_9.xml".
+
+Checking policy_2.xml...
+❌ policy_2.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_2.xml".
+
+Checking policy_32.xml...
+❌ policy_32.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_32.xml".
+
+Checking policy_26.xml...
+❌ policy_26.xml failed validation:
+libyang err : Node "actions" not found as a child of "rules" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules, data location /ietf-i2nsf-cons-facing-interface:rules[name='cap_connections'], line number 15.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_26.xml".
+
+Checking policy_13.xml...
+❌ policy_13.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_13.xml".
+
+Checking policy_44.xml...
+❌ policy_44.xml failed validation:
+libyang err : Invalid identityref "core_network_interface_down" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/event/system-event, data location /ietf-i2nsf-cons-facing-interface:event, line number 8.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_44.xml".
+
+Checking policy_12.xml...
+❌ policy_12.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_12.xml".
+
+Checking policy_11.xml...
+❌ policy_11.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_11.xml".
+
+Checking policy_42.xml...
+❌ policy_42.xml failed validation:
+libyang err : Invalid identityref "memory_usage_exceeded" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/event/system-event, data location /ietf-i2nsf-cons-facing-interface:event, line number 8.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_42.xml".
+
+Checking policy_23.xml...
+❌ policy_23.xml failed validation:
+libyang err : Invalid identityref "port-scan-detection" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/event/system-event, data location /ietf-i2nsf-cons-facing-interface:event, line number 8.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_23.xml".
+
+Checking policy_27.xml...
+❌ policy_27.xml failed validation:
+libyang err : Node "firewall-condition" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 9.)
+YANGLINT[E]: Failed to parse input data file "./xml_policies/policy_27.xml".
+
+============================================================
+Summary: 0 passed, 46 failed
+============================================================

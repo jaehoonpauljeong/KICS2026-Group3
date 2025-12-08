@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Endpoint groups referenced by the i2nsf-cfi-policy below.
+  Placeholder RFC5737 TEST-NET prefixes are used; replace with real prefixes or device-group mappings in your environment.
+-->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>compute_nodes</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>nonessential_service_hosts</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+
+  <user-group>
+    <name>management_and_alerting</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>CPU_Overload_Response_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <!-- Rule 1: Invoke external orchestration/runbook to perform host/process actions and notifications.
+       The orchestration system (autoscaler / runbook engine / orchestration webhook) MUST implement:
+         - throttle or suspend nonessential processes on compute_nodes (respecting process tags and critical-service safeguards)
+         - apply local load-shedding where applicable
+         - notify operators/alerting systems (management_and_alerting)
+         - attempt scale or redistribution of compute resources per runbook (with authorization/quota checks)
+       The invoke-signaling payload/behavior is out-of-band to this model and must be implemented by the invoked orchestrator.
+  -->
+  <rules>
+    <name>On_CPU_Overload_Invoke_Orchestrator</name>
+    <condition>
+      <firewall>
+        <!-- apply orchestration scoped to compute nodes -->
+        <source>compute_nodes</source>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- Rule 2: Network-level load-shedding / rate-limit towards nonessential hosts.
+       This provides an immediate network throttle to reduce load; orchestration (rule 1) handles process-level throttle/suspend and scaling.
+       Limit units are bytes-per-second (decimal64). Replace limit with an appropriate value for your environment.
+  -->
+  <rules>
+    <name>On_CPU_Overload_Load_Shedding_RateLimit</name>
+    <condition>
+      <firewall>
+        <source>compute_nodes</source>
+        <destination>nonessential_service_hosts</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>1048576.0</limit>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

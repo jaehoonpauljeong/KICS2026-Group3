@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!--
+    Endpoint groups referenced by the policy.
+    Placeholder/test-net IPv4 prefixes are used because the intent did not supply concrete addresses.
+  -->
+  <user-group>
+    <name>client_endpoints</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>database_servers</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+    <!-- This group represents database hosts (placeholder addresses). -->
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Permit_DB_Access_and_Log_Sessions</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Permit_DB_Connection_Log_Full_Session</name>
+
+    <condition>
+      <firewall>
+        <source>client_endpoints</source>
+        <destination>database_servers</destination>
+
+        <range-port-number>
+          <start>3306</start>
+          <end>3306</end>
+        </range-port-number>
+
+        <range-port-number>
+          <start>5432</start>
+          <end>5432</end>
+        </range-port-number>
+
+        <range-port-number>
+          <start>1433</start>
+          <end>1433</end>
+        </range-port-number>
+
+        <range-port-number>
+          <start>1521</start>
+          <end>1521</end>
+        </range-port-number>
+
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+
+      <secondary-action>
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+
+  </rules>
+</i2nsf-cfi-policy>

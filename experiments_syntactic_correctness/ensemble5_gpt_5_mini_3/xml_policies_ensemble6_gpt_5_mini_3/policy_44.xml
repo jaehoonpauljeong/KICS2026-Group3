@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Device groups referenced by the policy. These use RFC5737 TEST-NET placeholders; replace with real ranges in production. -->
+  <device-group>
+    <name>Core-Interfaces</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>Redundant-Interfaces</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>Operations-Systems</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>CoreInterface_Failover_and_Incident_Response_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>CoreInterface_Down_Failover_And_Escalation_Rule</name>
+
+    <condition>
+      <!-- The policy operates on traffic whose source endpoints are on the core interfaces
+           and whose (intended) destination can be reached via the redundant interfaces.
+           Actual IPs/prefixes are defined in the endpoint-groups document above. -->
+      <firewall>
+        <source>Core-Interfaces</source>
+        <destination>Redundant-Interfaces</destination>
+      </firewall>
+
+      <!-- This is a network-infrastructure-device-level policy -->
+      <context>
+        <device-type>
+          <device>network-infrastructure-device</device>
+        </device-type>
+      </context>
+
+      <!-- NOTE: Many operational/routing checks (e.g., redundancy group existence,
+           redundant-interface oper-state/admin-state, bandwidth/capacity thresholds,
+           RIB/FIB next-hop availability, BGP/OSPF neighbor state, SLA metrics,
+           maintenance-mode flags, safety/authorization constraints, ticketing system
+           reachability, diagnostics/tool availability, escalation timers, severity
+           classification rules, restore verification criteria, and rollback policy)
+           are operational items that are expected to be evaluated by the orchestration
+           system invoked by this policy. Those checks are documented below as a
+           vendor/orchestration payload (see invoke-signaling comment). -->
+    </condition>
+
+    <action>
+      <!-- Primary action: invoke an orchestrator/service to perform failover, reroute,
+           alerting, ticketing, diagnostics, automated logging, and escalation workflow.
+           Implementations should map the following orchestration payload to their
+           orchestration/automation subsystem. -->
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+
+    <!-- Orchestration payload (informative comment only; not part of the constrained YANG model):
+         The invoke-signaling call to the orchestration system SHOULD include the following instructions
+         and parameters. The orchestration engine is responsible for evaluating the detailed operational
+         conditions not expressible in the base I2NSF model, and for executing/recording the full
+         incident response workflow.
+
+         Orchestration / invocation parameters (recommended):
+         - event_id: interface-down
+         - target_interface_group: "Core-Interfaces"
+         - redundancy_group_id: <configured-redundancy-id>        (must be resolved by orchestrator)
+         - failover_target_group: "Redundant-Interfaces"
+         - pre-failover checks:
+             * confirm redundancy_group exists and maps core->redundant interfaces
+             * verify at least one redundant interface oper-state == up and admin-state == up
+             * verify redundant path available bandwidth >= configured_threshold
+             * verify routing/RIB next-hop via redundant interface exists
+             * verify policy/ACL compatibility for rerouted traffic
+             * verify maintenance/manual-override flags are not set
+             * if any check fails, escalate to human operator and do not auto-failover
+         - actions to perform (in order when pre-checks pass):
+             1) program forwarding/routing to redirect affected flows to failover_target_group
+                (this can be done by orchestrator via device config change, SDN controller, or
+                 by instructing the NSF to apply forwarding changes)
+             2) ensure continuity (traffic reroute) and monitor immediate impact metrics
+             3) generate alerts/notifications to:
+                - NOC/network-operations distribution ("Operations-Systems")
+                - on-call team for impacted service/region
+                - relevant stakeholders/business owners
+                Channels by priority: SMS/pager -> phone -> email
+             4) open an incident ticket in ITSM system:
+                - include impacted interfaces, redundancy group, affected services, severity
+             5) run automated diagnostics:
+                - collect interface counters, SFP diagnostics, syslogs, ping/traceroute to next-hops
+                - query routing protocol neighbor states (BGP/OSPF) and route acceptance
+             6) capture and push logs/diagnostics to logging endpoint (SEIM) and attach to ticket
+             7) start escalation timers and follow escalation path per severity:
+                - map impact to severity levels (P1/P2/P3) using configured mapping
+                - escalate to Level 2 after T1 (e.g., 15 minutes for P1), Level 3 after T2, etc.
+             8) continue escalation until interface is restored
+             9) when interface restored, perform restoration verification:
+                - oper-state == up, routing restored, packet loss under threshold for X minutes
+             10) on verified restoration:
+                - update ticket with resolution details
+                - notify stakeholders of closure
+                - optionally rollback failover configuration (automatic or manual per policy)
+                - schedule RCA if required
+         - failure-mode handling:
+             * if automation unable to execute a step (e.g., device API failure), immediately notify
+               on-call personnel and mark ticket with automation-failure flag
+             * detect cascade/ correlated failures and, if found, escalate to major-incident path
+         - audit/tracing:
+             * record who/what initiated each automated change (orchestrator identity),
+               timestamps, and change diffs for compliance and audit.
+      -->
+  </rules>
+</i2nsf-cfi-policy>

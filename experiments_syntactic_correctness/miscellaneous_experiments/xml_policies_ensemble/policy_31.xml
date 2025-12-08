@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No endpoint groups defined for this policy -->
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds defined for this policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Login_Attempt_Monitoring_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Permit_And_Log_Login_Attempts</name>
+    <condition>
+      <firewall>
+        <source>login-attempts-placeholder</source> <!-- Placeholder for source endpoint group -->
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action> <!-- Permit the login attempt -->
+      </primary-action>
+      <secondary-action>
+        <log-action>rule-log</log-action> <!-- Log the event -->
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

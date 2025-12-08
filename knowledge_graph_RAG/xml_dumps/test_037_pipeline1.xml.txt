@@ -1,0 +1,28 @@
+<!-- intent: Reject unauthorized VPN login attempts and record session details for each attempt. -->
+<!-- expected: primary-action: reject, secondary-action -> log-action: session-log -->
+xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>reject_unauthorized_vpn_login_policy</name>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>reject_vpn_login_attempts</name>
+    <event>
+      <system-event>access-violation</system-event>
+    </event>
+    <condition>
+      <firewall>
+        <transport-layer-protocol>tcp</transport-layer-protocol>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>reject</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

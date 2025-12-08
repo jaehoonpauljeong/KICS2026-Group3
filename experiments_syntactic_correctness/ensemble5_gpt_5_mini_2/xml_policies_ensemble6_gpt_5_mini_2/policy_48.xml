@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Contact/notification placeholder for the security team (included so the group name exists;
+       the model does not define a native "notification" action or e-mail/SMS fields).
+       Use of this group by an external orchestrator is recommended. -->
+  <user-group>
+    <name>security-team</name>
+    <ipv4-prefix>198.51.100.100/32</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>source-endpoints</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>quarantine-endpoints</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>destination-endpoints</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>ransomware_detect_response_policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>block_and_quarantine_on_ransomware_flag</name>
+
+    <!-- Condition: an Antivirus profile 'ransomware-detect' flags a file transfer
+         and the source/destination are identified via endpoint-group names -->
+    <condition>
+      <firewall>
+        <source>source-endpoints</source>
+        <destination>destination-endpoints</destination>
+      </firewall>
+
+      <anti-virus>
+        <profile>ransomware-detect</profile>
+      </anti-virus>
+    </condition>
+
+    <action>
+      <!-- Primary action: invoke-signaling - the NSF will call an orchestrator/service
+           to perform the multi-step response (see mapping notes below). -->
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+
+      <!-- Secondary action: log the incident using the NSF's rule logging capability -->
+      <secondary-action>
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,15 @@
+GPT 5 mini:
+Total samples: 100
+Accuracy: 0.970
+TP (true valid):   47
+FN (missed valid): 3
+FP (false valid):  0
+TN (true invalid): 50
+
+GPT 4o mini:
+Total samples: 100
+Accuracy: 0.910
+TP (true valid):   41
+FN (missed valid): 9
+FP (false valid):  0
+TN (true invalid): 50

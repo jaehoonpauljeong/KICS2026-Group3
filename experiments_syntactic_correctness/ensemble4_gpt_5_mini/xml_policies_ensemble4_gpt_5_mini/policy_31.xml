@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- User endpoints initiating login attempts (placeholder TEST-NET range) -->
+  <user-group>
+    <name>UserEndpoints</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Authentication / login servers (placeholder TEST-NET range) -->
+  <device-group>
+    <name>AuthServers</name>
+    <ipv4-prefix>192.0.2.0/28</ipv4-prefix>
+    <!-- application-protocol entries removed to conform to schema validation rules -->
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Monitor_Login_Attempts_Permit_And_Log</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>PermitAndLog_LoginAttempt</name>
+
+    <condition>
+      <firewall>
+        <!-- Reference endpoint-groups by name only (actual addresses are in the standalone endpoint-groups document) -->
+        <source>UserEndpoints</source>
+        <destination>AuthServers</destination>
+        <!-- transport-layer-protocol removed to conform with validation rules -->
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- 'pass' in the model maps to the intent's 'permit' -->
+        <action>pass</action>
+      </primary-action>
+
+      <secondary-action>
+        <!-- Log each matching rule hit as requested by the intent -->
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

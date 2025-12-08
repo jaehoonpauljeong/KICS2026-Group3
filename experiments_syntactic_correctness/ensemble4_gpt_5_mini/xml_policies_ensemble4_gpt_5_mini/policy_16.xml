@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Placeholder endpoint groups using RFC 5737 TEST-NET addresses per the intent -->
+  <user-group>
+    <name>Internal_Clients</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>Internal_Servers</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>External_Peers</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Deny_Disallowed_Ports_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <!-- Allow rules for explicitly permitted ports (explicit allow-list).
+       These must appear before the deny rules so allowed ports are passed.
+       Default allowed set chosen as an example; adjust as needed for your environment. -->
+  <rules>
+    <name>Allow_Explicit_TCP_Ports</name>
+    <condition>
+      <firewall>
+        <source>Internal_Clients</source>
+        <source>External_Peers</source>
+        <destination>Internal_Servers</destination>
+        <destination>External_Peers</destination>
+
+        <!-- Explicitly allowed TCP ports: SSH(22), HTTP(80), HTTPS(443) -->
+        <range-port-number>
+          <start>22</start>
+          <end>22</end>
+        </range-port-number>
+        <range-port-number>
+          <start>80</start>
+          <end>80</end>
+        </range-port-number>
+        <range-port-number>
+          <start>443</start>
+          <end>443</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <rules>
+    <name>Allow_Explicit_UDP_Ports</name>
+    <condition>
+      <firewall>
+        <source>Internal_Clients</source>
+        <source>External_Peers</source>
+        <destination>Internal_Servers</destination>
+        <destination>External_Peers</destination>
+
+        <!-- Explicitly allowed UDP port: DNS(53) -->
+        <range-port-number>
+          <start>53</start>
+          <end>53</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- Deny rules: catch-all for TCP/UDP ports not matched by previous allow rules.
+       Because the model does not support direct negation ("not in"), we implement
+       "deny disallowed ports" by ordering: explicit allows first, then deny everything else. -->
+  <rules>
+    <name>Deny_Disallowed_Ports_Rule_TCP</name>
+    <condition>
+      <firewall>
+        <source>Internal_Clients</source>
+        <source>External_Peers</source>
+        <destination>Internal_Servers</destination>
+        <destination>External_Peers</destination>
+
+        <!-- Match full TCP port range; allowed TCP ports above will have matched first -->
+        <range-port-number>
+          <start>1</start>
+          <end>65535</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <rules>
+    <name>Deny_Disallowed_Ports_Rule_UDP</name>
+    <condition>
+      <firewall>
+        <source>Internal_Clients</source>
+        <source>External_Peers</source>
+        <destination>Internal_Servers</destination>
+        <destination>External_Peers</destination>
+
+        <!-- Match full UDP port range; allowed UDP ports above will have matched first -->
+        <range-port-number>
+          <start>1</start>
+          <end>65535</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- Optional: a catch-all deny for other transport protocols (non-TCP/UDP) if desired.
+       Uncomment or add if enforcement should include non-TCP/UDP port-like traffic. -->
+  <!--
+  <rules>
+    <name>Deny_Other_Protocols_Rule</name>
+    <condition>
+      <firewall>
+        <source>Internal_Clients</source>
+        <destination>Internal_Servers</destination>
+        <destination>External_Peers</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+  -->
+</i2nsf-cfi-policy>

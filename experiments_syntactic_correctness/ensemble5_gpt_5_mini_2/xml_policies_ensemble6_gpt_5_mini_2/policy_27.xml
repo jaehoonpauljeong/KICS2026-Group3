@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>ALL_ENDPOINTS</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>icmp_ping_flood_rate_limit_policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>enforce_icmp_500pps_rate_limit</name>
+
+    <condition>
+      <firewall>
+        <!-- Policy scope: placeholder device-group ALL_ENDPOINTS -->
+        <source>ALL_ENDPOINTS</source>
+        <destination>ALL_ENDPOINTS</destination>
+
+        <!-- Match common ICMP ping messages (echo and echo-reply).
+             If you require "all ICMP", vendor-specific semantics for an empty
+             icmp/message or additional message entries may be needed. -->
+        <icmp>
+          <message>echo</message>
+          <message>echo-reply</message>
+        </icmp>
+      </firewall>
+
+      <ddos>
+        <rate-limit>
+          <!-- This encodes the intended trigger threshold in packets/sec -->
+          <packet-rate-threshold>500</packet-rate-threshold>
+        </rate-limit>
+      </ddos>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Enforcement: rate-limit. The model's 'limit' is bytes/sec.
+             We approximate enforcement bytes/sec value to represent ~500 pps.
+             Adjust as needed for your average packet size or vendor-specific pps support. -->
+        <action>rate-limit</action>
+        <limit>64000</limit>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Firewalls whose configuration and memory are being monitored -->
+  <device-group>
+    <name>firewall-control-plane</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Configuration/orchestration servers that push changes -->
+  <device-group>
+    <name>config-management-servers</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Administrative workstations (manual admins) -->
+  <user-group>
+    <name>admin-workstations</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Centralized audit log servers (placeholder addresses) -->
+  <device-group>
+    <name>audit-log-servers</name>
+    <ipv4-prefix>198.51.100.128/25</ipv4-prefix>
+  </device-group>
+
+  <!-- Placeholder for notification endpoints (e.g., webhook/gateway addresses) -->
+  <device-group>
+    <name>notification-channels</name>
+    <ipv4-prefix>198.51.100.192/32</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Prevent_ConfigChange_On_CriticalMemory</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Rollback_And_Notify_On_CriticalMemory</name>
+
+    <condition>
+      <firewall>
+        <source>config-management-servers</source>
+        <source>admin-workstations</source>
+        <destination>firewall-control-plane</destination>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+
+      <secondary-action>
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

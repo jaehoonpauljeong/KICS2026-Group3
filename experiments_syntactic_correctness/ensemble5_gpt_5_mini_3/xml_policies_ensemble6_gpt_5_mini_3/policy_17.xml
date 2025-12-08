@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>database-endpoints</name>
+    <!-- Placeholder IPv4 prefix for the database servers -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+    <!-- Typical DB application protocols could be set on the device-group; left unset here -->
+  </device-group>
+
+  <device-group>
+    <name>analysis-servers</name>
+    <!-- Placeholder IPv4 prefix for analysis/inspection servers (mirror targets) -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>client-endpoints</name>
+    <!-- Placeholder IPv4 prefix for originators of DB traffic -->
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>suspicious-traffic</name>
+    <!-- Dynamic label placeholder: the internal detection engine is expected to populate this group at runtime.
+         A placeholder prefix is provided per the instruction to include placeholder addresses when details are missing. -->
+    <ipv4-prefix>198.51.100.128/25</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Mirror_Suspicious_Database_Traffic</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Mirror_Suspicious_DB_To_Analysis_Server</name>
+
+    <condition>
+      <firewall>
+        <!-- Source is the dynamic label assigned by the internal detection/anomaly engine -->
+        <source>suspicious-traffic</source>
+
+        <!-- Destination is the database endpoint group -->
+        <destination>database-endpoints</destination>
+
+        <!-- Limit matching to common DB server ports (place each port as a start=end range) -->
+        <range-port-number>
+          <start>1433</start>
+          <end>1433</end>
+        </range-port-number>
+
+        <range-port-number>
+          <start>3306</start>
+          <end>3306</end>
+        </range-port-number>
+
+        <range-port-number>
+          <start>5432</start>
+          <end>5432</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <!-- Primary action: mirror. NOTE: The model excerpt allows only one primary action value.
+           Confirm with your NSF vendor that 'mirror' implies forwarding the original traffic (pass + mirror).
+           If not, the model must be extended to allow composite actions (pass + mirror). -->
+      <primary-action>
+        <action>mirror</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

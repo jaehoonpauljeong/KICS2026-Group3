@@ -1,0 +1,101 @@
+intent,true_label,predicted_label,correct
+Block SNS Access during Business Hours,valid,valid,1
+Block Malicious VoIP/VoCN Packets Coming to a Company,valid,valid,1
+Mitigate Flood Attacks on a Company Web Server,valid,valid,1
+Block my son's computers from malicious websites.,valid,valid,1
+Block SNS access during office hours with a weekly frequency (9am-5pm; Monday-Friday).,valid,valid,1
+"Block access to Youtube, X and Instagram during school hours to all PCs within 128.0.0.0-128.0.0.255 IPv4 ranges.",valid,valid,1
+Restrict access to adult content from all devices.,valid,valid,1
+Block all games during the nights at weekdays.,valid,valid,1
+Allow all traffic from the internal HR system through the firewall without restriction.,valid,valid,1
+Permit employees to browse the web freely from the corporate network.,valid,not_valid,0
+Traffic from trusted devices should be allowed without any filtering.,valid,valid,1
+Silently drop any traffic coming from known malicious IP addresses.,valid,valid,1
+Block all incoming connections from the guest network (no response to sender).,valid,valid,1
+Unknown or unclassified traffic should be discarded without notification.,valid,valid,1
+Reject any unauthorized login attempts and send an error notification back to the source.,valid,valid,1
+"Actively refuse traffic on disallowed ports, informing the sender that the connection is prohibited.",valid,valid,1
+Mirror suspicious database traffic to an analysis server while still allowing it to reach its destination.,valid,valid,1
+Copy all outgoing email traffic to the monitoring system for inspection (and still forward it).,valid,valid,1
+Forward all IoT device traffic to a specialized gateway for additional processing.,valid,not_valid,0
+Route all video streaming traffic through the proxy server in the DMZ.,valid,not_valid,0
+Translate incoming HTTP requests from IoT sensors into CoAP for the internal service.,valid,not_valid,0
+Encapsulate sensitive financial data traffic into a secure tunnel to the central server.,valid,not_valid,0
+Send an alert to the monitoring system for any detected port scans (but allow traffic).,valid,valid,1
+Throttle streaming media traffic to 100 MB/s to prevent network congestion.,valid,not_valid,0
+Limit guest network bandwidth to 1000 packets per second.,valid,not_valid,0
+Cap new connection attempts to 20 flows per second to protect the server from abuse.,valid,valid,1
+Apply a rate limit of 500 pps on ICMP traffic to mitigate ping flood attacks.,valid,valid,1
+Restrict backup data transfers to 10 MB/s during work hours.,valid,not_valid,0
+Block traffic to the admin port and log the attempt for auditing.,valid,valid,1
+Allow file downloads but generate a log entry each time this rule is triggered.,valid,valid,1
+Monitor login attempts by permitting them but logging whenever this rule matches.,valid,valid,1
+Permit database access and log the full session details for each connection.,valid,valid,1
+Allow VPN connections but keep a session log of every session for review.,valid,valid,1
+Allow all employee web browsing but write a rule-log entry whenever this rule is triggered.,valid,valid,1
+Drop all incoming SSH connections from the guest network and log each attempt in the rule log.,valid,valid,1
+Permit database traffic from the finance department but log the entire session information.,valid,valid,1
+Reject unauthorized VPN login attempts and record session details for each attempt.,valid,valid,1
+Allow web server access from external clients but maintain a session log of every connection.,valid,valid,1
+"If any employee attempts to access restricted finance servers without authorization, drop the traffic and trigger this rule.",valid,valid,1
+"Whenever a configuration change is made on the firewall, allow the change but log the attempt for auditing.",valid,valid,1
+Detect unauthorized attempts to alter DNS settings and immediately reject the request.,valid,valid,1
+"If memory usage on the database server exceeds 80%, drop nonessential backup traffic.",valid,valid,1
+"When the CPU load on the firewall is above 90%, allow only critical management traffic and rate-limit all other flows.",valid,valid,1
+"If a core network interface goes down, reject any new connections from the external network.",valid,valid,1
+"During a CPU overload, if an employee also attempts unauthorized access to the HR portal, reject the attempt immediately.",valid,not_valid,0
+"If a configuration change is made while memory usage on the firewall is critically high, drop any non-management traffic until stability is restored.",valid,valid,1
+"Drop and log any traffic that matches indicators-of-compromise from the threat feed named ""zeus-ioc"" and add matched IOCs to the blocklist.",valid,valid,1
+"If an anti-virus profile ransomware-detect flags a file transfer, quarantine the endpoint, drop the flow, and forward the payload to the forensic analysis server.",valid,valid,1
+"During the monthly maintenance window (first Sunday 02:00–04:00 UTC), allow SSH (port 22) only from devices of type ""management"" and reject all other SSH connection attempts.",valid,valid,1
+Reject calls and mirror media to an analysis server whenever a SIP URI in the voice-group blacklist_sip initiates a session.,valid,valid,1
+Book a meeting room for tomorrow from 3pm to 4pm.,not_valid,not_valid,1
+Generate a monthly sales report in Excel for all APAC regions.,not_valid,not_valid,1
+Write a Python script that sorts a list of integers using quicksort.,not_valid,not_valid,1
+Order coffee and snacks for the engineering team for Friday's meeting.,not_valid,not_valid,1
+Design a new company logo using blue and green color themes.,not_valid,not_valid,1
+Schedule performance reviews for all team members next quarter.,not_valid,not_valid,1
+Translate this paragraph from English to Korean for our marketing brochure.,not_valid,not_valid,1
+Resize all images in this folder to 1024x768 resolution.,not_valid,not_valid,1
+Create a PowerPoint presentation about our Q4 product roadmap.,not_valid,not_valid,1
+Calculate the total payroll tax due for this month.,not_valid,not_valid,1
+Monitor CPU and memory usage on all application servers and send an alert if they are high.,not_valid,not_valid,1
+Upgrade the firmware on all routers in the data center to the latest version.,not_valid,not_valid,1
+Measure average network latency between Singapore and Tokyo and plot it on a graph.,not_valid,not_valid,1
+Back up the database every night at 2am and store it on S3.,not_valid,not_valid,1
+Generate a machine learning model to predict customer churn.,not_valid,not_valid,1
+Create user accounts for the new interns and assign them to the 'Interns' group.,not_valid,not_valid,1
+Optimize the SQL query to reduce execution time by 50%.,not_valid,not_valid,1
+Refactor the microservices architecture to use event-driven communication.,not_valid,not_valid,1
+Set up a Jira project for the new product launch and define the workflows.,not_valid,not_valid,1
+Write documentation for the new REST API endpoints.,not_valid,not_valid,1
+Plan company team-building retreat itinerary for next quarter.,not_valid,not_valid,1
+Draft an email announcing the new work-from-home policy.,not_valid,not_valid,1
+Create a marketing slogan for our new smartphone app.,not_valid,not_valid,1
+Analyze customer survey responses and summarize key themes.,not_valid,not_valid,1
+Design a poster advertising the annual charity run.,not_valid,not_valid,1
+Write a job description for a senior data engineer position.,not_valid,not_valid,1
+Prepare a budget proposal for the IT department for next year.,not_valid,not_valid,1
+Generate color palette ideas for redesigning our website.,not_valid,not_valid,1
+Summarize the latest quarterly earnings call for executives.,not_valid,not_valid,1
+Draft a social media campaign for the upcoming product launch.,not_valid,not_valid,1
+Write a user manual for the new HR self-service portal.,not_valid,not_valid,1
+Design a database schema for the inventory management system.,not_valid,not_valid,1
+Create a checklist for onboarding new employees.,not_valid,not_valid,1
+Write unit tests for the payment processing module.,not_valid,not_valid,1
+Plan a series of training sessions for new hires.,not_valid,not_valid,1
+Draft meeting minutes for yesterday's project review.,not_valid,not_valid,1
+Research competitors' pricing and compile a comparison chart.,not_valid,not_valid,1
+Write a blog post describing our new AI feature.,not_valid,not_valid,1
+Prepare a Gantt chart for the data migration project timeline.,not_valid,not_valid,1
+Design a survey to measure employee engagement levels.,not_valid,not_valid,1
+Create wireframes for the new mobile application interface.,not_valid,not_valid,1
+Draft a proposal to migrate on-prem workloads to the cloud.,not_valid,not_valid,1
+Write acceptance criteria for the new login feature.,not_valid,not_valid,1
+Prepare a slide deck explaining Scrum to stakeholders.,not_valid,not_valid,1
+Design a logo for the internal hackathon event.,not_valid,not_valid,1
+Plan the agenda for the upcoming all-hands meeting.,not_valid,not_valid,1
+Write SQL queries to generate monthly KPI dashboards.,not_valid,not_valid,1
+Draft a press release about the new partnership announcement.,not_valid,not_valid,1
+Create an Excel template for tracking project expenses.,not_valid,not_valid,1
+Write a tutorial for integrating our public API with Python.,not_valid,not_valid,1

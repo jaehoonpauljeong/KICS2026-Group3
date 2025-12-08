@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>corporate-users</name>
+    <!-- Placeholder IPv4 prefix (RFC 5737 TEST-NET-1) used per intent guidance -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <url-group>
+    <name>social-networking-sites</name>
+    <!-- Representative SNS URIs included as url-group members; replace with production URLs/categories as required -->
+    <url>https://facebook.com</url>
+    <url>https://www.facebook.com</url>
+    <url>https://twitter.com</url>
+    <url>https://www.twitter.com</url>
+    <url>https://linkedin.com</url>
+    <url>https://www.linkedin.com</url>
+    <url>https://instagram.com</url>
+    <url>https://www.instagram.com</url>
+  </url-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_SNS_During_Business_Hours</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Block_SNS_When_Inside_Business_Hours</name>
+
+    <condition>
+      <!-- Source constrained to corporate network user-group -->
+      <firewall>
+        <source>corporate-users</source>
+        <!-- Application-level hint: match HTTP/S traffic targeting SNS -->
+        <!-- Note: application protocol conditions are under context/application -->
+      </firewall>
+
+      <!-- URL-category match referencing the url-group defined in endpoint-groups -->
+      <url-category>
+        <url-name>social-networking-sites</url-name>
+      </url-category>
+
+      <context>
+        <!-- Time-based activation: business hours Monday-Friday 09:00-17:00, recurring weekly -->
+        <time>
+          <period>
+            <start-time>09:00:00Z</start-time>
+            <end-time>17:00:00Z</end-time>
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+          </period>
+          <frequency>weekly</frequency>
+        </time>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Block action -->
+        <action>drop</action>
+      </primary-action>
+      <!-- No secondary logging action requested in the intent -->
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>IoT_Devices</name>
+    <!-- Placeholder IPv4 prefix for the IoT devices group (RFC5737 TEST-NET-1 range). Replace in production. -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>IoT_Gateway</name>
+    <!-- Placeholder single-address prefix representing the specialized gateway. Replace in production. -->
+    <ipv4-prefix>198.51.100.10/32</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface"
+                  xmlns:ext="urn:ietf:params:xml:ns:i2nsf:ext:forwarding">
+  <name>IoT_Traffic_To_Gateway_Forwarding_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Forward_IoT_Device_Traffic_To_IoT_Gateway</name>
+
+    <condition>
+      <firewall>
+        <!-- Reference to the endpoint-group that contains IoT devices (name only) -->
+        <source>IoT_Devices</source>
+      </firewall>
+
+      <context>
+        <!-- Optional explicit device-type to reflect the intent (classification). -->
+        <device-type>
+          <device>iot-device</device>
+        </device-type>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Instruct NSF to forward/redirect matched traffic -->
+        <action>forwarding</action>
+
+        <!--
+          Vendor extension used to specify the forwarding target endpoint-group name.
+        -->
+        <ext:forward-target-group>IoT_Gateway</ext:forward-target-group>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

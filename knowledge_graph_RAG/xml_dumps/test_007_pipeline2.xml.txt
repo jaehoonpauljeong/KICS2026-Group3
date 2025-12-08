@@ -1,0 +1,25 @@
+<!-- intent: Restrict access to adult content from all devices. -->
+<!-- expected: primary-action: drop -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>restrict_access_to_adult_content</name>
+    <rules>
+        <name>block_adult_content_access</name>
+        <condition>
+            <url-category>
+                <url-name>adult_content</url-name>
+            </url-category>
+            <firewall>
+                <source>all_devices</source>
+            </firewall>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>
+```

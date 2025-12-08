@@ -1,0 +1,40 @@
+<!-- intent: Block access to Youtube, X and Instagram during school hours to all PCs within 128.0.0.0-128.0.0.255 IPv4 ranges. -->
+<!-- expected: primary-action: drop -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>block_social_media_during_school_hours</name>
+    <rules>
+        <name>block_youtube_x_instagram</name>
+        <condition>
+            <firewall>
+                <source>
+                    <range-ipv4-address>
+                        <start>128.0.0.0</start>
+                        <end>128.0.0.255</end>
+                    </range-ipv4-address>
+                </source>
+            </firewall>
+            <url-category>
+                <url-name>Youtube</url-name>
+                <url-name>X</url-name>
+                <url-name>Instagram</url-name>
+            </url-category>
+            <context>
+                <time>
+                    <period>
+                        <start-time>08:00</start-time>
+                        <end-time>15:00</end-time>
+                    </period>
+                </time>
+            </context>
+        </condition>
+        <action>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

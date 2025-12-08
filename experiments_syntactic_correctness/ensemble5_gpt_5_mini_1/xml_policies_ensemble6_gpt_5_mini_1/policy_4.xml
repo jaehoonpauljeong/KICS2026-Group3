@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>PARENT_ADMIN</name>
+    <mac-address>00:aa:bb:cc:dd:ee</mac-address>
+  </user-group>
+  <device-group>
+    <name>SON_DEVICES</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+  <url-group>
+    <name>example-blocked-sites</name>
+    <url>http://malicious.example</url>
+  </url-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>malicious-websites-feed</name>
+  <ioc>malicious.example</ioc>
+  <ioc>phish.example</ioc>
+  <ioc>c2.example</ioc>
+  <format>stix</format>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Parental_Block_Son_Malicious_Websites</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-number</priority-usage>
+  <resolution-strategy>pmre</resolution-strategy>
+
+  <rules>
+    <name>Block_Son_Malicious_Websites_Log</name>
+    <priority>100</priority>
+    <condition>
+      <firewall>
+        <source>SON_DEVICES</source>
+      </firewall>
+      <threat-feed>
+        <name>malicious-websites-feed</name>
+      </threat-feed>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <rules>
+    <name>Notify_Parent_On_Blocked_Attempt</name>
+    <priority>90</priority>
+    <condition>
+      <firewall>
+        <source>SON_DEVICES</source>
+      </firewall>
+      <threat-feed>
+        <name>malicious-websites-feed</name>
+      </threat-feed>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

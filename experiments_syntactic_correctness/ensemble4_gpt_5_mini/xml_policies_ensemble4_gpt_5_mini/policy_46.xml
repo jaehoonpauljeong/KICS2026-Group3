@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!--
+    Endpoint groups referenced by the policy "Prevent_Config_Changes_During_Critical_Firewall_Memory".
+    Test-net placeholder prefixes used per intent guidance.
+  -->
+  <user-group>
+    <name>Operations-Security-Team</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>Firewall-Devices</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>Configuration-Management-Servers</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Prevent_Config_Changes_During_Critical_Firewall_Memory</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Block_Rollback_And_Notify_On_Critical_Memory</name>
+
+    <condition>
+      <firewall>
+        <!-- Sources that may attempt configuration changes -->
+        <source>Operations-Security-Team</source>
+        <source>Configuration-Management-Servers</source>
+
+        <!-- Target: the firewall device(s) being protected -->
+        <destination>Firewall-Devices</destination>
+      </firewall>
+    </condition>
+
+    <action>
+      <!--
+        invoke-signaling is used to call an external orchestrator/automation responsible for:
+          - Blocking the attempted change (if applicable),
+          - Performing rollback procedures if safe,
+          - Notifying operations/security team,
+          - Enforcing "prevent retry until memory returns to safe levels" semantics.
+        Note: rollback, notification channels, and retry gating are executed by the invoked orchestrator
+        because the base YANG model does not provide native primitives for rollback/notification/retry gating.
+      -->
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

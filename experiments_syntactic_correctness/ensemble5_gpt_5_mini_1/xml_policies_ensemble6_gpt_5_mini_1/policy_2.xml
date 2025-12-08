@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Endpoint groups document -->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- User group: internal corporate users / softphones -->
+  <user-group>
+    <name>Internal_Users</name>
+    <ipv4-prefix>10.10.0.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Device groups: VoIP servers, SBCs, proxies, RTP relays -->
+  <device-group>
+    <name>VoIP_Servers</name>
+    <ipv4-prefix>192.0.2.10/32</ipv4-prefix>
+    <application-protocol>sip</application-protocol>
+  </device-group>
+
+  <device-group>
+    <name>SIP_Proxies</name>
+    <ipv4-prefix>192.0.2.20/32</ipv4-prefix>
+    <application-protocol>sip</application-protocol>
+  </device-group>
+
+  <device-group>
+    <name>Session_Border_Controllers</name>
+    <ipv4-prefix>192.0.2.30/32</ipv4-prefix>
+    <application-protocol>sip</application-protocol>
+  </device-group>
+
+  <device-group>
+    <name>RTP_Media_Endpoints</name>
+    <ipv4-prefix>192.0.2.40/32</ipv4-prefix>
+    <application-protocol>rtsp</application-protocol>
+  </device-group>
+
+  <!-- Edge enforcement points -->
+  <device-group>
+    <name>Edge_Firewalls</name>
+    <ipv4-prefix>10.0.0.1/32</ipv4-prefix>
+    <application-protocol>sip</application-protocol>
+  </device-group>
+
+  <!-- Placeholder groups for untrusted/malicious external sources (TEST-NET ranges) -->
+  <device-group>
+    <name>Malicious_Sources_List</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>Untrusted_External_Hosts</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Voice identities (SIP URIs) used to match signaling-based conditions -->
+  <voice-group>
+    <name>VoIP_Service_Identities</name>
+    <sip-id>sip:pbx@example.corp</sip-id>
+    <sip-id>sip:proxy@example.corp</sip-id>
+    <sip-id>sip:sbc@example.corp</sip-id>
+  </voice-group>
+</endpoint-groups>
+
+<!-- Threat-prevention document -->
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Representing threat feeds / IOC lists referenced by rules -->
+  <threat-feed-list>
+    <name>Blacklist_IP_List</name>
+    <ioc>198.51.100.0/24</ioc>
+    <ioc>203.0.113.45</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+
+  <threat-feed-list>
+    <name>IDS_Signature_DB</name>
+    <ioc>sig:VOIP-EXPLOIT-2025</ioc>
+    <ioc>sig:SIP-INVITE-OVERFLOW</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+
+  <threat-feed-list>
+    <name>SIP_Protocol_Anomalies</name>
+    <ioc>sip:sdp-malformed</ioc>
+    <ioc>sip:missing-callid</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+
+  <threat-feed-list>
+    <name>RTP_Protocol_Anomalies</name>
+    <ioc>rtp:ssrc-anomaly</ioc>
+    <ioc>rtcp:malformed</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+
+  <threat-feed-list>
+    <name>Invalid_Credentials_Detections</name>
+    <ioc>auth:failed-digest-threshold</ioc>
+    <ioc>auth:invalid-cert</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+
+  <threat-feed-list>
+    <name>Unauthorized_Port_Blocklist</name>
+    <ioc>port:unauthorized-voip</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+
+  <threat-feed-list>
+    <name>SIP_Flood_Anomaly_List</name>
+    <ioc>anomaly:sip-requests-pps-exceed</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+</threat-prevention>
+
+<!-- Main policy document referencing endpoint groups and threat feeds by name only -->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Malicious_VoIP_VoCN_Packets</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <!-- Rule 1: Immediate drop and block for sources in blacklist or known exploit signatures -->
+  <rules>
+    <name>Drop_and_Block_Blacklisted_Sources</name>
+    <condition>
+      <firewall>
+        <!-- Source is referenced by endpoint-group name -->
+        <source>Malicious_Sources_List</source>
+        <!-- Destination targets VoIP services -->
+        <destination>VoIP_Servers</destination>
+        <destination>SIP_Proxies</destination>
+        <destination>Session_Border_Controllers</destination>
+        <!-- SIP signaling and RTP ports -->
+        <range-port-number>
+          <start>5060</start>
+          <end>5061</end>
+        </range-port-number>
+        <range-port-number>
+          <start>10000</start>
+          <end>20000</end>
+        </range-port-number>
+      </firewall>
+
+      <context>
+        <!-- Enforcement intended at edge/VoIP-infrastructure devices -->
+        <device-type>
+          <device>network-infrastructure-device</device>
+        </device-type>
+      </context>
+
+      <!-- Reference threat feeds that indicate blacklisted IPs or known exploit signatures -->
+      <threat-feed>
+        <name>Blacklist_IP_List</name>
+      </threat-feed>
+      <threat-feed>
+        <name>IDS_Signature_DB</name>
+      </threat-feed>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- Rule 2: Reject malformed or nonconforming SIP/RTP messages (protocol conformance checks) -->
+  <rules>
+    <name>Reject_Malformed_SIP_or_RTP</name>
+    <condition>
+      <firewall>
+        <destination>VoIP_Servers</destination>
+        <destination>SIP_Proxies</destination>
+        <destination>Session_Border_Controllers</destination>
+      </firewall>
+
+      <!-- Also match voice identities (signaling targets) -->
+      <voice>
+        <destination-id>VoIP_Service_Identities</destination-id>
+      </voice>
+
+      <!-- Threat feeds representing protocol-anomaly detection -->
+      <threat-feed>
+        <name>SIP_Protocol_Anomalies</name>
+      </threat-feed>
+      <threat-feed>
+        <name>RTP_Protocol_Anomalies</name>
+      </threat-feed>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>reject</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- Rule 3: Detect and mitigate flooding / abnormal traffic patterns with rate-limit -->
+  <rules>
+    <name>Rate_Limit_And_Mitigate_Flooding</name>
+    <condition>
+      <firewall>
+        <destination>VoIP_Servers</destination>
+        <destination>RTP_Media_Endpoints</destination>
+      </firewall>
+
+      <ddos>
+        <rate-limit>
+          <packet-rate-threshold>1000</packet-rate-threshold>
+          <byte-rate-threshold>500000</byte-rate-threshold>
+          <flow-rate-threshold>200</flow-rate-threshold>
+        </rate-limit>
+      </ddos>
+
+      <threat-feed>
+        <name>SIP_Flood_Anomaly_List</name>
+      </threat-feed>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>20000.0</limit>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- Rule 4: Handle invalid credentials / credential abuse — block source and invoke orchestration for quarantine -->
+  <rules>
+    <name>Block_Invalid_Credentials_And_Quarantine</name>
+    <condition>
+      <firewall>
+        <destination>VoIP_Servers</destination>
+      </firewall>
+
+      <threat-feed>
+        <name>Invalid_Credentials_Detections</name>
+      </threat-feed>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- Rule 5: Catch-all enforcement for unauthorized ports/protocols targeting VoIP services -->
+  <rules>
+    <name>Block_Unauthorized_Ports_And_Protocols</name>
+    <condition>
+      <firewall>
+        <destination>VoIP_Servers</destination>
+        <destination>SIP_Proxies</destination>
+        <range-port-number>
+          <start>1</start>
+          <end>1023</end>
+        </range-port-number>
+      </firewall>
+
+      <threat-feed>
+        <name>Unauthorized_Port_Blocklist</name>
+      </threat-feed>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

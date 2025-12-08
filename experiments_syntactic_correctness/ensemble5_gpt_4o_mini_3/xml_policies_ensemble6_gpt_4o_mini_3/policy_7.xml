@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <url-group>
+      <name>Video Streaming Services</name>
+      <url>https://www.youtube.com</url>
+      <url>https://youtube.com</url>
+    </url-group>
+  </endpoint-groups>
+  <threat-prevention>
+    <threat-feed-list>
+      <name>default-threat-feed</name>
+      <ioc>example.com</ioc>
+      <ioc>hash:default1234</ioc>
+      <format>stix</format>
+    </threat-feed-list>
+  </threat-prevention>
+  <i2nsf-cfi-policy>
+    <name>Block_Access_To_YouTube</name>
+    <rules>
+      <name>Block_YouTube_Access</name>
+      <condition>
+        <firewall>
+          <source>Video Streaming Services</source>
+          <destination>Video Streaming Services</destination>
+        </firewall>
+        <url-category>
+          <url-name>Video Streaming Services</url-name>
+        </url-category>
+      </condition>
+      <action>
+        <primary-action>
+          <action>drop</action>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>

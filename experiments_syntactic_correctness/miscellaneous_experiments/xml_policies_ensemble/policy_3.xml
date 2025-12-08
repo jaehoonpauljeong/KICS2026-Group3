@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No specific endpoint groups defined in the policy -->
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No specific threat feeds defined in the policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface"
+    xmlns:nsfcfi="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cfi-policy">
+  <name>Mitigate_Flood_Attacks_Policy</name>
+  <rules>
+    <name>Flood_Attack_Mitigation_Rule</name>
+    <condition>
+      <firewall>
+        <source>unknown-source-group</source> <!-- Placeholder for source group -->
+        <destination>company-web-server</destination> <!-- Placeholder for destination -->
+      </firewall>
+      <context>
+        <application>
+          <protocol>nsfcfi:tcp</protocol> <!-- Example protocol for flood attacks -->
+        </application>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action> <!-- Example action for mitigation -->
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

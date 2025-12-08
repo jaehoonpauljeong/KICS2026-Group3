@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>administrative-servers</name>
+    <!-- Placeholder IPv4 prefix per RFC 5737 (replace with real admin hosts/networks) -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>AdminPort_Block_and_Audit_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Block_AdminPort_and_Log_Attempt</name>
+
+    <condition>
+      <firewall>
+        <!-- Destination is the administrative servers group defined in endpoint-groups -->
+        <destination>administrative-servers</destination>
+
+        <!-- Admin ports (explicit numeric ports): SSH (22) and HTTPS/admin UI (443).
+             Add or change ranges as needed for your environment. -->
+        <range-port-number>
+          <start>22</start>
+          <end>22</end>
+        </range-port-number>
+        <range-port-number>
+          <start>443</start>
+          <end>443</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Block (drop) the connection attempt -->
+        <action>drop</action>
+      </primary-action>
+
+      <secondary-action>
+        <!-- Log the rule match for auditing -->
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

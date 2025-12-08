@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No specific endpoint groups defined for this policy -->
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No specific threat feeds defined for this policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Port_Scan_Alert_Policy</name>
+  <rules>
+    <name>Send_Alert_On_Port_Scan</name>
+    <condition>
+      <firewall>
+        <source>unknown-source-group</source> <!-- Placeholder for source group -->
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action> <!-- Allow traffic -->
+      </primary-action>
+      <secondary-action>
+        <action>invoke-signaling</action> <!-- Send alert to monitoring system -->
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

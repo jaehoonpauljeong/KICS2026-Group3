@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No endpoint groups defined in the policy -->
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds defined in the policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Allow_VPN_Connections_With_Logging</name>
+  <rules>
+    <name>Log_VPN_Session</name>
+    <condition>
+      <firewall>
+        <source>vpn-users</source> <!-- Placeholder for endpoint group -->
+      </firewall>
+      <context>
+        <application>
+          <protocol>vpn</protocol> <!-- Assuming VPN is treated as a protocol -->
+        </application>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>log</action> <!-- Logging action as per intent -->
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

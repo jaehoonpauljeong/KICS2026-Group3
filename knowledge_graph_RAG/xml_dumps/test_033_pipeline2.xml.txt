@@ -1,0 +1,26 @@
+<!-- intent: Allow VPN connections but keep a session log of every session for review. -->
+<!-- expected: primary-action: pass, secondary-action -> log-action: rule-log -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>allow_vpn_with_logging_policy</name>
+    <rules>
+        <name>allow_vpn_connections</name>
+        <condition>
+            <firewall>
+                <source>vpn_clients</source>
+                <destination>vpn_server</destination>
+            </firewall>
+        </condition>
+        <action>
+            <primary-action>
+                <action>allow</action>
+            </primary-action>
+            <secondary-action>
+                <log-action>log_session</log-action>
+            </secondary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

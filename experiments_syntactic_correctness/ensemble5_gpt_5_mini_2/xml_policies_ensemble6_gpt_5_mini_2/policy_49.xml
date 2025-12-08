@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>maintenance_targets</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>backup_endpoints</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>monitoring_and_management</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Monthly_Maintenance_Window_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>FirstSunday_02_00_to_04_00_UTC_Maintenance_Network_Allow</name>
+    <condition>
+      <firewall>
+        <source>monitoring_and_management</source>
+        <destination>maintenance_targets</destination>
+        <destination>backup_endpoints</destination>
+      </firewall>
+
+      <context>
+        <time>
+          <period>
+            <start-time>02:00:00Z</start-time>
+            <end-time>04:00:00Z</end-time>
+            <day>sunday</day>
+            <date>1</date>
+            <date>2</date>
+            <date>3</date>
+            <date>4</date>
+            <date>5</date>
+            <date>6</date>
+            <date>7</date>
+          </period>
+          <frequency>monthly</frequency>
+        </time>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <rules>
+    <name>FirstSunday_02_00_to_04_00_UTC_Maintenance_Invoke_Orchestrator</name>
+    <condition>
+      <firewall>
+        <source>monitoring_and_management</source>
+        <destination>maintenance_targets</destination>
+      </firewall>
+
+      <context>
+        <time>
+          <period>
+            <start-time>02:00:00Z</start-time>
+            <end-time>04:00:00Z</end-time>
+            <day>sunday</day>
+            <date>1</date>
+            <date>2</date>
+            <date>3</date>
+            <date>4</date>
+            <date>5</date>
+            <date>6</date>
+            <date>7</date>
+          </period>
+          <frequency>monthly</frequency>
+        </time>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>Employees_Workstations</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <user-group>
+    <name>Finance_Employees</name>
+    <ipv4-prefix>192.0.2.0/25</ipv4-prefix>
+  </user-group>
+
+  <user-group>
+    <name>Finance_Admins</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>Restricted_Finance_Servers</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Finance_Server_Access_Control_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <!-- 1) Allow authorized finance admins to access finance servers -->
+  <rules>
+    <name>Permit_Finance_Admins</name>
+    <condition>
+      <firewall>
+        <source>Finance_Admins</source>
+        <destination>Restricted_Finance_Servers</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- 2) Notification for all unauthorized access attempts: invoke-signaling + log -->
+  <rules>
+    <name>Notify_IT_Security_On_Unauthorized_Finance_Access</name>
+    <condition>
+      <firewall>
+        <source>Employees_Workstations</source>
+        <destination>Restricted_Finance_Servers</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+
+  <!-- 3) Higher-severity / HR notification & enforcement trigger -->
+  <rules>
+    <name>Notify_HR_and_Enforcement_Workflow</name>
+    <condition>
+      <firewall>
+        <source>Finance_Employees</source>
+        <destination>Restricted_Finance_Servers</destination>
+      </firewall>
+      <ddos>
+        <rate-limit>
+          <!-- approximates "repeated attempts" threshold: tune per environment -->
+          <flow-rate-threshold>5</flow-rate-threshold>
+        </rate-limit>
+      </ddos>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+
+  <!-- 4) Deny access attempts from employees that are not authorized -->
+  <rules>
+    <name>Deny_Log_Access_From_Unauthorized_Employees</name>
+    <condition>
+      <firewall>
+        <source>Employees_Workstations</source>
+        <destination>Restricted_Finance_Servers</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+
+</i2nsf-cfi-policy>

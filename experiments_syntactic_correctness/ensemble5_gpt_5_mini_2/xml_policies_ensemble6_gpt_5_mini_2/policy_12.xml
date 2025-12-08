@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>known_malicious_sources</name>
+    <!-- Placeholder IPv4 prefix (TEST-NET-2) representing the known-malicious IP list -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>protected_internal_hosts</name>
+    <!-- Placeholder internal hosts protected by this policy -->
+    <ipv4-prefix>192.168.1.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <threat-feed-list>
+    <name>known_malicious_ip_feed</name>
+    <!-- IOC entry: placeholder TEST-NET range representing malicious IPs -->
+    <ioc>198.51.100.0/24</ioc>
+    <!-- Format chosen from allowed values: stix | misp | openioc | iodef -->
+    <format>openioc</format>
+  </threat-feed-list>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>deny_known_malicious_ip_policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>drop_traffic_from_known_malicious_ips</name>
+
+    <condition>
+      <firewall>
+        <!-- Placeholder endpoint-group names (must exist in endpoint-groups document) -->
+        <source>known_malicious_sources</source>
+        <destination>protected_internal_hosts</destination>
+      </firewall>
+
+      <!-- Reference to the external threat feed (must exist in threat-prevention document) -->
+      <threat-feed>
+        <name>known_malicious_ip_feed</name>
+      </threat-feed>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Silent drop: do not respond, forward, or establish connection -->
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

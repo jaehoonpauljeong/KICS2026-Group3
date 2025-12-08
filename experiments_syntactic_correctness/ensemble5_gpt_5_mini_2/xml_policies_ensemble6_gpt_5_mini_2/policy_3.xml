@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Endpoint groups document.
+  Contains all endpoint groups referenced by the policy (names + placeholder TEST-NET prefixes).
+-->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Origin web servers (company) -->
+  <device-group>
+    <name>company-web-servers</name>
+    <ipv4-prefix>192.0.2.0/28</ipv4-prefix>
+  </device-group>
+
+  <!-- Reverse proxies / CDN edges -->
+  <device-group>
+    <name>reverse-proxies</name>
+    <ipv4-prefix>198.51.100.0/28</ipv4-prefix>
+  </device-group>
+
+  <!-- Upstream DDoS scrubbing / clean-pipe service -->
+  <device-group>
+    <name>scrubbing-service</name>
+    <ipv4-prefix>198.51.100.16/28</ipv4-prefix>
+  </device-group>
+
+  <!-- Suspicious or blacklisted client sources (placeholder list / learned feed) -->
+  <user-group>
+    <name>suspicious-clients</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Forensic log / PCAP storage endpoint (mirror target) -->
+  <device-group>
+    <name>forensic-log-storage</name>
+    <ipv4-prefix>192.0.2.16/28</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<!--
+  Threat-prevention / threat-feed document.
+  Contains feeds referenced by the policy (example/placeholder IOC entries).
+-->
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <threat-feed-list>
+    <name>ip-reputation-feed</name>
+    <!-- Example IOCs; replace with real feed contents in production -->
+    <ioc>203.0.113.0/24</ioc>
+    <ioc>203.0.113.5</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+
+  <threat-feed-list>
+    <name>geo-block-feed</name>
+    <!-- Example: country codes or ranges used by orchestration; representation depends on feed format -->
+    <ioc>CN</ioc>
+    <ioc>RU</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+</threat-prevention>
+
+<!--
+  i2nsf-cfi-policy document.
+  Rule references endpoint groups and threat feeds by name only.
+  The single rule below invokes orchestration to perform the full set of mitigations
+  (rate limiting, connection/timeouts, SYN cookies, WAF + challenge, CDN/scrubbing routing,
+  blacklisting/geo-blocking, cache/static serving, autoscale/failover, PCAP capture),
+  and records session logs. Orchestration is expected to implement vendor-specific actions.
+-->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Mitigate_Flood_Attacks_Company_WebServer</name>
+  <language>en-US</language>
+  <!-- Use priority-by-order (rule execution order). Using fmr (first-matching-rule) resolution.
+       Because the primary action is invoke-signaling (orchestration), the orchestrator should
+       implement and coordinate the set of mitigations (rate limits, forwarding to scrubber/CDN,
+       WAF activation, client challenge, autoscaling, PCAP capture, blacklisting). -->
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Apply_DDoS_Flood_Mitigation</name>
+
+    <condition>
+      <!-- Apply this rule to traffic targeting the company's web servers -->
+      <firewall>
+        <destination>company-web-servers</destination>
+        <!-- typical web ports (optional — left out port-range to match any web port) -->
+      </firewall>
+
+      <!-- DDoS-trigger thresholds (example values; tune for environment). When these are met,
+           the primary action (invoke-signaling) should be executed immediately. -->
+      <ddos>
+        <rate-limit>
+          <!-- triggers in packets per second -->
+          <packet-rate-threshold>100000</packet-rate-threshold>
+          <!-- triggers in bytes per second -->
+          <byte-rate-threshold>500000000</byte-rate-threshold>
+          <!-- triggers in new-flow (connection) creations per second -->
+          <flow-rate-threshold>5000</flow-rate-threshold>
+        </rate-limit>
+      </ddos>
+
+      <!-- Reference reputation / geo feeds used for blacklisting / throttling decisions.
+           The named feeds must exist in the threat-prevention document above. -->
+      <threat-feed>
+        <name>ip-reputation-feed</name>
+        <name>geo-block-feed</name>
+      </threat-feed>
+    </condition>
+
+    <action>
+      <!-- Primary action is to invoke an orchestration/signaling service that:
+           - enables rate-limiting (per-IP/subnet/endpoint) and aggressive connection/timeouts
+           - enables SYN cookies and kernel/network stack tuning on relevant boxes
+           - activates WAF rules and issues JS/CAPTCHA challenges for suspicious clients
+           - routes/redirects traffic through CDN or upstream scrubbing-service as needed
+           - applies IP reputation + geo-blocking + blacklisting (drop or throttle)
+           - serves cached/static content at edges where possible
+           - triggers autoscaling or failover of origin infrastructure
+           - triggers packet-capture/PCAP collection to forensic-log-storage
+           - notifies security/operations teams (alerts, paging)
+           This mapping uses invoke-signaling because many mitigations require orchestration or vendor APIs
+           that are outside the base ECA action set of this model.
+      -->
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+
+      <!-- Secondary (logging) action: preserve session logs for forensic and analysis.
+           Orchestration should also trigger PCAP capture to forensic-log-storage as part of the invoke-signaling flow. -->
+      <secondary-action>
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

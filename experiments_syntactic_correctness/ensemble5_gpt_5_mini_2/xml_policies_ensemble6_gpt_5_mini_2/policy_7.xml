@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>ALL_DEVICES</name>
+    <!-- Represents "any device" (global). Using 0.0.0.0/0 as a placeholder for all IPv4.
+         Adjust to your environment if you prefer specific subnets instead of literal "any". -->
+    <ipv4-prefix>0.0.0.0/0</ipv4-prefix>
+  </device-group>
+
+  <url-group>
+    <name>adult-category</name>
+    <!-- Representative example URLs for the "adult" category. Replace with your real
+         URL-category feed integration or a fuller list of domains as appropriate. -->
+    <url>https://adult.example/</url>
+    <url>https://adult-site.example/</url>
+  </url-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Restrict_Adult_Content_All_Devices</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Deny_Adult_Content_Access</name>
+
+    <condition>
+      <firewall>
+        <!-- Referencing endpoint-group by name only (details are in endpoint-groups doc) -->
+        <source>ALL_DEVICES</source>
+        <destination>ALL_DEVICES</destination>
+      </firewall>
+
+      <!-- Content classification mapped to a URL-group representing the adult category -->
+      <url-category>
+        <url-name>adult-category</url-name>
+      </url-category>
+    </condition>
+
+    <action>
+      <!-- "Block" semantics implemented as 'drop' -->
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

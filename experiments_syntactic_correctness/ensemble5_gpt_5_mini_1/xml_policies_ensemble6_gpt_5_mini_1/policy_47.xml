@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>any-endpoints</name>
+    <!-- Placeholder IPv4 prefix (RFC 5737 TEST-NET-1) to satisfy endpoint-group requirements.
+         Replace with your actual protected endpoints/subnets as appropriate. -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <threat-feed-list>
+    <name>zeus-ioc</name>
+    <!-- Example placeholder IOCs (TEST-NET used for example). Replace with real feed contents
+         or configure the controller to pull from the external "zeus-ioc" feed. -->
+    <ioc>198.51.100.0/24</ioc>
+    <ioc>malicious.example</ioc>
+    <!-- format is required by the model; choose the appropriate format (stix, misp, openioc, iodef).
+         Here we use STIX as a commonly used structured feed format. -->
+    <format>stix</format>
+  </threat-feed-list>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>zeus_ioc_blocklist_policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>drop_log_and_block_zeus_ioc</name>
+
+    <condition>
+      <firewall>
+        <!-- Placeholder source endpoint-group. If the intent is truly "any source/destination",
+             you can leave out firewall source/destination entirely or keep a named group that
+             represents "all managed endpoints". -->
+        <source>any-endpoints</source>
+      </firewall>
+
+      <threat-feed>
+        <!-- Reference the threat feed declared in the standalone threat-prevention document. -->
+        <name>zeus-ioc</name>
+      </threat-feed>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Drop matching traffic as specified by the intent. -->
+        <action>drop</action>
+      </primary-action>
+
+      <secondary-action>
+        <!-- The intent explicitly requested logging. Use rule-log so orchestration can consume it. -->
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

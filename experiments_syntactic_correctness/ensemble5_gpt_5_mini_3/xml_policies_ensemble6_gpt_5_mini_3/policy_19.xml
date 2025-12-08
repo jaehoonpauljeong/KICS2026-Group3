@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Device group representing IoT devices (source group) -->
+  <device-group>
+    <name>IoT_Devices</name>
+    <!-- Placeholder/test IPv4 prefix for IoT devices -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Device group representing the specialized IoT gateway (forward target) -->
+  <device-group>
+    <name>IoT_Gateway</name>
+    <!-- Placeholder/test IPv4 address for the gateway -->
+    <ipv4-prefix>198.51.100.10/32</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Forward_IoT_Traffic_To_Gateway</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Forward_IoT_Devices_To_Gateway</name>
+
+    <!-- Condition: source is the IoT_Devices endpoint-group and device classified as iot-device -->
+    <condition>
+      <firewall>
+        <!-- Reference to the endpoint-group defined in the endpoint-groups document above -->
+        <source>IoT_Devices</source>
+      </firewall>
+      <context>
+        <device-type>
+          <!-- Explicit device-type classification -->
+          <device>iot-device</device>
+        </device-type>
+      </context>
+    </condition>
+
+    <!-- Action: forward matching IoT device traffic for additional processing -->
+    <action>
+      <primary-action>
+        <action>forwarding</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

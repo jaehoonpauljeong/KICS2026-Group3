@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Hosts/users generating outbound email (clients/workstations) -->
+  <user-group>
+    <name>Internal_Email_Senders</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Internal mail relays / MTAs (optional; included for completeness) -->
+  <device-group>
+    <name>Mail_Relay_Servers</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+    <application-protocol>smtp</application-protocol>
+  </device-group>
+
+  <!-- Monitoring system that should receive copies for inspection.
+       NOTE: the YANG excerpt does not provide a mirror-target action parameter;
+       this endpoint-group declares the monitoring host so implementations can map
+       mirror-target → Monitoring_System in their platform-specific configuration. -->
+  <device-group>
+    <name>Monitoring_System</name>
+    <range-ipv4-address>
+      <start>203.0.113.10</start>
+      <end>203.0.113.10</end>
+    </range-ipv4-address>
+    <application-protocol>smtp</application-protocol>
+  </device-group>
+
+  <!-- Logical group representing outbound/external destinations (placeholder) -->
+  <device-group>
+    <name>External_Email_Destinations</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>copy_outgoing_email_to_monitoring</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>copy_and_forward_outgoing_email</name>
+
+    <condition>
+      <firewall>
+        <!-- Source: internal senders group -->
+        <source>Internal_Email_Senders</source>
+
+        <!-- Destinations: external mail servers / recipients -->
+        <destination>External_Email_Destinations</destination>
+
+        <!-- Ports commonly used for SMTP/submission/smtps -->
+        <range-port-number>
+          <start>25</start>
+          <end>25</end>
+        </range-port-number>
+        <range-port-number>
+          <start>587</start>
+          <end>587</end>
+        </range-port-number>
+        <range-port-number>
+          <start>465</start>
+          <end>465</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <!-- Primary action: mirror (create a copy of the outbound message for inspection).
+           NOTE: the model excerpt has no subtree to specify the mirror target; the
+           Monitoring_System endpoint-group above must be mapped to the mirror target
+           by the NSF implementation (implementation-specific configuration). -->
+      <primary-action>
+        <action>mirror</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

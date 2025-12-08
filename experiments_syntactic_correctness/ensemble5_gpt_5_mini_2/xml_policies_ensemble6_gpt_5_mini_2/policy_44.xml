@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>core-network-interfaces</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>redundant-network-interfaces</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>network-operations-systems</name>
+    <ipv4-prefix>192.0.2.0/25</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>on-call-engineer-devices</name>
+    <ipv4-prefix>192.0.2.128/25</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>logging-system</name>
+    <ipv4-prefix>192.0.2.64/26</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>CoreInterfaceFailover_Alert_IncidentPolicy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-number</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <!-- Rule 1: Fail over traffic to redundant interface and log the event.
+       Orchestrator/NSF implementation must perform pre-checks (redundant interface availability, capacity,
+       anti-flap thresholds, route reachability, auth/permission checks, etc.) before or during execution. -->
+  <rules>
+    <name>FailoverAndLog_On_CoreInterfaceDown</name>
+    <priority>200</priority>
+
+    <condition>
+      <firewall>
+        <!-- Identify the triggering and target endpoint-groups by name only -->
+        <source>core-network-interfaces</source>
+        <destination>redundant-network-interfaces</destination>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Instruct NSF/orchestrator to forward traffic to the redundant interface -->
+        <action>forwarding</action>
+      </primary-action>
+
+      <secondary-action>
+        <!-- Log the rule event for post-incident review -->
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+
+  <!-- Rule 2: Immediately notify NOC / on-call and create an incident ticket (via orchestration).
+       This rule uses invoke-signaling; the orchestrator must implement the notification and ticket creation
+       with diagnostics and timestamps. It also logs the event. -->
+  <rules>
+    <name>NotifyAndTicket_On_CoreInterfaceDown</name>
+    <priority>180</priority>
+
+    <condition>
+      <firewall>
+        <source>core-network-interfaces</source>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Trigger orchestration to send alerts and create incident with diagnostics/timestamps -->
+        <action>invoke-signaling</action>
+      </primary-action>
+
+      <secondary-action>
+        <!-- Also request that the event be logged for post-incident review -->
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

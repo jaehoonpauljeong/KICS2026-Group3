@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>core-network-interfaces</name>
+    <!-- Placeholder/test-net prefix for core interfaces; replace with real production ranges -->
+    <ipv4-prefix>198.51.100.0/26</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>redundant-path-devices</name>
+    <!-- Placeholder/test-net prefix for alternate path devices; replace with real production ranges -->
+    <ipv4-prefix>203.0.113.0/26</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>noc-monitoring-systems</name>
+    <!-- NOC servers/dashboards -->
+    <ipv4-prefix>192.0.2.0/26</ipv4-prefix>
+  </device-group>
+
+  <user-group>
+    <name>oncall-engineer-devices</name>
+    <!-- On-call engineer endpoints -->
+    <ipv4-prefix>192.0.2.64/26</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>incident-ticketing-system</name>
+    <!-- ITSM / ticketing system endpoint(s) -->
+    <ipv4-prefix>198.51.100.64/26</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>diagnostic-and-recovery-systems</name>
+    <!-- Orchestration/diagnostics agents -->
+    <ipv4-prefix>203.0.113.64/26</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Core_Network_Interface_Failover</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Interface_Down_Failover_and_Incident_Response</name>
+
+    <condition>
+      <firewall>
+        <!-- The traffic/service scope identifiers are endpoint-group names only (no IPs here) -->
+        <source>core-network-interfaces</source>
+        <!-- Primary target(s) for failover -->
+        <destination>redundant-path-devices</destination>
+        <!-- Additional endpoint-group targets referenced so the orchestration callback knows where to send alerts, tickets, run diagnostics -->
+        <destination>noc-monitoring-systems</destination>
+        <destination>oncall-engineer-devices</destination>
+        <destination>incident-ticketing-system</destination>
+        <destination>diagnostic-and-recovery-systems</destination>
+      </firewall>
+
+      <context>
+        <time>
+          <!-- Policy active range (placeholder): set to long-lived window to keep rule active;
+               adjust start/end and periodic window to match your maintenance-window behavior. -->
+          <start-date-time>2025-01-01T00:00:00Z</start-date-time>
+          <end-date-time>2030-12-31T23:59:59Z</end-date-time>
+
+          <!-- Keep the rule enabled daily; orchestration should apply maintenance-window suppression logic
+               if you have a separate maintenance schedule. -->
+          <period>
+            <start-time>00:00:00Z</start-time>
+            <end-time>23:59:59Z</end-time>
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+            <day>saturday</day>
+            <day>sunday</day>
+          </period>
+          <frequency>daily</frequency>
+        </time>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Invoke-signaling is used to call an orchestration/integration component that:
+             - performs automated failover to redundant-path-devices (subject to redundancy checks)
+             - generates alerts to noc-monitoring-systems and oncall-engineer-devices
+             - opens and annotates an incident in incident-ticketing-system (ticket template and fields handled by orchestration)
+             - runs diagnostics and recovery via diagnostic-and-recovery-systems
+             Note: orchestration payload/templates/credentials are out-of-band or require YANG augmentation. -->
+        <action>invoke-signaling</action>
+      </primary-action>
+
+      <secondary-action>
+        <!-- Record the event in the NSF rule log (incident ticketing/annotations performed by orchestration) -->
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

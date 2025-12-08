@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No endpoint groups defined in the policy -->
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds defined in the policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface"
+    xmlns:nsfcfi="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cfi-policy">
+  <name>Secure_Financial_Data_Traffic_Policy</name>
+  <rules>
+    <name>Encapsulate_Sensitive_Data_Traffic</name>
+    <condition>
+      <firewall>
+        <source>unknown-source-group</source> <!-- Placeholder for missing endpoint group -->
+      </firewall>
+      <context>
+        <application>
+          <protocol>nsfcfi:https</protocol> <!-- Assuming HTTPS for secure tunneling -->
+        </application>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>tunnel-encapsulation</action>
+      </primary-action>
+    </action>
+  </rules>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <language>en-US</language>
+</i2nsf-cfi-policy>

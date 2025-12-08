@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>Firewall-Devices</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>Config-Management-Systems</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>Immutable-Audit-Repository</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>SecOps-Notification-Endpoints</name>
+    <ipv4-prefix>198.51.100.128/25</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Firewall_Config_Change_Audit_and_Approval_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Audit_Record_Notify_On_Firewall_Config_Change</name>
+
+    <condition>
+      <firewall>
+        <!-- Source is the managed firewall(s) where configuration changes originate -->
+        <source>Firewall-Devices</source>
+
+        <!-- Destinations referenced by name only (endpoints defined in endpoint-groups) -->
+        <!-- These represent the systems to which the NSF implementation SHOULD forward or signal -->
+        <!-- to record the change and to deliver notifications. -->
+        <destination>Config-Management-Systems</destination>
+        <destination>Immutable-Audit-Repository</destination>
+        <destination>SecOps-Notification-Endpoints</destination>
+      </firewall>
+
+      <context>
+        <!-- Actor attribution (represented here using supported user/group fields).
+             Implementation should populate these dynamically from the event payload at runtime. -->
+        <users>
+          <user>
+            <id>1001</id>
+            <name>change-operator</name>
+          </user>
+          <group>
+            <id>200</id>
+            <name>admins</name>
+          </group>
+        </users>
+
+        <!-- Device type (firewall / network infrastructure device). -->
+        <device-type>
+          <device>network-infrastructure-device</device>
+        </device-type>
+      </context>
+    </condition>
+
+    <action>
+      <!-- Primary action: invoke-signaling to represent notifying/recording actions (CMDB, ticketing, orchestration). -->
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

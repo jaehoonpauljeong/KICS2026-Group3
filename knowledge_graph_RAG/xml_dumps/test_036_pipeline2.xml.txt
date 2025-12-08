@@ -1,0 +1,26 @@
+<!-- intent: Permit database traffic from the finance department but log the entire session information. -->
+<!-- expected: primary-action: pass, secondary-action -> log-action: session-log -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>permit_database_traffic_finance_department</name>
+    <rules>
+        <name>Permit_database_traffic</name>
+        <condition>
+            <firewall>
+                <source>Finance_Department</source>
+                <destination>Database_Servers</destination>
+            </firewall>
+        </condition>
+        <action>
+            <primary-action>
+                <action>permit</action>
+            </primary-action>
+            <secondary-action>
+                <log-action>log-session-info</log-action>
+            </secondary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

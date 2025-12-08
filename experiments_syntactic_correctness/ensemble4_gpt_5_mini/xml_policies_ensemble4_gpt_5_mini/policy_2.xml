@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Endpoint groups referenced by the policy -->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Internal VoIP servers (PBX / SBC / registrar) -->
+  <device-group>
+    <name>Internal_VoIP_Servers</name>
+    <!-- Placeholder TEST-NET range for internal VoIP servers -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Corporate VoIP clients (softphones / desk phones) -->
+  <device-group>
+    <name>Corporate_VoIP_Clients</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Perimeter VoIP gateway / SBC in DMZ -->
+  <device-group>
+    <name>DMZ_VoIP_Gateway</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- External/untrusted source placeholder (any external host) -->
+  <device-group>
+    <name>external-untrusted</name>
+    <!-- Placeholder representative prefix for external addresses.
+         Real deployments should replace this with accurate external ranges
+         or leave it to enforcement device's default external zone mapping. -->
+    <ipv4-prefix>0.0.0.0/0</ipv4-prefix>
+  </device-group>
+
+  <!-- SIP identity-based endpoint group (optional SIP uri matches) -->
+  <voice-group>
+    <name>internal-voice-uris</name>
+    <!-- Example SIP URIs for internal administrative/critical endpoints -->
+    <sip-id>sip:pbx@corp.example.com</sip-id>
+    <sip-id>sip:registrar@corp.example.com</sip-id>
+    <sip-id>sip:helpdesk@corp.example.com</sip-id>
+  </voice-group>
+</endpoint-groups>
+
+<!-- Threat feed(s) used by the policy -->
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- A single consolidated feed entry (placeholder examples).
+       Replace IOC values and format with the real feed contents in production. -->
+  <name>voip-malicious-feeds</name>
+  <ioc>ip:203.0.113.45</ioc>
+  <ioc>ip:198.51.100.78</ioc>
+  <ioc>signature:SIP-MALFORMED-001</ioc>
+  <ioc>signature:RTP-ANOMALY-01</ioc>
+  <format>stix</format>
+</threat-prevention>
+
+<!-- I2NSF CFI policy referencing the endpoint groups and threat feed by name -->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Malicious_VoIP_VoCN_Packets</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Block_Inbound_Malicious_VoIP_VoCN</name>
+
+    <!-- Conditions:
+         - Traffic from untrusted/external sources
+         - Destined to internal VoIP servers / DMZ gateway
+         - Known-malicious IOCs / IDS signatures (referenced via threat feed)
+         - RTP/SIP port ranges included
+         - DDoS/rate thresholds to capture excessive call/packet rates
+    -->
+    <condition>
+      <firewall>
+        <source>external-untrusted</source>
+        <destination>Internal_VoIP_Servers</destination>
+        <destination>DMZ_VoIP_Gateway</destination>
+
+        <!-- SIP default ports -->
+        <range-port-number>
+          <start>5060</start>
+          <end>5061</end>
+        </range-port-number>
+
+        <!-- Typical RTP ephemeral port range (placeholder) -->
+        <range-port-number>
+          <start>10000</start>
+          <end>20000</end>
+        </range-port-number>
+      </firewall>
+
+      <!-- Rate-based thresholds to detect floods/bursts that may indicate malicious behavior -->
+      <ddos>
+        <rate-limit>
+          <!-- Examples: adjust thresholds as appropriate for the environment -->
+          <packet-rate-threshold>1000</packet-rate-threshold>
+          <flow-rate-threshold>100</flow-rate-threshold>
+        </rate-limit>
+      </ddos>
+
+      <!-- Optional SIP URI based matching (voice-group named in endpoint-groups) -->
+      <voice>
+        <destination-id>internal-voice-uris</destination-id>
+      </voice>
+
+      <!-- Application-level context: device-type filter (application protocol removed per validation rules) -->
+      <context>
+        <!-- Device type could be used to focus on VoIP devices -->
+        <device-type>
+          <device>voip-vocn-phone</device>
+        </device-type>
+      </context>
+
+      <!-- Reference to threat feed(s) containing signatures / blacklists / IOCs -->
+      <threat-feed>
+        <name>voip-malicious-feeds</name>
+      </threat-feed>
+    </condition>
+
+    <!-- Actions:
+         - Primary: drop (block) matching malicious VoIP/VoCN packets at the perimeter
+         - Secondary: log the event (rule-log)
+    -->
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+
+      <secondary-action>
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

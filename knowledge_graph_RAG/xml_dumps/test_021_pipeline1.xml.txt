@@ -1,0 +1,25 @@
+<!-- intent: Translate incoming HTTP requests from IoT sensors into CoAP for the internal service. -->
+<!-- expected: primary-action: transformation -->
+xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>translate_http_to_coap_policy</name>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>translate_http_requests</name>
+    <condition>
+      <application>
+        <protocol>http</protocol>
+      </application>
+    </condition>
+    <action>
+      <primary-action>
+        <action>transformation</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,339 @@
+awesome — here’s a clean, **idempotent** Cypher bundle you can paste into Neo4j Browser / Cypher Shell to stand up the **Identity**, **Catalog**, and **Lexeme** portions of the KG (no CSVs). It creates constraints, seeds core identities, a few example catalog rows you can edit/extend, and the lexeme→target links.
+
+---
+
+# 0) Constraints & Indexes (run once)
+
+```cypher
+// --- Identity uniqueness
+CREATE CONSTRAINT identity_machine_name_unique IF NOT EXISTS
+FOR (i:Identity) REQUIRE i.machine_name IS UNIQUE;
+
+// --- Catalog uniqueness
+CREATE CONSTRAINT usergroup_name_unique IF NOT EXISTS
+FOR (g:UserGroup) REQUIRE g.name IS UNIQUE;
+
+CREATE CONSTRAINT devicegroup_name_unique IF NOT EXISTS
+FOR (g:DeviceGroup) REQUIRE g.name IS UNIQUE;
+
+CREATE CONSTRAINT urlgroup_name_unique IF NOT EXISTS
+FOR (g:URLGroup) REQUIRE g.name IS UNIQUE;
+
+CREATE CONSTRAINT voicegroup_name_unique IF NOT EXISTS
+FOR (g:VoiceGroup) REQUIRE g.name IS UNIQUE;
+
+CREATE CONSTRAINT threatfeed_name_unique IF NOT EXISTS
+FOR (t:ThreatFeed) REQUIRE t.name IS UNIQUE;
+
+CREATE CONSTRAINT payloadcontent_name_unique IF NOT EXISTS
+FOR (p:PayloadContent) REQUIRE p.name IS UNIQUE;
+
+// LocationGroup uses the YANG key [country, region, city]
+CREATE CONSTRAINT locationgroup_key_unique IF NOT EXISTS
+FOR (l:LocationGroup) REQUIRE (l.country, l.region, l.city) IS UNIQUE;
+
+// --- Optional full-text index for Lexemes
+CALL db.index.fulltext.createNodeIndex(
+  'lexemeTextIndex', ['Lexeme'], ['text']
+) YIELD name
+RETURN name;
+```
+
+---
+
+# 1) Identity Nodes (YANG identityrefs)
+
+> Identities carry two labels: `:Identity` and their base class (e.g., `:PrimaryAction`).
+> `machine_name` is the canonical ID you’ll use in serialization (e.g., `drop`).
+
+## 1A. PrimaryAction
+
+```cypher
+WITH [
+  {m:'pass', dname:'Allow/Pass', desc:'Allows traffic to proceed (permit)'},
+  {m:'drop', dname:'Drop', desc:'Denies matching traffic (silent drop)'},
+  {m:'reject', dname:'Reject', desc:'Denies traffic with error (ICMP/TCP RST)'},
+  {m:'rate-limit', dname:'Rate Limit', desc:'Throttle traffic by rate'},
+  {m:'mirror', dname:'Mirror', desc:'Copy traffic to monitor while forwarding'},
+  {m:'invoke-signaling', dname:'Invoke Signaling', desc:'Notify/control-plane action'},
+  {m:'tunnel-encapsulation', dname:'Tunnel Encapsulation', desc:'Encapsulate in a tunnel'},
+  {m:'forwarding', dname:'Forwarding', desc:'Forward to specific next hop/segment'},
+  {m:'transformation', dname:'Transformation', desc:'Packet/protocol transformation'}
+] AS rows
+UNWIND rows AS r
+MERGE (i:Identity:PrimaryAction {machine_name:r.m})
+SET i.display_name = r.dname, i.description = r.desc;
+```
+
+## 1B. SecondaryAction
+
+```cypher
+WITH [
+  {m:'rule-log', dname:'Rule Log', desc:'Log that a rule fired'},
+  {m:'session-log', dname:'Session Log', desc:'Log session/flow details'}
+] AS rows
+UNWIND rows AS r
+MERGE (i:Identity:SecondaryAction {machine_name:r.m})
+SET i.display_name = r.dname, i.description = r.desc;
+```
+
+## 1C. ResolutionStrategy
+
+```cypher
+WITH [
+  {m:'fmr', dname:'First Match', desc:'First matching rule wins'},
+  {m:'lmr', dname:'Last Match', desc:'Last matching rule wins'},
+  {m:'pmre', dname:'Priority (Allow Errors)', desc:'Priority-based; conflicts possible'},
+  {m:'pmrn', dname:'Priority (No Errors)', desc:'Priority-based; unique priorities'}
+] AS rows
+UNWIND rows AS r
+MERGE (i:Identity:ResolutionStrategy {machine_name:r.m})
+SET i.display_name = r.dname, i.description = r.desc;
+```
+
+## 1D. ICMPMessage (core set + a couple of subtypes)
+
+```cypher
+// Parents
+WITH [
+  {m:'echo', dname:'Echo Request', desc:'ICMP Echo Request'},
+  {m:'echo-reply', dname:'Echo Reply', desc:'ICMP Echo Reply'},
+  {m:'destination-unreachable', dname:'Destination Unreachable', desc:'ICMP unreachable'},
+  {m:'redirect', dname:'Redirect', desc:'ICMP Redirect'},
+  {m:'time-exceeded', dname:'Time Exceeded', desc:'TTL exceeded'},
+  {m:'parameter-problem', dname:'Parameter Problem', desc:'Header parameter error'},
+  {m:'router-advertisement', dname:'Router Advertisement', desc:'ICMP RA'},
+  {m:'router-solicitation', dname:'Router Solicitation', desc:'ICMP RS'},
+  {m:'extended-echo-request', dname:'Extended Echo Request', desc:'ICMPv6 extended echo'},
+  {m:'extended-echo-reply', dname:'Extended Echo Reply', desc:'ICMPv6 extended echo reply'}
+] AS rows
+UNWIND rows AS r
+MERGE (i:Identity:ICMPMessage {machine_name:r.m})
+SET i.display_name = r.dname, i.description = r.desc;
+
+// Subtypes (examples) with hierarchy edges
+WITH [
+  {child:'port-unreachable', parent:'destination-unreachable', dname:'Port Unreachable',
+   desc:'ICMP code: destination port unreachable'},
+  {child:'ttl-zero-during-transit', parent:'time-exceeded', dname:'TTL Zero During Transit',
+   desc:'ICMP code: TTL expired in transit'}
+] AS subs
+UNWIND subs AS s
+MERGE (c:Identity:ICMPMessage {machine_name:s.child})
+  ON CREATE SET c.display_name=s.dname, c.description=s.desc
+MERGE (p:Identity:ICMPMessage {machine_name:s.parent})
+MERGE (c)-[:SUBTYPE_OF]->(p);
+```
+
+## 1E. DeviceType
+
+```cypher
+WITH [
+  {m:'computer', dname:'Computer', desc:'PC / server'},
+  {m:'mobile-phone', dname:'Mobile Phone', desc:'Smartphone / cellular'},
+  {m:'voip-vocn-phone', dname:'VoIP/VoCN Phone', desc:'VoIP or cellular network phone'},
+  {m:'tablet', dname:'Tablet', desc:'Tablet device'},
+  {m:'network-infrastructure-device', dname:'Network Device', desc:'Router/switch/AP, etc.'},
+  {m:'iot-device', dname:'IoT Device', desc:'Embedded/IoT device'},
+  {m:'ot', dname:'OT Device', desc:'Industrial/Operational Tech'},
+  {m:'vehicle', dname:'Vehicle', desc:'Connected vehicle'}
+] AS rows
+UNWIND rows AS r
+MERGE (i:Identity:DeviceType {machine_name:r.m})
+SET i.display_name = r.dname, i.description = r.desc;
+```
+
+## 1F. ApplicationProtocol
+
+```cypher
+WITH [
+  {m:'http', dname:'HTTP', desc:'HTTP/1.1'},
+  {m:'https', dname:'HTTPS', desc:'HTTP/1.1 over TLS'},
+  {m:'http2', dname:'HTTP/2', desc:'HTTP/2'},
+  {m:'https2', dname:'HTTP/2 (TLS)', desc:'HTTP/2 over TLS'},
+  {m:'ftp', dname:'FTP', desc:'File Transfer Protocol'},
+  {m:'ssh', dname:'SSH', desc:'Secure Shell'},
+  {m:'telnet', dname:'Telnet', desc:'Telnet protocol'},
+  {m:'smtp', dname:'SMTP', desc:'Simple Mail Transfer Protocol'},
+  {m:'pop3', dname:'POP3', desc:'Post Office Protocol v3'},
+  {m:'pop3s', dname:'POP3 (TLS)', desc:'POP3 over TLS'},
+  {m:'imap', dname:'IMAP', desc:'Internet Message Access Protocol'},
+  {m:'imaps', dname:'IMAP (TLS)', desc:'IMAP over TLS'}
+] AS rows
+UNWIND rows AS r
+MERGE (i:Identity:ApplicationProtocol {machine_name:r.m})
+SET i.display_name = r.dname, i.description = r.desc;
+```
+
+## 1G. IOCFormat (signature types)
+
+```cypher
+WITH [
+  {m:'signature-yara', dname:'YARA', desc:'YARA rule signature format'},
+  {m:'signature-snort', dname:'SNORT', desc:'Snort IDS rule format'},
+  {m:'signature-suricata', dname:'SURICATA', desc:'Suricata IDS rule format'}
+] AS rows
+UNWIND rows AS r
+MERGE (i:Identity:IOCFormat {machine_name:r.m})
+SET i.display_name = r.dname, i.description = r.desc;
+```
+
+---
+
+# 2) Catalog Nodes (leafref targets)
+
+> These are example seeds. Edit or add entries freely by extending the arrays.
+
+## 2A. UserGroup
+
+```cypher
+WITH [
+  {
+    name:'employees',
+    mac_addresses:['00:AA:BB:CC:DD:EE','00:AA:BB:CC:DD:EF'],
+    ipv4_ranges:['192.0.2.11-192.0.2.90'],
+    ipv6_ranges:[]
+  }
+] AS rows
+UNWIND rows AS r
+MERGE (g:UserGroup {name:r.name})
+SET g.mac_addresses = r.mac_addresses,
+    g.ipv4_ranges  = r.ipv4_ranges,
+    g.ipv6_ranges  = r.ipv6_ranges;
+```
+
+## 2B. DeviceGroup (+ relations to ApplicationProtocol)
+
+```cypher
+WITH [
+  {
+    name:'webservers',
+    ipv4_ranges:['198.51.100.11-198.51.100.20'],
+    ipv6_ranges:[],
+    app_protocols:['http','https']
+  }
+] AS rows
+UNWIND rows AS r
+MERGE (g:DeviceGroup {name:r.name})
+SET g.ipv4_ranges = r.ipv4_ranges,
+    g.ipv6_ranges = r.ipv6_ranges
+WITH r,g
+UNWIND r.app_protocols AS ap
+MATCH (p:Identity:ApplicationProtocol {machine_name:ap})
+MERGE (g)-[:USES_PROTOCOL]->(p);
+```
+
+## 2C. LocationGroup (keyed by country/region/city)
+
+```cypher
+WITH [
+  {
+    country:'US', region:'CA', city:'Sunnyvale',
+    ipv4_subnets:['203.0.113.0/24'],
+    ipv6_subnets:['2001:db8:abcd::/48']
+  }
+] AS rows
+UNWIND rows AS r
+MERGE (l:LocationGroup {
+  country:r.country, region:r.region, city:r.city
+})
+SET l.ipv4_subnets = r.ipv4_subnets,
+    l.ipv6_subnets = r.ipv6_subnets;
+```
+
+## 2D. URLGroup
+
+```cypher
+WITH [
+  {name:'sns-websites', urls:['https://www.example.com/','https://www.example.net/']}
+] AS rows
+UNWIND rows AS r
+MERGE (u:URLGroup {name:r.name})
+SET u.urls = r.urls;
+```
+
+## 2E. VoiceGroup
+
+```cypher
+WITH [
+  {name:'malicious-id', sip_ids:['sip:alice@example.org','sip:bob@203.0.113.15']}
+] AS rows
+UNWIND rows AS r
+MERGE (v:VoiceGroup {name:r.name})
+SET v.sip_ids = r.sip_ids;
+```
+
+## 2F. ThreatFeed (+ relations to IOCFormat)
+
+```cypher
+WITH [
+  {name:'APT_feed', description:'APT malware signature feed', signatures:['signature-yara','signature-snort']}
+] AS rows
+UNWIND rows AS r
+MERGE (t:ThreatFeed {name:r.name})
+SET t.description = r.description
+WITH r,t
+UNWIND r.signatures AS sig
+MATCH (f:Identity:IOCFormat {machine_name:sig})
+MERGE (t)-[:HAS_SIGNATURE]->(f);
+```
+
+## 2G. PayloadContent
+
+```cypher
+WITH [
+  {name:'backdoor', description:'Backdoor traffic indicators', content:['<bytes1_base64>','<bytes2_base64>']}
+] AS rows
+UNWIND rows AS r
+MERGE (p:PayloadContent {name:r.name})
+SET p.description = r.description,
+    p.content     = r.content;
+```
+
+---
+
+# 3) Lexical Helpers (Lexeme → REFERS\_TO)
+
+> Small curated set you can grow later. These enable NL shortcuts.
+
+```cypher
+// Create/update Lexemes
+WITH [
+  {text:'block', locale:'en'},
+  {text:'allow', locale:'en'},
+  {text:'social media', locale:'en'},
+  {text:'throttle', locale:'en'}
+] AS rows
+UNWIND rows AS r
+MERGE (l:Lexeme {text:r.text, locale:r.locale});
+
+// Wire Lexemes to targets
+// block -> PrimaryAction:drop
+MATCH (l:Lexeme {text:'block', locale:'en'})
+MATCH (i:Identity:PrimaryAction {machine_name:'drop'})
+MERGE (l)-[:REFERS_TO]->(i);
+
+// allow -> PrimaryAction:pass
+MATCH (l:Lexeme {text:'allow', locale:'en'})
+MATCH (i:Identity:PrimaryAction {machine_name:'pass'})
+MERGE (l)-[:REFERS_TO]->(i);
+
+// social media -> URLGroup:sns-websites
+MATCH (l:Lexeme {text:'social media', locale:'en'})
+MATCH (g:URLGroup {name:'sns-websites'})
+MERGE (l)-[:REFERS_TO]->(g);
+
+// throttle -> PrimaryAction:rate-limit
+MATCH (l:Lexeme {text:'throttle', locale:'en'})
+MATCH (i:Identity:PrimaryAction {machine_name:'rate-limit'})
+MERGE (l)-[:REFERS_TO]->(i);
+```
+
+---
+
+## Notes / Tips
+
+* All statements use `MERGE` so you can re-run safely.
+* Add more identities (e.g., **TransportProtocol** or full **ICMP** subtype set) by copying the UNWIND pattern.
+* If you prefer **relationships** over array props (e.g., IP ranges as nodes), you can normalize later without changing identity semantics.
+* This schema supports your **LLM → (class-scoped) vector lookup**: the second label (e.g., `:PrimaryAction`) is a perfect filter.

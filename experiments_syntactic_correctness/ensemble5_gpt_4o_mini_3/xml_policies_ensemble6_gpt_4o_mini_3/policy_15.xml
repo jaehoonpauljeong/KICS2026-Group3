@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <endpoint-groups>
+        <url-group>
+            <name>unknown-or-unclassified-traffic</name>
+            <url>http://192.0.2.0/24</url>
+        </url-group>
+        <device-group>
+            <name>unknown-or-unclassified-traffic</name>
+            <range-ipv4-address>
+                <start>192.0.2.0</start>
+                <end>192.0.2.255</end>
+            </range-ipv4-address>
+        </device-group>
+    </endpoint-groups>
+    <i2nsf-cfi-policy>
+        <name>UnknownTrafficDiscardPolicy</name>
+        <language>en-US</language>
+        <priority-usage>priority-by-order</priority-usage>
+        <resolution-strategy>fmr</resolution-strategy>
+        <rules>
+            <name>DiscardUnknownUnclassifiedTraffic</name>
+            <condition>
+                <firewall>
+                    <source>unknown-or-unclassified-traffic</source>
+                    <destination>unknown-or-unclassified-traffic</destination>
+                </firewall>
+            </condition>
+            <action>
+                <primary-action>
+                    <action>drop</action>
+                </primary-action>
+            </action>
+        </rules>
+    </i2nsf-cfi-policy>
+</policy>

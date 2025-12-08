@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Destination group: database servers (placeholder/test prefix) -->
+  <device-group>
+    <name>DB_SERVERS</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Analysis/mirror targets (placeholder/test prefix) -->
+  <device-group>
+    <name>ANALYSIS_SERVERS</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Suspicious sources (classification placeholder/test prefix).
+       In operational deployments this group would be populated dynamically
+       (for example, by an IDS/analytics component) rather than as a static prefix. -->
+  <device-group>
+    <name>SUSPICIOUS_SOURCES</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Mirror_Suspicious_DB_Traffic_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <!-- Rule 1: Mirror suspicious DB-bound traffic to analysis (non-disruptive mirroring). -->
+  <rules>
+    <name>Mirror_Suspicious_DB_To_Analysis_Server</name>
+    <condition>
+      <firewall>
+        <!-- source is the set of flows/endpoints flagged as suspicious -->
+        <source>SUSPICIOUS_SOURCES</source>
+
+        <!-- destination is the DB servers group -->
+        <destination>DB_SERVERS</destination>
+
+        <!-- DB traffic ports -->
+        <range-port-number>
+          <start>3306</start>
+          <end>3306</end>
+        </range-port-number>
+        <range-port-number>
+          <start>5432</start>
+          <end>5432</end>
+        </range-port-number>
+        <range-port-number>
+          <start>1433</start>
+          <end>1433</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>mirror</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- Rule 2: Ensure the original suspicious DB traffic is still allowed (non-disruptive). -->
+  <rules>
+    <name>Allow_Suspicious_DB_Traffic</name>
+    <condition>
+      <firewall>
+        <source>SUSPICIOUS_SOURCES</source>
+        <destination>DB_SERVERS</destination>
+        <range-port-number>
+          <start>3306</start>
+          <end>3306</end>
+        </range-port-number>
+        <range-port-number>
+          <start>5432</start>
+          <end>5432</end>
+        </range-port-number>
+        <range-port-number>
+          <start>1433</start>
+          <end>1433</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

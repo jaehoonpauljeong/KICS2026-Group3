@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No endpoint groups defined in the policy -->
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No threat feeds defined in the policy -->
+</threat-prevention>
+
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface"
+    xmlns:nsfcfi="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cfi-policy">
+  <name>ICMP_Rate_Limiting_Policy</name>
+  <rules>
+    <name>ICMP_Traffic_Rate_Limit</name>
+    <condition>
+      <firewall>
+        <source>unknown-source-group</source> <!-- Placeholder for missing endpoint group -->
+        <transport-layer-protocol>nsfcfi:icmp</transport-layer-protocol>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>rate-limit</action>
+        <limit>500</limit> <!-- Rate limit of 500 packets per second -->
+      </primary-action>
+    </action>
+  </rules>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <language>en-US</language>
+</i2nsf-cfi-policy>

@@ -1,0 +1,147 @@
+YANG Validation Results - 2025-10-28 15:11:54.093334
+============================================================
+
+[PASS] policy_5.xml
+[PASS] policy_41.xml
+[FAIL] policy_11.xml
+[PASS] policy_36.xml
+[FAIL] policy_50.xml
+[PASS] policy_25.xml
+[FAIL] policy_13.xml
+[FAIL] policy_20.xml
+[PASS] policy_43.xml
+[PASS] policy_3.xml
+[PASS] policy_42.xml
+[FAIL] policy_31.xml
+[PASS] policy_46.xml
+[PASS] policy_40.xml
+[FAIL] policy_7.xml
+[PASS] policy_10.xml
+[FAIL] policy_29.xml
+[PASS] policy_44.xml
+[PASS] policy_38.xml
+[PASS] policy_2.xml
+[PASS] policy_23.xml
+[FAIL] policy_35.xml
+[PASS] policy_30.xml
+[PASS] policy_34.xml
+[PASS] policy_6.xml
+[PASS] policy_8.xml
+[FAIL] policy_18.xml
+[PASS] policy_24.xml
+[PASS] policy_33.xml
+[FAIL] policy_48.xml
+[FAIL] policy_4.xml
+[FAIL] policy_9.xml
+[PASS] policy_45.xml
+[FAIL] policy_16.xml
+[PASS] policy_37.xml
+[PASS] policy_47.xml
+[PASS] policy_14.xml
+[PASS] policy_12.xml
+[FAIL] policy_49.xml
+[FAIL] policy_22.xml
+[FAIL] policy_17.xml
+[PASS] policy_39.xml
+[PASS] policy_21.xml
+[PASS] policy_26.xml
+[PASS] policy_19.xml
+[PASS] policy_32.xml
+[FAIL] policy_28.xml
+[FAIL] policy_15.xml
+[PASS] policy_1.xml
+[PASS] policy_27.xml
+
+[FAIL] policy_11.xml
+Error:
+libyang err : Node "policy" not found in the "ietf-i2nsf-cons-facing-interface" module. (Line number 3.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_11.xml".
+
+[FAIL] policy_50.xml
+Error:
+libyang err : Duplicate instance of "primary-action". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/action/primary-action, data location /ietf-i2nsf-cons-facing-interface:action/primary-action, line number 44.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_50.xml".
+
+[FAIL] policy_13.xml
+Error:
+libyang err : Node "policy" not found in the "ietf-i2nsf-cons-facing-interface" module. (Line number 3.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_13.xml".
+
+[FAIL] policy_20.xml
+Error:
+libyang err : Node "policy" not found in the "ietf-i2nsf-cons-facing-interface" module. (Line number 3.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_20.xml".
+
+[FAIL] policy_31.xml
+Error:
+libyang err : Missing mandatory prefix for XML metadata "name". (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups, data location /ietf-i2nsf-cons-facing-interface:endpoint-groups, line number 3.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_31.xml".
+
+[FAIL] policy_7.xml
+Error:
+libyang err : Node "policy" not found in the "ietf-i2nsf-cons-facing-interface" module. (Line number 3.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_7.xml".
+
+[FAIL] policy_29.xml
+Error:
+libyang err : Node "policy" not found in the "ietf-i2nsf-cons-facing-interface" module. (Line number 3.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_29.xml".
+
+[FAIL] policy_35.xml
+Error:
+libyang err : Missing mandatory prefix for XML metadata "name". (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups, data location /ietf-i2nsf-cons-facing-interface:endpoint-groups, line number 3.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_35.xml".
+
+[FAIL] policy_18.xml
+Error:
+libyang err : Duplicate instance of "primary-action". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/action/primary-action, data location /ietf-i2nsf-cons-facing-interface:action/primary-action, line number 31.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_18.xml".
+
+[FAIL] policy_48.xml
+Error:
+libyang err : Node "policy" not found in the "ietf-i2nsf-cons-facing-interface" module. (Line number 3.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_48.xml".
+
+[FAIL] policy_4.xml
+Error:
+libyang err : Child element "url-category" inside a terminal node "destination" found. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition/firewall/destination, data location /ietf-i2nsf-cons-facing-interface:destination[.='
+          '], line number 28.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_4.xml".
+
+[FAIL] policy_9.xml
+Error:
+libyang err : Missing mandatory prefix for XML metadata "name". (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups, data location /ietf-i2nsf-cons-facing-interface:endpoint-groups, line number 3.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_9.xml".
+
+[FAIL] policy_16.xml
+Error:
+libyang err : Node "range-port-number" not found as a child of "condition" node. (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/condition, data location /ietf-i2nsf-cons-facing-interface:condition, line number 27.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_16.xml".
+
+[FAIL] policy_49.xml
+Error:
+libyang err : Node "policy" not found in the "ietf-i2nsf-cons-facing-interface" module. (Line number 3.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_49.xml".
+
+[FAIL] policy_22.xml
+Error:
+libyang err : Data for both cases "prefix" and "range" exist. (Schema location /ietf-i2nsf-cons-facing-interface:endpoint-groups/user-group/match-type/ipv4/ipv4-range-or-prefix, data location /ietf-i2nsf-cons-facing-interface:user-group[name='Financial_Data_Endpoints'], line number 10.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_22.xml".
+
+[FAIL] policy_17.xml
+Error:
+libyang err : Duplicate instance of "primary-action". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/action/primary-action, data location /ietf-i2nsf-cons-facing-interface:action/primary-action, line number 51.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_17.xml".
+
+[FAIL] policy_28.xml
+Error:
+libyang err : Node "policy" not found in the "ietf-i2nsf-cons-facing-interface" module. (Line number 3.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_28.xml".
+
+[FAIL] policy_15.xml
+Error:
+libyang err : Invalid identityref "send-error-notification" value - identity not found in module "ietf-i2nsf-cons-facing-interface". (Schema location /ietf-i2nsf-cons-facing-interface:i2nsf-cfi-policy/rules/action/secondary-action/log-action, data location /ietf-i2nsf-cons-facing-interface:secondary-action, line number 37.)
+YANGLINT[E]: Failed to parse input data file "xml_policies/policy_15.xml".
+
+============================================================
+Validation Summary: 32 passed, 18 failed.

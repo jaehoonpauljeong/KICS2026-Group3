@@ -1,0 +1,25 @@
+<!-- intent: If memory usage on the database server exceeds 80%, drop nonessential backup traffic. -->
+<!-- expected: event -> system-alarm: memory-alarm, primary-action: drop -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>drop_nonessential_backup_traffic_policy</name>
+    <rules>
+        <name>memory_usage_exceeds_80_percent</name>
+        <condition>
+            <firewall>
+                <destination>database_server</destination>
+            </firewall>
+            <system-event>
+                <memory-usage>80</memory-usage>
+            </system-event>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>
+```

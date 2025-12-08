@@ -1,0 +1,26 @@
+<!-- intent: During a CPU overload, if an employee also attempts unauthorized access to the HR portal, reject the attempt immediately. -->
+<!-- expected: event -> system-event: access-violation, system-alarm: cpu-alarm, primary-action: reject -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>security_policy_for_cpu_overload_and_unauthorized_access</name>
+    <rules>
+        <name>reject_unauthorized_access_during_cpu_overload</name>
+        <condition>
+            <firewall>
+                <source>employee</source>
+                <destination>HR_portal</destination>
+            </firewall>
+            <system-event>
+                <event>cpu-overload</event>
+            </system-event>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>reject</action>
+            </primary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>
+```

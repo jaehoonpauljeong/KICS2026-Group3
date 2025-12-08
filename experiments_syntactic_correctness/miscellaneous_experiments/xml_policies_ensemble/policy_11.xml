@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No endpoint groups defined -->
+</endpoint-groups>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Trusted_Device_Traffic_Allow_Without_Filtering</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Allow_Trusted_Device_Traffic</name>
+    <condition>
+      <firewall>
+        <source>trusted-devices</source> <!-- Placeholder for the endpoint group -->
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>pass</action> <!-- Valid action from the YANG model -->
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

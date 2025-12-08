@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No endpoint groups defined in the policy -->
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Firewall_Memory_Usage_Management</name>
+  <rules>
+    <name>Configuration_Change_High_Memory_Usage</name>
+    <condition>
+      <firewall>
+        <source>unknown-source-group</source> <!-- Placeholder for missing endpoint group -->
+      </firewall>
+      <context>
+        <device-type>
+          <device>network-infrastructure-device</device> <!-- Updated to valid device type -->
+        </device-type>
+        <memory-usage>
+          <state>critically-high</state> <!-- Implied condition for memory usage -->
+        </memory-usage>
+      </context>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action> <!-- Specified a valid action from the YANG model -->
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

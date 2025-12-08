@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>EmployeeEndpoints</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>FinanceServers</name>
+    <ipv4-prefix>192.0.2.0/28</ipv4-prefix>
+  </device-group>
+
+  <user-group>
+    <name>SecurityTeamEndpoints</name>
+    <ipv4-prefix>203.0.113.0/29</ipv4-prefix>
+  </user-group>
+
+  <user-group>
+    <name>ManagementEndpoints</name>
+    <ipv4-prefix>203.0.113.8/29</ipv4-prefix>
+  </user-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Unauthorized_FinanceServer_Access_Response</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>pmre</resolution-strategy>
+
+  <rules>
+    <name>Deny_Log_Notify_Suspend_InitiateIR</name>
+    <condition>
+      <firewall>
+        <source>EmployeeEndpoints</source>
+        <destination>FinanceServers</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <rules>
+    <name>Invoke_Orchestration_for_Incident_Response</name>
+    <condition>
+      <firewall>
+        <source>EmployeeEndpoints</source>
+        <destination>FinanceServers</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

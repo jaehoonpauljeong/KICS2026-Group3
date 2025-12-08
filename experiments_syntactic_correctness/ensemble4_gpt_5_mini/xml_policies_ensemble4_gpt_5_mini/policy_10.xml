@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Endpoint groups referenced by the policy -->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>Employees</name>
+    <!-- Identity-based group (no IPs required; membership managed by AAA/IdP) -->
+  </user-group>
+
+  <device-group>
+    <name>Corporate-Network</name>
+    <!-- Placeholder corporate network prefix (TEST-NET) -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>Internet-Web</name>
+    <!-- Represents the public Internet / web destinations -->
+    <ipv4-prefix>0.0.0.0/0</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<!-- I2NSF CFI policy referencing the endpoint-groups above -->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Corporate_Employee_Web_Access_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Permit_Employee_Corporate_Web_Browsing</name>
+
+    <condition>
+      <firewall>
+        <!-- Source conditions: user identity and originating network -->
+        <source>Employees</source>
+        <source>Corporate-Network</source>
+
+        <!-- Destination: Internet / web servers -->
+        <destination>Internet-Web</destination>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Permit (pass) the matched traffic without additional enforcement -->
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

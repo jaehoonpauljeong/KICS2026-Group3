@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Standalone endpoint-groups document (contains all endpoint groups referenced by the policy)
+  Note: placeholder/test IP prefixes are used for network examples (198.51.100.0/24 is RFC 5737 TEST-NET-2).
+-->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Source endpoint groups -->
+  <user-group>
+    <name>ENDPOINT_GROUP_USERS</name>
+    <!-- Placeholder IPv4 prefix for users on the internal network -->
+    <ipv4-prefix>10.0.0.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>ENDPOINT_GROUP_DEVICES</name>
+    <!-- Placeholder IPv4 prefix for managed devices -->
+    <ipv4-prefix>10.0.1.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>ENDPOINT_GROUP_NETWORK_CLIENTS</name>
+    <!-- Placeholder IPv4 prefix for generic network clients -->
+    <ipv4-prefix>10.0.2.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- Optional: Google/YouTube IP ranges (placeholder/test-net) maintained as a device-group for IP-based blocking fallback -->
+  <device-group>
+    <name>GOOGLE_YT_IP_RANGES</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- URL group containing YouTube hostnames, subdomains and common CDN domains used by YouTube.
+       Wildcards are included as URIs; actual wildcard behavior depends on NSF implementation. -->
+  <url-group>
+    <name>youtube-hosts</name>
+    <url>https://www.youtube.com</url>
+    <url>https://youtube.com</url>
+    <url>https://m.youtube.com</url>
+    <url>https://youtube-nocookie.com</url>
+    <url>https://youtu.be</url>
+    <url>https://ytimg.com</url>
+    <url>https://googlevideo.com</url>
+    <url>https://youtubei.googleapis.com</url>
+    <url>https://manifest.googlevideo.com</url>
+    <!-- Wildcard entries (implementation-dependent matching semantics) -->
+    <url>https://*.youtube.com</url>
+    <url>https://*.ytimg.com</url>
+  </url-group>
+</endpoint-groups>
+
+<!--
+  i2nsf-cfi-policy document that references the endpoint groups by name only.
+  This policy blocks access to YouTube (domain-based) for the defined source endpoint groups.
+-->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_YouTube_Access_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <!-- Rule 1: Block QUIC (UDP/443) flows to YouTube hostnames -->
+  <rules>
+    <name>Deny_Access_To_YouTube_Rule_UDP</name>
+    <condition>
+      <firewall>
+        <!-- Sources (referencing user/device groups defined in endpoint-groups document) -->
+        <source>ENDPOINT_GROUP_USERS</source>
+        <source>ENDPOINT_GROUP_DEVICES</source>
+        <source>ENDPOINT_GROUP_NETWORK_CLIENTS</source>
+
+        <!-- Capture QUIC (UDP port 443) -->
+        <range-port-number>
+          <start>443</start>
+          <end>443</end>
+        </range-port-number>
+      </firewall>
+
+      <!-- Use URL group for domain/fqdn matching -->
+      <url-category>
+        <url-name>youtube-hosts</url-name>
+      </url-category>
+    </condition>
+    <action>
+      <primary-action>
+        <!-- Deny/drop the traffic -->
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- Rule 2: Block HTTP and HTTPS (TCP/80 and TCP/443) flows to YouTube hostnames -->
+  <rules>
+    <name>Deny_Access_To_YouTube_Rule_TCP</name>
+    <condition>
+      <firewall>
+        <source>ENDPOINT_GROUP_USERS</source>
+        <source>ENDPOINT_GROUP_DEVICES</source>
+        <source>ENDPOINT_GROUP_NETWORK_CLIENTS</source>
+
+        <!-- TCP covering ports 80 and 443 (inclusive) -->
+        <range-port-number>
+          <start>80</start>
+          <end>443</end>
+        </range-port-number>
+      </firewall>
+
+      <url-category>
+        <url-name>youtube-hosts</url-name>
+      </url-category>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- Optional: IP-based fallback rule to drop traffic to known Google/YouTube IP ranges.
+       This rule references the GOOGLE_YT_IP_RANGES device-group defined in endpoint-groups.
+       Leave in place to help block traffic when host-based classification (SNI) is not available.
+       If you do not want an IP-based fallback, remove this rule. -->
+  <rules>
+    <name>Deny_Access_To_YouTube_By_IPs</name>
+    <condition>
+      <firewall>
+        <source>ENDPOINT_GROUP_USERS</source>
+        <source>ENDPOINT_GROUP_DEVICES</source>
+        <source>ENDPOINT_GROUP_NETWORK_CLIENTS</source>
+
+        <!-- Apply to any transport protocol to make IP-block broad; implementer may restrict to TCP/UDP -->
+        <range-port-number>
+          <start>1</start>
+          <end>65535</end>
+        </range-port-number>
+
+        <!-- Destination as the device-group of Google/YouTube IPs (leafref to endpoint-groups) -->
+        <destination>GOOGLE_YT_IP_RANGES</destination>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

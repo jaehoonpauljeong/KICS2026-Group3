@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>trusted-clients</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <device-group>
+    <name>db-servers</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <!-- optional logging sink (implementation may map session-log to this sink) -->
+  <device-group>
+    <name>logging-sink</name>
+    <range-ipv4-address>
+      <start>203.0.113.10</start>
+      <end>203.0.113.10</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Permit_Database_Access_With_Full_Session_Logging</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Allow_Database_Connection_Log_Full_Session</name>
+
+    <condition>
+      <firewall>
+        <!-- endpoint-group references only (details live in endpoint-groups above) -->
+        <source>trusted-clients</source>
+        <destination>db-servers</destination>
+
+        <range-port-number>
+          <start>5432</start>
+          <end>5432</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Permit the connection -->
+        <action>pass</action>
+      </primary-action>
+
+      <secondary-action>
+        <!-- Request session-level logging (implementation detail: capture the fields listed in the intent) -->
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

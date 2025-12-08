@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <voice-group>
+    <name>malicious-voip-sources</name>
+    <sip-id>sip:malicious-source@unknown.com</sip-id>
+    <sip-id>sip:malicious-source2@unknown.com</sip-id>
+  </voice-group>
+  <device-group>
+    <name>company-devices</name>
+    <range-ipv4-address>
+      <start>192.168.1.1</start>
+      <end>192.168.1.50</end>
+    </range-ipv4-address>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Malicious_VoIP_Packets</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>Block_Malicious_VoIP_Rule</name>
+    <condition>
+      <firewall>
+        <source>malicious-voip-sources</source>
+        <destination>company-devices</destination>
+      </firewall>
+      <voice>
+        <source-id>malicious-voip-sources</source-id>
+        <destination-id>company-devices</destination-id>
+      </voice>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

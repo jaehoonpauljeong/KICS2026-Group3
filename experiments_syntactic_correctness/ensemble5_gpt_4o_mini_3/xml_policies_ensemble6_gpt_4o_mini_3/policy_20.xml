@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <endpoint-groups>
+    <device-group>
+      <name>iot-devices</name>
+      <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+    </device-group>
+    <device-group>
+      <name>specialized-gateway</name>
+      <ipv4-prefix>192.0.2.100/30</ipv4-prefix>
+    </device-group>
+  </endpoint-groups>
+  <threat-prevention>
+    <!-- No threat feeds specified or used -->
+  </threat-prevention>
+  <i2nsf-cfi-policy>
+    <name>IoT_Device_Traffic_Forwarding_Policy</name>
+    <language>en-US</language>
+    <priority-usage>priority-by-order</priority-usage>
+    <resolution-strategy>fmr</resolution-strategy>
+    <rules>
+      <name>Forward_IoT_Traffic_To_Gateway</name>
+      <condition>
+        <firewall>
+          <source>iot-devices</source>
+          <destination>specialized-gateway</destination>
+        </firewall>
+      </condition>
+      <action>
+        <primary-action>
+          <action>forwarding</action>
+        </primary-action>
+      </action>
+    </rules>
+  </i2nsf-cfi-policy>
+</policy>

@@ -1,0 +1,26 @@
+<!-- intent: Encapsulate sensitive financial data traffic into a secure tunnel to the central server. -->
+<!-- expected: primary-action: tunnel-encapsulation -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>secure_tunnel_for_financial_data</name>
+    <rules>
+        <name>encapsulate_sensitive_financial_data</name>
+        <condition>
+            <firewall>
+                <source>financial_department</source>
+                <destination>central_server</destination>
+            </firewall>
+            <application>
+                <protocol>financial_protocols</protocol>
+            </application>
+        </condition>
+        <action>
+            <primary-action>
+                <action>encapsulate</action>
+            </primary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <voice-group>
+    <name>blacklist_sip</name>
+    <sip-id>sip:*@example.com</sip-id>
+  </voice-group>
+  <voice-group>
+    <name>voice communication endpoints</name>
+    <sip-id>sip:1000@corp.com</sip-id>
+    <sip-id>sip:2000@corp.com</sip-id>
+  </voice-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Call_Management_Policy</name>
+  <rules>
+    <name>Reject_And_Mirror_Blocked_SIP_Sessions</name>
+    <condition>
+      <voice>
+        <source-id>blacklist_sip</source-id>
+      </voice>
+    </condition>
+    <action>
+      <primary-action>
+        <action>reject</action>
+      </primary-action>
+      <primary-action>
+        <action>mirror</action>
+        <limit>analysis-server</limit>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

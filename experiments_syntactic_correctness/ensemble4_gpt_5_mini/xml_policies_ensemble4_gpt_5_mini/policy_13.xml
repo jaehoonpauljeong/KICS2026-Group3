@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Endpoint groups document: contains all endpoint-groups referenced by the policy -->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>guest-network</name>
+    <!-- Placeholder IPv4 prefix (TEST-NET-2 range) -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>protected-internal</name>
+    <!-- Placeholder IPv4 prefix (TEST-NET-1 range) -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<!-- I2NSF CFI policy document: references endpoint-groups by name only -->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Guest_Network_Incoming_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Silently_Drop_Incoming_From_Guest_Net</name>
+
+    <condition>
+      <firewall>
+        <!-- Source and destination reference endpoint-group names (no addresses here) -->
+        <source>guest-network</source>
+        <destination>protected-internal</destination>
+        <!-- transport-layer-protocol omitted => match all L3/L4 protocols -->
+        <!-- range-port-number omitted => match all ports -->
+      </firewall>
+      <!-- No time/context specified => rule is always active -->
+    </condition>
+
+    <action>
+      <primary-action>
+        <!-- Silent drop (do not send RST/ICMP/unreachables). Do not use "reject". -->
+        <action>drop</action>
+      </primary-action>
+      <!-- No secondary log-action specified per intent (no logging) -->
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

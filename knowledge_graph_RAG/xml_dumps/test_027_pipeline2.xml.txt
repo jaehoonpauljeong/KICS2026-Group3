@@ -1,0 +1,27 @@
+<!-- intent: Apply a rate limit of 500 pps on ICMP traffic to mitigate ping flood attacks. -->
+<!-- expected: primary-action: rate-limit, limit -> 500 -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>security_policy_for_icmp_rate_limiting</name>
+    <rules>
+        <name>Rate_limit_icmp_traffic</name>
+        <condition>
+            <firewall>
+                <transport-layer-protocol>icmp</transport-layer-protocol>
+            </firewall>
+            <ddos>
+                <rate-limit>
+                    <packet-rate-threshold>500</packet-rate-threshold>
+                </rate-limit>
+            </ddos>
+        </condition>
+        <action>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+        </action>
+    </rules>
+</i2nsf-cfi-policy>
+```

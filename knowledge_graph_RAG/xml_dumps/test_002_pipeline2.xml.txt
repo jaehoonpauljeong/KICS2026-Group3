@@ -1,0 +1,25 @@
+<!-- intent: Block Malicious VoIP/VoCN Packets Coming to a Company -->
+<!-- expected: primary-action: drop -->
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>security_policy_for_blocking_malicious_voip_packets</name>
+    <rules>
+        <name>Block_malicious_voip_and_vocn_packets</name>
+        <condition>
+            <voice>
+                <source-id>malicious-voip-source</source-id>
+            </voice>
+            <firewall>
+                <destination>company_network</destination>
+            </firewall>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>
+```

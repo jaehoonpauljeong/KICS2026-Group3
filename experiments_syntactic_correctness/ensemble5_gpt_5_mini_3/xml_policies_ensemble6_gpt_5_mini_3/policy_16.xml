@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Placeholder source endpoint group (RFC5737 TEST-NET range used as example) -->
+  <user-group>
+    <name>source_endpoints</name>
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Placeholder destination endpoint group (RFC5737 TEST-NET-2 range used as example) -->
+  <device-group>
+    <name>destination_endpoints</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Active_Refusal_Disallowed_Ports_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <!-- TCP-specific rule: for TCP flows targeting disallowed ports, actively refuse (reject).
+       Enforcement note (not expressible in this model): NSF should inject TCP RSTs for TCP flows. -->
+  <rules>
+    <name>Refuse_Disallowed_Ports_Rule_TCP</name>
+    <condition>
+      <firewall>
+        <source>source_endpoints</source>
+        <destination>destination_endpoints</destination>
+
+        <!-- Disallowed ports (placeholder examples). Add or modify ranges/ports as required. -->
+        <range-port-number>
+          <start>23</start>
+          <end>23</end>
+        </range-port-number>
+        <range-port-number>
+          <start>135</start>
+          <end>139</end>
+        </range-port-number>
+        <range-port-number>
+          <start>445</start>
+          <end>445</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>reject</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- UDP-specific rule: for UDP traffic targeting disallowed ports, actively refuse (reject).
+       Enforcement note (not expressible in this model): NSF should send ICMP-unreachable for UDP. -->
+  <rules>
+    <name>Refuse_Disallowed_Ports_Rule_UDP</name>
+    <condition>
+      <firewall>
+        <source>source_endpoints</source>
+        <destination>destination_endpoints</destination>
+
+        <!-- Same disallowed ports as above -->
+        <range-port-number>
+          <start>23</start>
+          <end>23</end>
+        </range-port-number>
+        <range-port-number>
+          <start>135</start>
+          <end>139</end>
+        </range-port-number>
+        <range-port-number>
+          <start>445</start>
+          <end>445</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>reject</action>
+      </primary-action>
+    </action>
+  </rules>
+
+  <!-- Fallback rule to cover "other" protocols that use destination ports (catch-all).
+       Placed after TCP and UDP rules so TCP/UDP match first (priority-by-order). -->
+  <rules>
+    <name>Refuse_Disallowed_Ports_Rule_Others</name>
+    <condition>
+      <firewall>
+        <source>source_endpoints</source>
+        <destination>destination_endpoints</destination>
+
+        <!-- No transport-layer-protocol set -> matches any protocol not already matched by earlier rules. -->
+        <range-port-number>
+          <start>23</start>
+          <end>23</end>
+        </range-port-number>
+        <range-port-number>
+          <start>135</start>
+          <end>139</end>
+        </range-port-number>
+        <range-port-number>
+          <start>445</start>
+          <end>445</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>reject</action>
+      </primary-action>
+    </action>
+  </rules>
+
+</i2nsf-cfi-policy>

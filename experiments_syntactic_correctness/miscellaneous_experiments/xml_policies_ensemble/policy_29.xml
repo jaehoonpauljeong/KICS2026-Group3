@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- No endpoint groups defined in the policy -->
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Admin_Port_Traffic</name>
+  <rules>
+    <name>Block_Traffic_To_Admin_Port</name>
+    <condition>
+      <firewall>
+        <destination>admin-port</destination> <!-- Placeholder for the admin port -->
+      </firewall>
+    </condition>
+    <action>
+      <primary-action>
+        <action>drop</action> <!-- Block the traffic -->
+      </primary-action>
+      <secondary-action>
+        <log-action>rule-log</log-action> <!-- Log the attempt for auditing -->
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

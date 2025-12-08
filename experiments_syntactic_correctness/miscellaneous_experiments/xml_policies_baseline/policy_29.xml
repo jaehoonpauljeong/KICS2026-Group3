@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>block_admin_port_policy</name>
+    <rules>
+        <name>block_admin_port</name>
+        <condition>
+            <firewall-condition>
+                <destination>
+                    <range-port-number>
+                        <start>22</start>
+                        <end>22</end>
+                    </range-port-number>
+                </destination>
+            </firewall-condition>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+            <secondary-action>
+                <log-action>log</log-action>
+            </secondary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>

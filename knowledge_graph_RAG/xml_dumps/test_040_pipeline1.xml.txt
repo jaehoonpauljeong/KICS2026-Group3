@@ -1,0 +1,23 @@
+<!-- intent: Whenever a configuration change is made on the firewall, allow the change but log the attempt for auditing. -->
+<!-- expected: event -> system-event: configuration-change, primary-action: pass -->
+xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>configuration_change_logging_policy</name>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+  <rules>
+    <name>log_configuration_change</name>
+    <event>
+      <system-event>configuration-change</system-event>
+    </event>
+    <action>
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+      <secondary-action>
+        <log-action>rule-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

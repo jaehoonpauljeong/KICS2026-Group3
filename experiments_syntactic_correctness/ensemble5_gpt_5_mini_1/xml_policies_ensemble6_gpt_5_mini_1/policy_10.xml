@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Endpoint groups referenced by the policy (contains concrete source/destination details) -->
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <!-- Source endpoint-group: corporate employees (placeholder TEST-NET range) -->
+  <user-group>
+    <name>employees</name>
+    <!-- Placeholder IPv4 prefix for corporate employee devices -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <!-- Destination endpoint-group: the public web (placeholder TEST-NET range) -->
+  <device-group>
+    <name>internet-websites</name>
+    <!-- Placeholder IPv4 prefix used to represent Internet/web hosts; replace with actual ranges or ::/0/0.0.0.0/0 if desired -->
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+</endpoint-groups>
+
+<!-- Main I2NSF CFI policy referencing the endpoint-groups above by name -->
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Employee_Unrestricted_Web_Browsing_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Permit_Employee_Unrestricted_Web_Browsing</name>
+
+    <condition>
+      <firewall>
+        <!-- Source identifies employees on the corporate network (references user-group defined above) -->
+        <source>employees</source>
+
+        <!-- Destination identifies web servers / public web (references device-group defined above) -->
+        <destination>internet-websites</destination>
+
+        <!-- Explicitly allow TCP port 80 -->
+        <range-port-number>
+          <start>80</start>
+          <end>80</end>
+        </range-port-number>
+
+        <!-- Explicitly allow TCP port 443 -->
+        <range-port-number>
+          <start>443</start>
+          <end>443</end>
+        </range-port-number>
+      </firewall>
+    </condition>
+
+    <action>
+      <!-- Primary action = pass (permit traffic) -->
+      <primary-action>
+        <action>pass</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

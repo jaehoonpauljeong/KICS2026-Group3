@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <user-group>
+    <name>ENDPOINT_GROUP_ALL_USERS</name>
+    <!-- Placeholder IPv4 prefix (RFC 5737 TEST-NET-1) for all users/devices subject to the rule -->
+    <ipv4-prefix>192.0.2.0/24</ipv4-prefix>
+  </user-group>
+
+  <url-group>
+    <name>APP_GROUP_GAMING</name>
+    <!-- Representative game service domains/URLs (populate with vendor-specific or more complete lists as needed) -->
+    <url>https://store.steampowered.com</url>
+    <url>https://steamcommunity.com</url>
+    <url>https://www.epicgames.com</url>
+    <url>https://www.xbox.com</url>
+    <url>https://www.playstation.com</url>
+    <url>https://www.battle.net</url>
+  </url-group>
+</endpoint-groups>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Block_Games_Weekday_Night</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Block_Games_Weekday_Night_Rule</name>
+
+    <condition>
+      <firewall>
+        <source>ENDPOINT_GROUP_ALL_USERS</source>
+      </firewall>
+
+      <url-category>
+        <url-name>APP_GROUP_GAMING</url-name>
+      </url-category>
+
+      <context>
+        <time>
+          <period>
+            <start-time>22:00:00Z</start-time>
+            <end-time>06:00:00Z</end-time>
+            <day>monday</day>
+            <day>tuesday</day>
+            <day>wednesday</day>
+            <day>thursday</day>
+            <day>friday</day>
+          </period>
+          <frequency>weekly</frequency>
+        </time>
+      </context>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>drop</action>
+      </primary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>

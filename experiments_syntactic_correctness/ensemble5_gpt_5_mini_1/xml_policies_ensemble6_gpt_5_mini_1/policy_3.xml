@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoint-groups xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <device-group>
+    <name>web-servers</name>
+    <ipv4-prefix>198.51.100.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>load-balancers</name>
+    <ipv4-prefix>198.51.100.128/28</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>backend-apps</name>
+    <ipv4-prefix>198.51.100.32/27</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>attacker-src</name>
+    <ipv4-prefix>203.0.113.0/24</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>scrubbing-service</name>
+    <ipv4-prefix>192.0.2.0/28</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>sec-ops</name>
+    <ipv4-prefix>198.51.100.240/32</ipv4-prefix>
+  </device-group>
+
+  <device-group>
+    <name>cdn-waf-service</name>
+    <!-- external logical service; no IP provided here (left as a logical device-group).
+         If you have CDN/WAF IPs, add them as <ipv4-prefix> entries. -->
+  </device-group>
+</endpoint-groups>
+
+<threat-prevention xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <threat-feed-list>
+    <name>ip-reputation-feed</name>
+    <!-- Example IOCs / placeholders. In production, populate from your STIX/MISP feed provider. -->
+    <ioc>203.0.113.0/24</ioc>
+    <ioc>ASN:64500</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+
+  <threat-feed-list>
+    <name>geo-block-europe-sample</name>
+    <!-- Example placeholder for a geo-based block list (string format dependent on chosen feed) -->
+    <ioc>country:CN</ioc>
+    <format>stix</format>
+  </threat-feed-list>
+</threat-prevention>
+
+<i2nsf-cfi-policy xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+  <name>Company_Web_Server_Flood_Mitigation_Policy</name>
+  <language>en-US</language>
+  <priority-usage>priority-by-order</priority-usage>
+  <resolution-strategy>fmr</resolution-strategy>
+
+  <rules>
+    <name>Detect_Throttle_Block_And_Notify_Flood_Attacks</name>
+
+    <condition>
+      <firewall>
+        <source>attacker-src</source>
+        <destination>web-servers</destination>
+        <range-port-number>
+          <start>80</start>
+          <end>443</end>
+        </range-port-number>
+      </firewall>
+
+      <ddos>
+        <rate-limit>
+          <packet-rate-threshold>1000000</packet-rate-threshold>
+          <byte-rate-threshold>5000000</byte-rate-threshold>
+          <flow-rate-threshold>20000</flow-rate-threshold>
+        </rate-limit>
+      </ddos>
+
+      <threat-feed>
+        <name>ip-reputation-feed</name>
+      </threat-feed>
+    </condition>
+
+    <action>
+      <primary-action>
+        <action>invoke-signaling</action>
+      </primary-action>
+
+      <secondary-action>
+        <log-action>session-log</log-action>
+      </secondary-action>
+    </action>
+  </rules>
+</i2nsf-cfi-policy>
