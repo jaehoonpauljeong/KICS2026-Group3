@@ -1,7 +1,7 @@
 # from openai import OpenAI
 # import os
 
-# OPENAI_API_KEY = "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"
+# OPENAI_API_KEY = "YOUR-OPENAPI-KEY-HERE"
 # client = OpenAI(api_key=OPENAI_API_KEY)
 # model = "gpt-4o-mini"
 
@@ -291,7 +291,7 @@
 from openai import OpenAI
 import csv
 
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = "YOUR-OPENAPI-KEY-HERE"
 client = OpenAI(api_key=OPENAI_API_KEY)
 model = "gpt-4o-mini"
 
