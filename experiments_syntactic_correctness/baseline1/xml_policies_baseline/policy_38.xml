@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>allow_web_server_access_policy</name>
+    <rules>
+        <name>allow_web_server_access</name>
+        <event>
+            <system-event>connection-attempt</system-event>
+        </event>
+        <condition>
+            <firewall-condition>
+                <destination>Web_Server</destination>
+                <source>External_Clients</source>
+            </firewall-condition>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>allow</action>
+            </primary-action>
+            <secondary-action>
+                <log-action>session-log</log-action>
+            </secondary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>

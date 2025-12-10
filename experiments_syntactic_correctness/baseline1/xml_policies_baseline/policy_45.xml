@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>reject_unauthorized_access_policy</name>
+    <rules>
+        <name>reject_unauthorized_access</name>
+        <event>
+            <system-event>cpu_overload</system-event>
+        </event>
+        <condition>
+            <firewall-condition>
+                <source>Employee_Workstation</source>
+                <destination>HR_Portal</destination>
+            </firewall-condition>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>reject</action>
+            </primary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>

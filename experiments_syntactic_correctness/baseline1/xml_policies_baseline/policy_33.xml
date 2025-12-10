@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>allow_vpn_connections_policy</name>
+    <rules>
+        <name>allow_vpn_sessions</name>
+        <condition>
+            <firewall-condition>
+                <source>VPN_Client</source>
+            </firewall-condition>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>permit</action>
+            </primary-action>
+            <secondary-action>
+                <log-action>
+                    <action>log-session</action>
+                </log-action>
+            </secondary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>

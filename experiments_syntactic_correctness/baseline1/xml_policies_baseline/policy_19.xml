@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>forward_iot_traffic_policy</name>
+    <rules>
+        <name>forward_iot_traffic</name>
+        <event>
+            <system-event>iot-device-traffic-detected</system-event>
+        </event>
+        <condition>
+            <firewall-condition>
+                <source>Iot_Devices</source>
+            </firewall-condition>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>forward</action>
+                <limit>specialized-gateway</limit>
+            </primary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>block_incoming_guest_network_policy</name>
+    <rules>
+        <name>block_incoming_connections</name>
+        <condition>
+            <firewall-condition>
+                <source>guest_network</source>
+            </firewall-condition>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>

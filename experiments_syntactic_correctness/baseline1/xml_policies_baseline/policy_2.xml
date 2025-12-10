@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<i2nsf-cfi-policy
+    xmlns="urn:ietf:params:xml:ns:yang:ietf-i2nsf-cons-facing-interface">
+    <name>block_voip_vocn_policy</name>
+    <rules>
+        <name>block_voip_packets</name>
+        <condition>
+            <firewall-condition>
+                <destination>Company_Network</destination>
+            </firewall-condition>
+            <url-category>
+                <url-name>malicious_voip_vocn</url-name>
+            </url-category>
+        </condition>
+        <actions>
+            <primary-action>
+                <action>drop</action>
+            </primary-action>
+        </actions>
+    </rules>
+</i2nsf-cfi-policy>
