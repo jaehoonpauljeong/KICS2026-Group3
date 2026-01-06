@@ -2,6 +2,10 @@
 
 Paper:
 
+Overleafs (only accessible by the authors): 
+- https://www.overleaf.com/project/692e9074ef4cf5fed6bb467a (2 and 3 page version)
+- https://www.overleaf.com/project/68d094812f55bda494df05cb (7 page version)
+
 **Abstract**  
 Large Language Models (LLMs) have shown promise in translating high-level security intents into machine-readable policies for cloud-based security services. However, direct prompting of LLMs often produces hallucinated or invalid outputs, particularly when generating tructured artifacts such as the Interface to Network Security Functions (I2NSF) Consumer-Facing Interface (CFI) policies. In this work, we propose a [prompt ensembling](https://www.promptlayer.com/glossary/prompt-ensembling) approach that mitigates hallucination by decomposing policy generation into a sequence of specialized
 LLM prompts, each responsible for a distinct sub-task (e.g., event and action extraction, condition analysis, endpoint group and threat feed identification, metadata generation). Intermediate outputs are validated and refined against a Schema Reference Table derived from the official I2NSF [YANG data model](https://datatracker.ietf.org/doc/draft-ietf-i2nsf-consumer-facing-interface-dm/) before being composed into a final XML policy. This modular design improves both syntactic validity and semantic fidelity. In our evaluation on 50 synthetic policy intents using [yanglint](https://github.com/CESNET/libyang), the prompt ensemble method achieves a markedly higher compliance rate with the I2NSF schema compared to a single-step LLM baseline. Qualitative comparisons further show that our outputs are more consistent and interpretable. These results demonstrate that [prompt ensembling](https://www.promptlayer.com/glossary/prompt-ensembling) is an effective strategy for reducing LLM hallucinations and improving the trustworthiness of AI-driven security policy generation.
