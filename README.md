@@ -1,4 +1,4 @@
-# Mitigating-Hallucination-in-Security-Policy-Generation-with-Prompt-Ensembling
+# A-Hallucination-Mitigation-Scheme-in-Security-Policy-Generation-with-Large-Language-Models
 
 Paper:
 
