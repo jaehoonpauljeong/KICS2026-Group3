@@ -26,7 +26,9 @@ Much thanks to [Jaehoon (Paul) Jeong](https://scholar.google.co.uk/citations?use
 
 <br>
 
-**Video explanation of the project**
+**Video explanation of the project**  
+Find the video explanation of the project here: https://www.youtube.com/watch?v=klPVwahq4V0
+
 <p align="center"> 
 
 
