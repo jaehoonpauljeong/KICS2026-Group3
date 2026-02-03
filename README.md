@@ -1,4 +1,4 @@
-# A-Hallucination-Mitigation-Scheme-in-Security-Policy-Generation-with-Large-Language-Models
+# A Hallucination Mitigation Scheme in Security Policy Generation with Large Language Models
 
 Paper:
 
@@ -7,25 +7,32 @@ Overleafs (only accessible by the authors):
 - https://www.overleaf.com/project/68d094812f55bda494df05cb (7 page version)
 
 **Abstract**  
-Large Language Models (LLMs) have shown promise in translating high-level security intents into machine-readable policies for cloud-based security services. However, direct prompting of LLMs often produces hallucinated or invalid outputs, particularly when generating tructured artifacts such as the Interface to Network Security Functions (I2NSF) Consumer-Facing Interface (CFI) policies. In this work, we propose a [prompt ensembling](https://www.promptlayer.com/glossary/prompt-ensembling) approach that mitigates hallucination by decomposing policy generation into a sequence of specialized
-LLM prompts, each responsible for a distinct sub-task (e.g., event and action extraction, condition analysis, endpoint group and threat feed identification, metadata generation). Intermediate outputs are validated and refined against a Schema Reference Table derived from the official I2NSF [YANG data model](https://datatracker.ietf.org/doc/draft-ietf-i2nsf-consumer-facing-interface-dm/) before being composed into a final XML policy. This modular design improves both syntactic validity and semantic fidelity. In our evaluation on 50 synthetic policy intents using [yanglint](https://github.com/CESNET/libyang), the prompt ensemble method achieves a markedly higher compliance rate with the I2NSF schema compared to a single-step LLM baseline. Qualitative comparisons further show that our outputs are more consistent and interpretable. These results demonstrate that [prompt ensembling](https://www.promptlayer.com/glossary/prompt-ensembling) is an effective strategy for reducing LLM hallucinations and improving the trustworthiness of AI-driven security policy generation.
+Large Language Models (LLMs) have shown promise in translating high-level security intents into machine-readable policies for cloud-based security services. However, direct prompting of LLMs often produces hallucinated or invalid outputs, particularly when generating tructured artifacts such as the Interface to Network Security Functions (I2NSF) Consumer-Facing Interface (CFI) policies. In this work, we propose a [prompt ensembling](https://www.promptlayer.com/glossary/prompt-ensembling) approach that mitigates hallucination by decomposing policy generation into a sequence of specialized LLM prompts, each responsible for a distinct sub-task (e.g., event and action extraction, condition analysis, endpoint group and threat feed identification, metadata generation). Intermediate outputs are validated and refined against a Schema Reference Table derived from the official I2NSF [YANG data model](https://datatracker.ietf.org/doc/draft-ietf-i2nsf-consumer-facing-interface-dm/) before being composed into a final XML policy. This modular design improves both syntactic validity and semantic fidelity. In our evaluation on 50 synthetic policy intents using [yanglint](https://github.com/CESNET/libyang), the prompt ensemble method achieves a markedly higher compliance rate with the I2NSF schema compared to a single-step LLM baseline. Qualitative comparisons further show that our outputs are more consistent and interpretable. These results demonstrate that [prompt ensembling](https://www.promptlayer.com/glossary/prompt-ensembling) is an effective strategy for reducing LLM hallucinations and improving the trustworthiness of AI-driven security policy generation.
+
+This approach can be generalized beyond security policies to generate syntactically correct machine code for other domains where precise, structured output is required (especially in the LLM applications in Networking, this can be used to generate accurrate policies/low-level device configurations and actions from high level natural language aka intents). It is particularly useful for building agentic LLM pipelines, where natural language instructions must be reliably translated into deterministic machine-readable formats (e.g., XML, JSON, or other fixed-schema configurations). Even if the initial generation fails to meet schema constraints, the LLM can automatically regenerate or self-correct until valid output is produced — ensuring consistent pipeline operation with minimal hallucinations.
 
 This project can seen as to succeed this paper: 
 - http://iotlab.skku.edu/publications/domestic-conference/KICS-2025-Winter-LLM-Based-Security-Policy-Generation.pdf (Security Policy Generation for Cloud-Based Security Services using Large Language Model) and its source code, https://github.com/jaehoonpauljeong/Data-Modeling-Group-2-Project
 
 Much thanks to [Jaehoon (Paul) Jeong](https://scholar.google.co.uk/citations?user=_co9LWUAAAAJ&hl=en) for advising this project.
 
-This approach can be generalized beyond security policies to generate syntactically correct machine code for other domains where precise, structured output is required (especially in the LLM applications in Networking, this can be used to generate accurrate policies/low-level device configurations and actions from high level natural language aka intents). It is particularly useful for building agentic LLM pipelines, where natural language instructions must be reliably translated into deterministic machine-readable formats (e.g., XML, JSON, or other fixed-schema configurations). Even if the initial generation fails to meet schema constraints, the LLM can automatically regenerate or self-correct until valid output is produced — ensuring consistent pipeline operation with minimal hallucinations.
+<br>
 
-Find the video explanation of the project here: https://www.youtube.com/watch?v=klPVwahq4V0
-
+**Architecture of the Security Policy Generation with Prompt Ensembling pipeline**
 <p align="center"> 
   <img width="397" height="561" alt="prompt_ensemble_architecture (2)" src="https://github.com/user-attachments/assets/8ea5f31f-4394-4fef-b896-563076c85239" />
 
 </p>
 
+<br>
+
+**Video explanation of the project**
 <p align="center"> 
-  Architecture of the Security Policy Generation with Prompt Ensembling pipeline
+
+
+https://github.com/user-attachments/assets/2bd3f2c5-89bf-40b7-ac30-e7b21dc3a249
+
+
 </p>
 
 <br>
