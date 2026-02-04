@@ -102,8 +102,9 @@ Source(s):
 <br>
 
 ## How to reproduce the experiments? <a name = "reproduce"></a>
-**Syntactic Correctness Comparison**  
 Minimal external equirements in this project, the main one is the [OpenAI API Python library](https://platform.openai.com/docs/libraries).
+
+**Syntactic Correctness Comparison**  
 
 1. Add in your OpenAI API key, then simply run the latest version of the prompt ensembling pipeline, the '[main_v4.py](https://github.com/WindJammer6/37.-Mitigating-Hallucination-in-Security-Policy-Generation-with-Prompt-Ensembling/blob/main/main_v4.py)' file, which will generate a text file of the compiled XML policies for all 50 syntactic policy intents dataset
 2. Pass the generated text file to the '[text_to_xml.py](https://github.com/WindJammer6/37.-Mitigating-Hallucination-in-Security-Policy-Generation-with-Prompt-Ensembling/blob/main/helpers/text_to_xml.py)' file in the '[helpers](https://github.com/WindJammer6/37.-Mitigating-Hallucination-in-Security-Policy-Generation-with-Prompt-Ensembling/tree/main/helpers)' folder to generate a folder with 50 XML files of the generated policies from the 50 syntactic policy intents dataset
